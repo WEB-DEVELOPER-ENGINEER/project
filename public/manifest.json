@@ -1,0 +1,44 @@
+{
+  "name": "Jusor Translation Services",
+  "short_name": "Jusor",
+  "description": "Professional translation services for legal, technical, and business documents with exceptional quality and precision.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#e86e2a",
+  "orientation": "portrait-primary",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x130",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Contact Us",
+      "short_name": "Contact",
+      "description": "Get in touch with our team",
+      "url": "/contact",
+      "icons": [{ "src": "/apple-touch-icon.png", "sizes": "180x130" }]
+    },
+    {
+      "name": "Our Services",
+      "short_name": "Services",
+      "description": "Explore our digital solutions",
+      "url": "/services",
+      "icons": [{ "src": "/apple-touch-icon.png", "sizes": "180x130" }]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+# Jusor Translation Services
+
+> Jusor provides professional translation services for legal, technical, and business documents, ensuring accuracy and cultural relevance.
+
+## Services
+
+- [Legal Translation](https://jusortrans.com/legal-translation): Specialized translation of legal documents including contracts, patents, and court documents by certified legal translators.
+- [Technical Translation](https://jusortrans.com/technical-translation): Accurate translation of technical manuals, specifications, and scientific papers for various industries.
+- [Business Translation](https://jusortrans.com/business-translation): Professional translation of corporate communications, marketing materials, and financial reports for global business needs.
+- [Medical Translation](https://jusortrans.com/medical-translation): Precise translation of medical records, clinical trials, and pharmaceutical documents adhering to strict industry standards.
+- [Website Localization](https://jusortrans.com/website-localization): Adapting website content to specific linguistic and cultural contexts to effectively reach international audiences.
+- [Desktop Publishing (DTP)](https://jusortrans.com/desktop-publishing): Formatting and layout services for translated documents to maintain original design and readability across languages.
+
+## Company
+
+- [About Us](https://jusortrans.com/about-us): Learn about Jusor's mission, values, and commitment to delivering high-quality, culturally sensitive translation solutions.
+- [Contact Us](https://jusortrans.com/contact-us): Reach out to Jusor for inquiries, quotes, or support regarding translation projects.
+
+## Key Facts
+
+- Specializes in legal, technical, business, and medical translation.
+- Offers website localization and desktop publishing services.
+- Focuses on accuracy, cultural relevance, and timely delivery.
+- Serves a global clientele across diverse industries.
+
+## Contact
+
+- Website: https://jusortrans.com
+- Email: info@jusortrans.com
+- Phone: +1 (800) 555-1234 (placeholder, actual not found)

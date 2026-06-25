@@ -1,0 +1,635 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth/next'
+import { pool } from '@/lib/database'
+import { invalidateCacheForResource } from '@/lib/cache-manager'
+import { syncResourceCreate, syncResourceUpdate, syncResourceDelete, syncResourceBulkDelete } from '@/lib/data-sync-service'
+import DOMPurify from 'dompurify'
+import { JSDOM } from 'jsdom'
+
+// Create DOMPurify instance for server-side
+const window = new JSDOM('').window
+const purify = DOMPurify(window as any)
+
+// Authentication check
+export async function checkAuth(requiredRole?: string) {
+  const session = await getServerSession()
+  if (!session?.user?.email) {
+    return { authorized: false, user: null }
+  }
+
+  try {
+    const client = await pool.connect()
+    const result = await client.query(
+      'SELECT id, email, name, role, is_active FROM admin_users WHERE email = $1 AND is_active = true',
+      [session.user.email]
+    )
+    client.release()
+
+    if (result.rows.length === 0) {
+      return { authorized: false, user: null }
+    }
+
+    const user = result.rows[0]
+    
+    // Check role if required
+    if (requiredRole && user.role !== requiredRole && user.role !== 'super_admin') {
+      return { authorized: false, user }
+    }
+
+    return { authorized: true, user }
+  } catch (error) {
+    console.error('Auth check error:', error)
+    return { authorized: false, user: null }
+  }
+}
+
+// Generic CRUD operations
+export class AdminCRUD {
+  constructor(
+    private tableName: string,
+    private allowedFields: string[],
+    private requiredFields: string[] = [],
+    private searchFields: string[] = [],
+    private htmlFields: string[] = []
+  ) {}
+
+  // GET list with pagination, sorting, and filtering
+  async getList(request: NextRequest) {
+    const { authorized } = await checkAuth()
+    if (!authorized) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const { searchParams } = new URL(request.url)
+    const page = parseInt(searchParams.get('page') || '1')
+    const perPage = parseInt(searchParams.get('perPage') || '10')
+    const sort = searchParams.get('sort') || 'id'
+    const order = searchParams.get('order') || 'ASC'
+    const filter = searchParams.get('filter')
+
+    try {
+      const client = await pool.connect()
+      
+      let whereClause = ''
+      let queryParams: any[] = []
+      let paramIndex = 1
+
+      if (filter) {
+        const filterObj = JSON.parse(filter)
+        const conditions: string[] = []
+
+        // Handle search query
+        if (filterObj.q && this.searchFields.length > 0) {
+          const searchConditions = this.searchFields.map(field => 
+            `${field} ILIKE $${paramIndex}`
+          ).join(' OR ')
+          conditions.push(`(${searchConditions})`)
+          queryParams.push(`%${filterObj.q}%`)
+          paramIndex++
+        }
+
+        // Handle other filters
+        Object.keys(filterObj).forEach(key => {
+          if (key !== 'q' && this.allowedFields.includes(key) && filterObj[key] !== undefined) {
+            if (Array.isArray(filterObj[key])) {
+              // Handle array filters (e.g., id: [1, 2, 3])
+              const placeholders = filterObj[key].map(() => `$${paramIndex++}`).join(', ')
+              conditions.push(`${key} IN (${placeholders})`)
+              queryParams.push(...filterObj[key])
+            } else {
+              conditions.push(`${key} = $${paramIndex}`)
+              queryParams.push(filterObj[key])
+              paramIndex++
+            }
+          }
+        })
+
+        if (conditions.length > 0) {
+          whereClause = `WHERE ${conditions.join(' AND ')}`
+        }
+      }
+
+      // Validate sort field
+      const sortField = this.allowedFields.includes(sort) ? sort : 'id'
+      const sortOrder = order.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
+
+      // Get total count
+      const countResult = await client.query(
+        `SELECT COUNT(*) FROM ${this.tableName} ${whereClause}`,
+        queryParams
+      )
+      const total = parseInt(countResult.rows[0].count)
+
+      // Get paginated data
+      const offset = (page - 1) * perPage
+      const dataResult = await client.query(
+        `SELECT * FROM ${this.tableName} ${whereClause} ORDER BY ${sortField} ${sortOrder} LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
+        [...queryParams, perPage, offset]
+      )
+
+      client.release()
+
+      // Ensure all returned data has an id field and includes all table columns
+      const data = dataResult.rows.map((row: any) => {
+        // Ensure id field exists
+        const record = {
+          id: row.id,
+          ...row,
+        }
+        
+        // Add default values for any missing allowed fields and normalize array fields
+        this.allowedFields.forEach(field => {
+          if (record[field] === undefined || record[field] === null) {
+            // Set appropriate default values based on field type
+            if (field === 'sort_order') {
+              record[field] = 0
+            } else if (field === 'is_active') {
+              record[field] = true
+            } else if (['created_at', 'updated_at'].includes(field)) {
+              record[field] = row[field] || new Date().toISOString()
+            } else if (['languages', 'scope', 'deliverables', 'certifications', 'impact_outcomes', 'key_benefits', 'related_services', 'languages_supported', 'industry_focus', 'service_tags', 'meta_keywords'].includes(field)) {
+              // Ensure array fields are always arrays for React Admin
+              record[field] = []
+            } else {
+              record[field] = row[field] || null
+            }
+          } else if (['languages', 'scope', 'deliverables', 'certifications', 'impact_outcomes', 'key_benefits', 'related_services', 'languages_supported', 'industry_focus', 'service_tags', 'meta_keywords'].includes(field)) {
+            // Normalize existing array fields
+            record[field] = Array.isArray(record[field]) ? record[field] : (record[field] ? [record[field]] : [])
+          }
+        })
+        
+        return record
+      })
+
+      return NextResponse.json({
+        data,
+        total,
+      })
+    } catch (error) {
+      console.error(`Error fetching ${this.tableName}:`, {
+        error: error instanceof Error ? error.message : error,
+        resource: this.tableName,
+        params: { page, perPage, sort, order, filter },
+        stack: error instanceof Error ? error.stack : undefined
+      })
+      
+      return NextResponse.json({ 
+        error: 'Failed to fetch data',
+        details: process.env.NODE_ENV === 'development' 
+          ? (error instanceof Error ? error.message : 'Unknown error')
+          : undefined
+      }, { status: 500 })
+    }
+  }
+
+  // GET single item
+  async getOne(id: string) {
+    const { authorized } = await checkAuth()
+    if (!authorized) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    try {
+      const client = await pool.connect()
+      const result = await client.query(
+        `SELECT * FROM ${this.tableName} WHERE id = $1`,
+        [id]
+      )
+      client.release()
+
+      if (result.rows.length === 0) {
+        return NextResponse.json({ error: 'Not found' }, { status: 404 })
+      }
+
+      const record = {
+        id: result.rows[0].id,
+        ...result.rows[0],
+      }
+      
+      // Add default values for any missing allowed fields and normalize array fields
+      this.allowedFields.forEach(field => {
+        if (record[field] === undefined || record[field] === null) {
+          if (field === 'sort_order') {
+            record[field] = 0
+          } else if (field === 'is_active') {
+            record[field] = true
+          } else if (['created_at', 'updated_at'].includes(field)) {
+            record[field] = record[field] || new Date().toISOString()
+          } else if (['languages', 'scope', 'deliverables', 'certifications', 'impact_outcomes', 'key_benefits', 'related_services', 'languages_supported', 'industry_focus', 'service_tags', 'meta_keywords'].includes(field)) {
+            // Ensure array fields are always arrays for React Admin
+            record[field] = []
+          } else {
+            record[field] = record[field] || null
+          }
+        } else if (['languages', 'scope', 'deliverables', 'certifications', 'impact_outcomes', 'key_benefits', 'related_services', 'languages_supported', 'industry_focus', 'service_tags', 'meta_keywords'].includes(field)) {
+          // Normalize existing array fields
+          record[field] = Array.isArray(record[field]) ? record[field] : (record[field] ? [record[field]] : [])
+        }
+      })
+
+      return NextResponse.json({
+        data: record,
+      })
+    } catch (error) {
+      console.error(`Error fetching ${this.tableName} item:`, error)
+      return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    }
+  }
+
+  // POST create
+  async create(request: NextRequest) {
+    const { authorized } = await checkAuth()
+    if (!authorized) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    try {
+      const body = await request.json()
+      
+      // Validate required fields
+      for (const field of this.requiredFields) {
+        if (!body[field]) {
+          return NextResponse.json({ error: `${field} is required` }, { status: 400 })
+        }
+      }
+
+      // Filter allowed fields and handle JSONB serialization
+      const jsonbFields = [
+        // Project JSONB fields
+        'technical_details', 'process_details', 'quality_metrics', 'key_metrics', 'client_testimonial', 'achievements', 'timeline_phases',
+        // Service JSONB fields
+        'service_features', 'process_steps', 'service_highlights', 'specifications', 'success_metrics', 'gallery_images', 'faq_items', 'schema_markup',
+        // About Us JSONB fields
+        'values', 'timeline_phases', 'achievements', 'certifications',
+        // Slider JSONB fields
+        'responsive_breakpoints', 'seo_metadata'
+      ]
+      const arrayFields = [
+        // Project array fields
+        'languages', 'scope', 'deliverables', 'certifications', 'impact_outcomes',
+        // Service array fields
+        'key_benefits', 'related_services', 'languages_supported', 'industry_focus', 'service_tags', 'meta_keywords'
+      ]
+      const data: any = {}
+      
+      this.allowedFields.forEach(field => {
+        if (body[field] !== undefined) {
+          if (this.htmlFields.includes(field) && typeof body[field] === 'string') {
+            data[field] = purify.sanitize(body[field])
+          } else if (jsonbFields.includes(field)) {
+            // Handle JSONB fields - ensure proper JSON serialization
+            if (body[field] === null || body[field] === '') {
+              data[field] = null
+            } else if (Array.isArray(body[field])) {
+              // Handle arrays directly - React Admin sends arrays for ArrayInput
+              try {
+                data[field] = JSON.stringify(body[field])
+                console.log(`Serialized array for ${field}:`, data[field])
+              } catch (error) {
+                console.error(`Invalid array for field ${field}:`, error)
+                throw new Error(`Invalid array format for field: ${field}`)
+              }
+            } else if (typeof body[field] === 'object') {
+              try {
+                // Validate and serialize JSON
+                data[field] = JSON.stringify(body[field])
+              } catch (error) {
+                console.error(`Invalid JSON for field ${field}:`, error)
+                throw new Error(`Invalid JSON format for field: ${field}`)
+              }
+            } else if (typeof body[field] === 'string') {
+              try {
+                // Validate existing JSON string
+                JSON.parse(body[field])
+                data[field] = body[field]
+              } catch (error) {
+                console.error(`Invalid JSON string for field ${field}:`, error)
+                throw new Error(`Invalid JSON format for field: ${field}`)
+              }
+            } else {
+              data[field] = body[field]
+            }
+          } else if (arrayFields.includes(field)) {
+            // Handle array fields - ensure proper array format
+            data[field] = Array.isArray(body[field]) ? body[field] : (body[field] ? [body[field]] : [])
+          } else if (['category_id', 'icon_id', 'sort_order'].includes(field)) {
+            // Handle integer fields - ensure proper type conversion
+            const value = body[field]
+            if (value === null || value === '' || value === undefined) {
+              data[field] = null
+            } else {
+              data[field] = parseInt(value, 10)
+            }
+          } else {
+            data[field] = body[field]
+          }
+        }
+      })
+
+      const fields = Object.keys(data)
+      const values = Object.values(data)
+      const placeholders = fields.map((_, index) => `$${index + 1}`).join(', ')
+
+      const client = await pool.connect()
+      const result = await client.query(
+        `INSERT INTO ${this.tableName} (${fields.join(', ')}) VALUES (${placeholders}) RETURNING *`,
+        values
+      )
+      client.release()
+
+      // Invalidate cache and sync data
+      invalidateCacheForResource(this.tableName);
+      syncResourceCreate(this.tableName, result.rows[0].id);
+
+      return NextResponse.json({
+        data: {
+          id: result.rows[0].id,
+          ...result.rows[0],
+        },
+      })
+    } catch (error) {
+      console.error(`Error creating ${this.tableName} item:`, {
+        error: error instanceof Error ? error.message : error,
+        tableName: this.tableName,
+        stack: error instanceof Error ? error.stack : undefined
+      })
+      
+      // Handle specific error types for better user experience
+      if (error instanceof Error) {
+        if (error.message.includes('Invalid JSON format')) {
+          return NextResponse.json({ 
+            error: 'Invalid data format', 
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+          }, { status: 400 })
+        }
+        
+        if (error.message.includes('invalid input syntax for type json')) {
+          return NextResponse.json({ 
+            error: 'Invalid JSON data provided', 
+            details: process.env.NODE_ENV === 'development' ? 'Please check your JSON field formats' : undefined
+          }, { status: 400 })
+        }
+        
+        if (error.message.includes('duplicate key value')) {
+          return NextResponse.json({ 
+            error: 'Duplicate entry', 
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+          }, { status: 409 })
+        }
+        
+        if (error.message.includes('violates not-null constraint')) {
+          return NextResponse.json({ 
+            error: 'Required field missing', 
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+          }, { status: 400 })
+        }
+      }
+      
+      return NextResponse.json({ 
+        error: 'Failed to create item',
+        details: process.env.NODE_ENV === 'development' 
+          ? (error instanceof Error ? error.message : 'Unknown error')
+          : undefined
+      }, { status: 500 })
+    }
+  }
+
+  // PUT update
+  async update(id: string, request: NextRequest) {
+    const { authorized } = await checkAuth()
+    if (!authorized) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    try {
+      const body = await request.json()
+
+      // Filter allowed fields and handle JSONB serialization
+      const jsonbFields = [
+        // Project JSONB fields
+        'technical_details', 'process_details', 'quality_metrics', 'key_metrics', 'client_testimonial', 'achievements', 'timeline_phases',
+        // Service JSONB fields
+        'service_features', 'process_steps', 'service_highlights', 'specifications', 'success_metrics', 'gallery_images', 'faq_items', 'schema_markup',
+        // About Us JSONB fields
+        'values', 'timeline_phases', 'achievements', 'certifications',
+        // Slider JSONB fields
+        'responsive_breakpoints', 'seo_metadata'
+      ]
+      const arrayFields = [
+        // Project array fields
+        'languages', 'scope', 'deliverables', 'certifications', 'impact_outcomes',
+        // Service array fields
+        'key_benefits', 'related_services', 'languages_supported', 'industry_focus', 'service_tags', 'meta_keywords'
+      ]
+      const data: any = {}
+      
+      this.allowedFields.forEach(field => {
+        if (body[field] !== undefined) {
+          if (this.htmlFields.includes(field) && typeof body[field] === 'string') {
+            data[field] = purify.sanitize(body[field])
+          } else if (jsonbFields.includes(field)) {
+            // Handle JSONB fields - ensure proper JSON serialization
+            if (body[field] === null || body[field] === '') {
+              data[field] = null
+            } else if (typeof body[field] === 'object') {
+              try {
+                // Validate and serialize JSON
+                data[field] = JSON.stringify(body[field])
+              } catch (error) {
+                console.error(`Invalid JSON for field ${field}:`, error)
+                throw new Error(`Invalid JSON format for field: ${field}`)
+              }
+            } else if (typeof body[field] === 'string') {
+              try {
+                // Validate existing JSON string
+                JSON.parse(body[field])
+                data[field] = body[field]
+              } catch (error) {
+                console.error(`Invalid JSON string for field ${field}:`, error)
+                throw new Error(`Invalid JSON format for field: ${field}`)
+              }
+            } else {
+              data[field] = body[field]
+            }
+          } else if (arrayFields.includes(field)) {
+            // Handle array fields - ensure proper array format
+            data[field] = Array.isArray(body[field]) ? body[field] : (body[field] ? [body[field]] : [])
+          } else if (['category_id', 'icon_id', 'sort_order'].includes(field)) {
+            // Handle integer fields - ensure proper type conversion
+            const value = body[field]
+            if (value === null || value === '' || value === undefined) {
+              data[field] = null
+            } else {
+              data[field] = parseInt(value, 10)
+            }
+          } else {
+            data[field] = body[field]
+          }
+        }
+      })
+
+      if (Object.keys(data).length === 0) {
+        return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 })
+      }
+
+      const fields = Object.keys(data)
+      const values = Object.values(data)
+      const setClause = fields.map((field, index) => `${field} = $${index + 1}`).join(', ')
+
+      const client = await pool.connect()
+      const result = await client.query(
+        `UPDATE ${this.tableName} SET ${setClause} WHERE id = $${fields.length + 1} RETURNING *`,
+        [...values, id]
+      )
+      client.release()
+
+      if (result.rows.length === 0) {
+        return NextResponse.json({ error: 'Not found' }, { status: 404 })
+      }
+
+      // Invalidate cache and sync data
+      invalidateCacheForResource(this.tableName);
+      syncResourceUpdate(this.tableName, id);
+
+      return NextResponse.json({
+        data: {
+          id: result.rows[0].id,
+          ...result.rows[0],
+        },
+      })
+    } catch (error) {
+      console.error(`Error updating ${this.tableName} item:`, {
+        error: error instanceof Error ? error.message : error,
+        id,
+        tableName: this.tableName,
+        stack: error instanceof Error ? error.stack : undefined
+      })
+      
+      // Handle specific error types for better user experience
+      if (error instanceof Error) {
+        if (error.message.includes('Invalid JSON format')) {
+          return NextResponse.json({ 
+            error: 'Invalid data format', 
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+          }, { status: 400 })
+        }
+        
+        if (error.message.includes('invalid input syntax for type json')) {
+          return NextResponse.json({ 
+            error: 'Invalid JSON data provided', 
+            details: process.env.NODE_ENV === 'development' ? 'Please check your JSON field formats' : undefined
+          }, { status: 400 })
+        }
+        
+        if (error.message.includes('duplicate key value')) {
+          return NextResponse.json({ 
+            error: 'Duplicate entry', 
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+          }, { status: 409 })
+        }
+      }
+      
+      return NextResponse.json({ 
+        error: 'Failed to update item',
+        details: process.env.NODE_ENV === 'development' 
+          ? (error instanceof Error ? error.message : 'Unknown error')
+          : undefined
+      }, { status: 500 })
+    }
+  }
+
+  // DELETE
+  async delete(id: string) {
+    const { authorized } = await checkAuth()
+    if (!authorized) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    try {
+      const client = await pool.connect()
+      const result = await client.query(
+        `DELETE FROM ${this.tableName} WHERE id = $1 RETURNING *`,
+        [id]
+      )
+      client.release()
+
+      if (result.rows.length === 0) {
+        return NextResponse.json({ error: 'Not found' }, { status: 404 })
+      }
+
+      // Invalidate cache and sync data
+      invalidateCacheForResource(this.tableName);
+      syncResourceDelete(this.tableName, id);
+
+      return NextResponse.json({
+        data: {
+          id: result.rows[0].id,
+          ...result.rows[0],
+        },
+      })
+    } catch (error) {
+      console.error(`Error deleting ${this.tableName} item:`, error)
+      return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    }
+  }
+
+  // DELETE many
+  async deleteMany(request: NextRequest) {
+    const { authorized } = await checkAuth()
+    if (!authorized) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const { searchParams } = new URL(request.url)
+    const filter = searchParams.get('filter')
+
+    if (!filter) {
+      return NextResponse.json({ error: 'Filter required for bulk delete' }, { status: 400 })
+    }
+
+    try {
+      const filterObj = JSON.parse(filter)
+      if (!filterObj.id || !Array.isArray(filterObj.id)) {
+        return NextResponse.json({ error: 'Invalid filter format' }, { status: 400 })
+      }
+
+      const ids = filterObj.id
+      const placeholders = ids.map((_, index) => `$${index + 1}`).join(', ')
+
+      const client = await pool.connect()
+      const result = await client.query(
+        `DELETE FROM ${this.tableName} WHERE id IN (${placeholders}) RETURNING id`,
+        ids
+      )
+      client.release()
+
+      // Invalidate cache and sync data
+      invalidateCacheForResource(this.tableName);
+      syncResourceBulkDelete(this.tableName, ids);
+
+      return NextResponse.json({ data: result.rows.map(row => row.id) })
+    } catch (error) {
+      console.error(`Error bulk deleting ${this.tableName} items:`, error)
+      return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    }
+  }
+}
+
+// Utility function to handle file uploads
+export async function handleFileUpload(file: File, uploadPath: string = 'uploads'): Promise<string> {
+  // This is a placeholder - in production, you'd upload to cloud storage
+  // For now, we'll just return a mock URL
+  const fileName = `${Date.now()}-${file.name}`
+  return `/uploads/${fileName}`
+}
+
+// Utility function to generate slug from title
+export function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9 -]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim()
+}
