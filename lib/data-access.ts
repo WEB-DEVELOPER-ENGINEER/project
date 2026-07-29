@@ -651,7 +651,8 @@ export async function getBlogPosts(page: number = 1, limit: number = 6): Promise
 }
 
 export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
-  const cacheKey = getCacheKey('blog:post', { slug });
+  const decodedSlug = decodeURIComponent(slug);
+  const cacheKey = getCacheKey('blog:post', { slug: decodedSlug });
   const cached = cacheManager.get<BlogPost>(cacheKey);
   if (cached) return cached;
 
@@ -667,8 +668,9 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
       FROM blog_posts bp
       LEFT JOIN blog_authors ba ON bp.author_id = ba.id
       LEFT JOIN blog_categories bc ON bp.category_id = bc.id
-      WHERE bp.slug = $1 AND bp.is_published = true
-    `, [slug]);
+      WHERE (bp.slug = $1 OR bp.slug = $2) AND bp.is_published = true
+      LIMIT 1
+    `, [slug, decodedSlug]);
 
     if (result.rows.length === 0) {
       return null;
@@ -721,7 +723,8 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
 }
 
 export async function getRelatedBlogPosts(currentSlug: string, limit: number = 3): Promise<BlogPost[]> {
-  const cacheKey = getCacheKey('blog:related', { currentSlug, limit });
+  const decodedSlug = decodeURIComponent(currentSlug);
+  const cacheKey = getCacheKey('blog:related', { currentSlug: decodedSlug, limit });
   const cached = cacheManager.get<BlogPost[]>(cacheKey);
   if (cached) return cached;
 
@@ -733,10 +736,10 @@ export async function getRelatedBlogPosts(currentSlug: string, limit: number = 3
       FROM blog_posts bp
       LEFT JOIN blog_authors ba ON bp.author_id = ba.id
       LEFT JOIN blog_categories bc ON bp.category_id = bc.id
-      WHERE bp.slug != $1 AND bp.is_published = true
+      WHERE bp.slug != $1 AND bp.slug != $2 AND bp.is_published = true
       ORDER BY bp.published_date DESC, bp.created_at DESC
-      LIMIT $2
-    `, [currentSlug, limit]);
+      LIMIT $3
+    `, [currentSlug, decodedSlug, limit]);
 
     const posts = result.rows.map(row => ({
       ...row,

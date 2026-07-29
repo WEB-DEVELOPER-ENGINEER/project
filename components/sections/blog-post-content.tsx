@@ -21,29 +21,27 @@ export function BlogPostContent({ post, siteSettings = {} }: BlogPostContentProp
   const [activeHeading, setActiveHeading] = useState<string>('');
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // Generate table of contents from content headings
+  // Generate table of contents from rendered content headings
   useEffect(() => {
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = post.content;
+    const container = document.querySelector('.blog-content');
+    if (!container) return;
     
-    const headings = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
     const toc: TableOfContentsItem[] = [];
     
     headings.forEach((heading, index) => {
       const level = parseInt(heading.tagName.charAt(1));
       const text = heading.textContent || '';
-      const id = `heading-${index}`;
-      
-      // Add ID to heading for navigation
-      heading.id = id;
+      let id = heading.id;
+      if (!id) {
+        id = `heading-${index}`;
+        heading.id = id;
+      }
       
       toc.push({ id, text, level });
     });
     
     setTableOfContents(toc);
-    
-    // Update the post content with IDs
-    const contentWithIds = tempDiv.innerHTML;
     
     // Set up intersection observer for active heading tracking
     const observer = new IntersectionObserver(
@@ -54,15 +52,10 @@ export function BlogPostContent({ post, siteSettings = {} }: BlogPostContentProp
           }
         });
       },
-      { rootMargin: '-20% 0px -80% 0px' }
+      { rootMargin: '-100px 0px -66% 0px' }
     );
 
-    // Observe headings after a short delay to ensure DOM is ready
-    setTimeout(() => {
-      headings.forEach((heading) => {
-        if (heading.id) observer.observe(heading);
-      });
-    }, 100);
+    headings.forEach((heading) => observer.observe(heading));
 
     return () => observer.disconnect();
   }, [post.content]);
@@ -84,9 +77,13 @@ export function BlogPostContent({ post, siteSettings = {} }: BlogPostContentProp
   const scrollToHeading = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      const offset = 100; // Account for fixed header
-      const elementPosition = element.offsetTop - offset;
+      const offset = 100; // Account for fixed header navigation
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect - offset;
+
       window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+      setActiveHeading(id);
     }
   };
 

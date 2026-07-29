@@ -24,14 +24,13 @@ if (connectionString && process.env.NODE_ENV === 'development') {
   }
 }
 
-const dbConfig = {
-  connectionString: connectionString,
-  // Fallback to individual variables if connection string fails
+const dbConfig: any = {
+  // Fallback to individual variables or connection string
   host: process.env.DB_HOST || process.env.POSTGRES_HOST || 'localhost',
   port: parseInt(process.env.DB_PORT || '5432'),
   database: process.env.DB_NAME || process.env.POSTGRES_DATABASE || 'jusor_nextjs',
   user: process.env.DB_USERNAME || process.env.DB_USER || process.env.POSTGRES_USER || 'postgres',
-  password: String(process.env.DB_PASSWORD || process.env.POSTGRES_PASSWORD || ''),
+  password: process.env.DB_PASSWORD || process.env.POSTGRES_PASSWORD || 'postgres',
   // SSL configuration - disable in development, enable in production
   ssl: process.env.NODE_ENV === 'production' && (process.env.DATABASE_URL || process.env.POSTGRES_URL) ? {
     rejectUnauthorized: false,
@@ -46,6 +45,10 @@ const dbConfig = {
   // Additional optimizations
   allowExitOnIdle: process.env.NODE_ENV !== 'production', // Allow pool to close in development
 };
+
+if (connectionString) {
+  dbConfig.connectionString = connectionString;
+}
 
 // Global variable to prevent multiple pool instances in development (Next.js hot reload)
 declare global {
@@ -283,6 +286,11 @@ export async function initializeDatabase() {
       -- Blog posts table already exists, add new columns if they don't exist
       DO $$ 
       BEGIN
+        ALTER TABLE blog_posts ALTER COLUMN title TYPE VARCHAR(500);
+        ALTER TABLE blog_posts ALTER COLUMN slug TYPE VARCHAR(500);
+        ALTER TABLE blog_posts ALTER COLUMN meta_title TYPE VARCHAR(500);
+        ALTER TABLE blog_posts ALTER COLUMN meta_description TYPE VARCHAR(1000);
+
         -- Add new columns to existing blog_posts table
         IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'blog_posts' AND column_name = 'author_id') THEN
           ALTER TABLE blog_posts ADD COLUMN author_id INTEGER REFERENCES blog_authors(id) ON DELETE SET NULL;
