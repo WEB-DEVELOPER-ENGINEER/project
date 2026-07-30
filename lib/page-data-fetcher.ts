@@ -41,10 +41,10 @@ export interface ContactPageData extends PageDataBase {
 /**
  * Fetch data for homepage with all required components
  */
-export async function fetchHomepageData(): Promise<HomepagePageData> {
+export async function fetchHomepageData(locale: string = 'en'): Promise<HomepagePageData> {
   try {
     const [homepageData, footerData, navigationData] = await Promise.all([
-      getHomepageData(),
+      getHomepageData(locale),
       getFooterData(),
       getNavigationData()
     ]);
@@ -90,7 +90,7 @@ export async function fetchHomepageData(): Promise<HomepagePageData> {
         {
           id: 1,
           title: "Professional Certified Translation Services",
-          description: "Accurate, timely, and ISO 17100:2015 certified translations for legal, technical, and business documents.",
+          description: "Accurate, timely, certified translations for legal, technical, and business documents.",
           image_url: "/images/hero-1.jpg",
           sort_order: 1,
           is_active: true
@@ -219,8 +219,8 @@ export async function fetchHomepageData(): Promise<HomepagePageData> {
         }
       ],
       features: [
-        { id: 1, title: "ISO 17100:2015", description: "Certified for translation quality.", icon_name: "FileText", category: "standards", sort_order: 1, is_active: true },
-        { id: 2, title: "100+ Languages", description: "Global language support.", icon_name: "Globe", category: "standards", sort_order: 2, is_active: true }
+        { id: 1, title: "Certified Translation", description: "Quality-managed translation process.", icon_name: "FileText", category: "standards", sort_order: 1, is_active: true },
+        { id: 2, title: "Arabic & English", description: "Certified translation between Arabic and English.", icon_name: "Globe", category: "standards", sort_order: 2, is_active: true }
       ],
       cta_sections: [
         {

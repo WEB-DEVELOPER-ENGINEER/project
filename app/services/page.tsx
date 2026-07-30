@@ -9,11 +9,15 @@ import { ServicesCTASection } from '@/components/sections/services-cta-section';
 import { JsonLd } from '@/components/seo/json-ld';
 import { fetchServicesPageData } from '@/lib/page-data-service';
 import { getSEOMetadata } from '@/lib/data-access';
+import { getLocale } from '@/lib/locale-server';
+import { localizedPath } from '@/lib/locale';
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
+    const locale = getLocale();
     const seoData = await getSEOMetadata('services');
-    const { siteSettings } = await fetchServicesPageData();
+    const { siteSettings } = await fetchServicesPageData(locale);
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://jusortrans.com';
 
     const defaultTitle = 'Certified Translation Services in Dubai, UAE | JUSOR';
     const defaultDescription = 'Explore JUSOR\'s certified translation, legal translation, and interpretation services in Dubai, UAE — accurate, court-accepted, and government-approved translations for individuals and businesses.';
@@ -50,7 +54,12 @@ export async function generateMetadata(): Promise<Metadata> {
         images: [seoData?.og_image || siteSettings.og_image || '/og-image-services.jpg'],
       },
       alternates: {
-        canonical: seoData?.canonical_url || `${process.env.NEXT_PUBLIC_SITE_URL}/services`,
+        canonical: seoData?.canonical_url || `${baseUrl}${localizedPath('/services', locale)}`,
+        languages: {
+          'en': `${baseUrl}/services`,
+          'ar': `${baseUrl}/ar/services`,
+          'x-default': `${baseUrl}/services`,
+        },
       },
       robots: {
         index: true,
@@ -74,7 +83,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ServicesPage() {
-  const { services, categories, siteSettings, footerData, navigationData, features } = await fetchServicesPageData();
+  const locale = getLocale();
+  const { services, categories, siteSettings, footerData, navigationData, features } = await fetchServicesPageData(locale);
+
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://jusortrans.com';
 
   // Generate structured data for services
   const servicesSchema = {
@@ -82,14 +94,14 @@ export default async function ServicesPage() {
     '@type': 'ItemList',
     name: 'Professional Services',
     description: 'Comprehensive range of professional services',
-    url: `${process.env.NEXT_PUBLIC_SITE_URL}/services`,
+    url: `${baseUrl}${localizedPath('/services', locale)}`,
     numberOfItems: services.length,
     itemListElement: services.map((service, index) => ({
       '@type': 'Service',
       position: index + 1,
       name: service.title,
       description: service.content,
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/services/${service.slug}`,
+      url: `${baseUrl}${localizedPath(`/services/${service.translation_group || service.slug}`, locale)}`,
       provider: {
         '@type': 'Organization',
         name: siteSettings.company_name || 'JUSOR Translation Services',

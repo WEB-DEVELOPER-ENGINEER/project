@@ -12,6 +12,7 @@ import { Footer } from '@/components/layout/footer';
 import { getSEOMetadata } from '@/lib/data-access';
 import { fetchHomepageData } from '@/lib/page-data-fetcher';
 import { JsonLd } from '@/components/seo/json-ld';
+import { getLocale } from '@/lib/locale-server';
 
 // Avoid build-time prerendering; render dynamically at request time
 export const dynamic = 'force-dynamic';
@@ -19,9 +20,11 @@ export const revalidate = 0;
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
+    const locale = getLocale();
     const seoData = await getSEOMetadata('homepage');
-    const { siteSettings } = await fetchHomepageData();
+    const { siteSettings } = await fetchHomepageData(locale);
     const settings = siteSettings;
+    const baseUrl = (settings.site_url || process.env.NEXT_PUBLIC_SITE_URL || 'https://jusortrans.com').replace('jusor-translation.com', 'jusortrans.com').replace(/\/$/, '');
 
     if (settings.site_url) {
       settings.site_url = settings.site_url.replace('jusor-translation.com', 'jusortrans.com');
@@ -51,7 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
         description: seoData?.og_description || seoData?.meta_description || settings.site_description,
         url: canonicalUrl,
         type: 'website',
-        locale: settings.site_locale || 'en_US',
+        locale: locale === 'ar' ? 'ar_AE' : 'en_US',
         siteName: settings.company_name || 'JUSOR Translation Services',
         images: [{
           url: (seoData?.og_image || settings.og_image || '/og-image-homepage.jpg').replace('jusor-translation.com', 'jusortrans.com'),
@@ -68,6 +71,11 @@ export async function generateMetadata(): Promise<Metadata> {
       },
       alternates: {
         canonical: canonicalUrl,
+        languages: {
+          en: baseUrl,
+          ar: `${baseUrl}/ar`,
+          'x-default': baseUrl,
+        },
       },
     };
   } catch (error) {
@@ -82,7 +90,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   // Fetch homepage data server-side for better SEO and performance
-  const { homepageData, footerData, navigationData, siteSettings } = await fetchHomepageData();
+  const locale = getLocale();
+  const { homepageData, footerData, navigationData, siteSettings } = await fetchHomepageData(locale);
   const settings = siteSettings;
 
   if (settings.site_url) {

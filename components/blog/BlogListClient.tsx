@@ -8,20 +8,24 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, User, ArrowRight, Search } from 'lucide-react';
 import { useLanguage } from '@/components/providers/LanguageProvider';
-import { englishArticles, arabicArticles, BlogArticle } from '@/lib/blog-data';
+import { BlogPost } from '@/lib/types';
+import { localizedPath } from '@/lib/locale';
 import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 
-export function BlogListClient() {
-  const { t, isRtl } = useLanguage();
+interface BlogListClientProps {
+  posts: BlogPost[];
+}
+
+export function BlogListClient({ posts }: BlogListClientProps) {
+  const { t, isRtl, locale } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
-  const activeArticles = isRtl ? arabicArticles : englishArticles;
-
-  const filteredArticles = activeArticles.filter(article =>
+  const filteredArticles = posts.filter(article =>
     searchQuery.trim() === '' ||
     article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    article.description.toLowerCase().includes(searchQuery.toLowerCase())
+    (article.description || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const limit = 9;
@@ -122,7 +126,7 @@ export function BlogListClient() {
                             </div>
                             <div className="flex items-center gap-1">
                               <Calendar className="h-3 w-3" />
-                              <span>{article.published_date}</span>
+                              <span>{article.published_date ? format(new Date(article.published_date), 'MMM d, yyyy') : ''}</span>
                             </div>
                             <div className="flex items-center gap-1">
                               <Clock className="h-3 w-3" />
@@ -139,7 +143,7 @@ export function BlogListClient() {
                           </p>
 
                           <Link 
-                            href={`/blog/${article.slug}`}
+                            href={localizedPath(`/blog/${article.slug}`, locale)}
                             className="inline-flex items-center text-brand-orange hover:text-brand-orange/80 font-medium text-sm transition-colors"
                           >
                             {isRtl ? 'قراءة المقال الكامل' : 'Read Full Article'}

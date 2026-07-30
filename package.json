@@ -23,6 +23,8 @@
     "db:seed-articles:dry-run": "npx tsx scripts/seed-articles.ts --dry-run",
     "db:seed-site-settings": "npx tsx scripts/seed-site-settings.ts",
     "db:seed-services": "npx tsx scripts/seed-services.ts",
+    "db:seed-services-ar": "npx tsx scripts/seed-services-ar.ts",
+    "db:link-blog-translations": "npx tsx scripts/link-blog-translations.ts",
     "db:migrate-blog-enhancement": "npx tsx scripts/migrate-blog-enhancement.ts",
     "db:migrate-about-enhancement": "npx tsx scripts/migrate-about-us-enhancement.ts",
     "migrate:hero-optimization": "npx tsx scripts/migrate-hero-optimization.ts",

@@ -44,8 +44,8 @@ function getCacheKey(prefix: string, params?: Record<string, any>): string {
 }
 
 // Homepage Data Access
-export async function getHomepageData(): Promise<HomepageData> {
-  const cacheKey = 'homepage:data';
+export async function getHomepageData(locale: string = 'en'): Promise<HomepageData> {
+  const cacheKey = `homepage:data:${locale}`;
   const cached = cacheManager.get<HomepageData>(cacheKey);
   if (cached) return cached;
 
@@ -53,17 +53,17 @@ export async function getHomepageData(): Promise<HomepageData> {
     // Fetch all homepage data with optimized queries
     const results = await Promise.allSettled([
       executeQuery(`
-        SELECT * FROM sliders 
-        WHERE is_active = true 
+        SELECT * FROM sliders
+        WHERE is_active = true
         ORDER BY sort_order ASC, created_at DESC
       `),
       executeQuery(`
         SELECT s.*, i.name as icon_name, i.icon_class, i.image_url as icon_image_url
         FROM services s
         LEFT JOIN icons i ON s.icon_id = i.id
-        WHERE s.is_active = true
+        WHERE s.is_active = true AND s.locale = $1
         ORDER BY s.sort_order ASC, s.created_at DESC
-      `),
+      `, [locale]),
       executeQuery(`
         SELECT * FROM about_us 
         WHERE is_active = true 
@@ -461,11 +461,11 @@ export async function getSiteSettings(): Promise<Record<string, any>> {
 }
 
 // Services Data Access
-export async function getServices(categoryId?: number, categorySlug?: string): Promise<Service[]> {
-  let cacheKey = 'services:all';
-  if (categoryId) cacheKey = `services:category:${categoryId}`;
-  if (categorySlug) cacheKey = `services:category_slug:${categorySlug}`;
-  
+export async function getServices(categoryId?: number, categorySlug?: string, locale: string = 'en'): Promise<Service[]> {
+  let cacheKey = `services:all:${locale}`;
+  if (categoryId) cacheKey = `services:category:${categoryId}:${locale}`;
+  if (categorySlug) cacheKey = `services:category_slug:${categorySlug}:${locale}`;
+
   const cached = cacheManager.get<Service[]>(cacheKey);
   if (cached) return cached;
 
@@ -476,12 +476,12 @@ export async function getServices(categoryId?: number, categorySlug?: string): P
       FROM services s
       LEFT JOIN icons i ON s.icon_id = i.id
       LEFT JOIN service_categories sc ON s.category_id = sc.id
-      WHERE s.is_active = true
+      WHERE s.is_active = true AND s.locale = $1
     `;
-    
-    const queryParams: any[] = [];
-    let paramIndex = 1;
-    
+
+    const queryParams: any[] = [locale];
+    let paramIndex = 2;
+
     if (categoryId) {
       query += ` AND s.category_id = $${paramIndex}`;
       queryParams.push(categoryId);
@@ -491,7 +491,7 @@ export async function getServices(categoryId?: number, categorySlug?: string): P
       queryParams.push(categorySlug);
       paramIndex++;
     }
-    
+
     query += ` ORDER BY s.sort_order ASC, s.created_at DESC`;
     
     const result = await executeQuery(query, queryParams);
@@ -551,8 +551,13 @@ export async function getServiceCategories(): Promise<any[]> {
   }
 }
 
-export async function getServiceBySlug(slug: string): Promise<Service | null> {
-  const cacheKey = `service:slug:${slug}`;
+// `identifier` is matched against translation_group first (the shared,
+// English-based routing key used so /ar/services/legal-translation and
+// /services/legal-translation are distinct URLs serving the matching
+// locale's row — see lib/database.ts), falling back to a literal slug match
+// for services that don't have a translation_group set.
+export async function getServiceBySlug(identifier: string, locale: string = 'en'): Promise<Service | null> {
+  const cacheKey = `service:slug:${identifier}:${locale}`;
   const cached = cacheManager.get<Service>(cacheKey);
   if (cached) return cached;
 
@@ -561,8 +566,11 @@ export async function getServiceBySlug(slug: string): Promise<Service | null> {
       SELECT s.*, i.name as icon_name, i.icon_class, i.image_url as icon_image_url
       FROM services s
       LEFT JOIN icons i ON s.icon_id = i.id
-      WHERE s.slug = $1 AND s.is_active = true
-    `, [slug]);
+      WHERE s.is_active = true AND s.locale = $2
+        AND (s.translation_group = $1 OR s.slug = $1)
+      ORDER BY (s.translation_group = $1) DESC
+      LIMIT 1
+    `, [identifier, locale]);
 
     if (result.rows.length === 0) {
       return null;
@@ -580,9 +588,9 @@ export async function getServiceBySlug(slug: string): Promise<Service | null> {
       } : undefined
     };
 
-    cacheManager.set(cacheKey, service, { 
-      ttlSeconds: 600, 
-      tags: [CACHE_TAGS.SERVICES] 
+    cacheManager.set(cacheKey, service, {
+      ttlSeconds: 600,
+      tags: [CACHE_TAGS.SERVICES]
     });
     return service;
   } catch (error) {
@@ -591,26 +599,44 @@ export async function getServiceBySlug(slug: string): Promise<Service | null> {
   }
 }
 
+// Finds the other-locale version of a service for hreflang alternates
+// (see translation_group column — see lib/database.ts).
+export async function getServiceTranslation(translationGroup: string, locale: string): Promise<Service | null> {
+  if (!translationGroup) return null;
+  try {
+    const result = await executeQuery(
+      `SELECT * FROM services WHERE translation_group = $1 AND locale = $2 AND is_active = true LIMIT 1`,
+      [translationGroup, locale]
+    );
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error('Error fetching service translation:', error);
+    return null;
+  }
+}
+
 // Blog Data Access
-export async function getBlogPosts(page: number = 1, limit: number = 6): Promise<PaginatedResponse<BlogPost>> {
+export async function getBlogPosts(page: number = 1, limit: number = 6, locale?: string): Promise<PaginatedResponse<BlogPost>> {
   const offset = (page - 1) * limit;
-  const cacheKey = getCacheKey('blog:posts', { page, limit });
+  const cacheKey = getCacheKey('blog:posts', { page, limit, locale });
   const cached = cacheManager.get<PaginatedResponse<BlogPost>>(cacheKey);
   if (cached) return cached;
 
   try {
+    const localeFilter = locale ? 'AND locale = $3' : '';
+    const localeParams = locale ? [locale] : [];
     const [postsResult, countResult] = await Promise.all([
       executeQuery(`
-        SELECT * FROM blog_posts 
-        WHERE is_published = true 
-        ORDER BY published_date DESC 
+        SELECT * FROM blog_posts
+        WHERE is_published = true ${localeFilter}
+        ORDER BY published_date DESC
         LIMIT $1 OFFSET $2
-      `, [limit, offset]),
+      `, [limit, offset, ...localeParams]),
       executeQuery(`
-        SELECT COUNT(*) as total 
-        FROM blog_posts 
-        WHERE is_published = true
-      `)
+        SELECT COUNT(*) as total
+        FROM blog_posts
+        WHERE is_published = true ${locale ? 'AND locale = $1' : ''}
+      `, localeParams)
     ]);
 
     const total = parseInt(countResult.rows[0].total);
@@ -654,6 +680,24 @@ export async function getBlogPosts(page: number = 1, limit: number = 6): Promise
         has_prev: page > 1
       }
     };
+  }
+}
+
+// Finds the other-locale version of a blog post for hreflang alternates
+// (only set for the article pairs that were confidently topic-matched —
+// see scripts/link-blog-translations.ts). Returns null if this article has
+// no counterpart in the other language yet.
+export async function getBlogPostTranslation(translationGroup: string | null | undefined, locale: string): Promise<BlogPost | null> {
+  if (!translationGroup) return null;
+  try {
+    const result = await executeQuery(
+      `SELECT * FROM blog_posts WHERE translation_group = $1 AND locale = $2 AND is_published = true LIMIT 1`,
+      [translationGroup, locale]
+    );
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error('Error fetching blog post translation:', error);
+    return null;
   }
 }
 

@@ -14,27 +14,21 @@ async function migrateBlogEnhancement() {
     console.log('🚀 Starting blog enhancement migration...');
 
     // Insert default blog authors
+    // Note: this previously also inserted two entirely fictional personas
+    // ("Dr. Sarah Johnson", "Michael Chen") with invented credentials
+    // (PhD, ATA certification, court-certified interpreter status) that
+    // don't correspond to real people at this company — removed. Only the
+    // non-personal "JUSOR Team" byline is seeded; add real named authors
+    // here once real people/bios are provided.
     console.log('📝 Creating default blog authors...');
     await client.query(`
       INSERT INTO blog_authors (name, slug, title, bio, expertise, achievements, social_links, is_active, sort_order) VALUES
-      ('JUSOR Team', 'jusor-team', 'Translation & Localization Experts', 
+      ('JUSOR Team', 'jusor-team', 'Translation & Localization Experts',
        'Our team of certified translators and localization specialists brings decades of combined experience in delivering high-quality language services across multiple industries. We are passionate about breaking down language barriers and helping businesses communicate effectively in global markets.',
        ARRAY['Legal Translation', 'Technical Documentation', 'Business Localization', 'Certified Translation'],
-       ARRAY['ISO 17100:2015 Certified', 'Professional Translation Services', 'Quality Assurance Process'],
-       '{"email": "info@jusortrans.com", "linkedin": "https://linkedin.com/company/jusor", "website": "https://jusor.com"}',
-       true, 1),
-      ('Dr. Sarah Johnson', 'dr-sarah-johnson', 'Senior Legal Translation Specialist',
-       'Dr. Sarah Johnson is a certified legal translator with over 15 years of experience in international law and cross-border legal documentation. She holds a PhD in Comparative Law and is certified by multiple international translation associations.',
-       ARRAY['Legal Translation', 'Court Interpretation', 'Contract Localization', 'Regulatory Compliance'],
-       ARRAY['PhD in Comparative Law', 'ATA Certified Translator', 'Court-Certified Interpreter', '1000+ Legal Documents Translated'],
-       '{"email": "sarah.johnson@jusor.com", "linkedin": "https://linkedin.com/in/sarahjohnson"}',
-       true, 2),
-      ('Michael Chen', 'michael-chen', 'Technical Translation Director',
-       'Michael Chen specializes in technical and software localization with a background in computer science and linguistics. He leads our technical translation team and has worked with major tech companies on global product launches.',
-       ARRAY['Software Localization', 'Technical Documentation', 'API Translation', 'UI/UX Localization'],
-       ARRAY['MS in Computer Science', 'Certified Localization Manager', '200+ Software Products Localized', 'Agile Localization Expert'],
-       '{"email": "michael.chen@jusor.com", "linkedin": "https://linkedin.com/in/michaelchen", "twitter": "https://twitter.com/michaelchen"}',
-       true, 3)
+       ARRAY['Certified Translation Services', 'Professional Translation Services', 'Quality Assurance Process'],
+       '{"email": "info@jusortrans.com", "linkedin": "https://linkedin.com/company/jusor", "website": "https://jusortrans.com"}',
+       true, 1)
       ON CONFLICT (slug) DO NOTHING;
     `);
 
@@ -63,7 +57,6 @@ async function migrateBlogEnhancement() {
       ('support_availability', '24/7', 'Support Available', 'Round-the-clock customer support', 'stats', 'Clock', 'text-brand-blue', 4, true),
       
       -- Achievements
-      ('iso_certification', 'ISO 17100:2015', 'ISO Certified', 'Quality management system certification', 'achievements', 'Award', 'text-green-600', 1, true),
       ('years_experience', '15+', 'Years Experience', 'Years of professional translation experience', 'achievements', 'Calendar', 'text-blue-600', 2, true),
       ('certified_translators', '100+', 'Certified Translators', 'Number of certified professional translators', 'achievements', 'Users', 'text-purple-600', 3, true),
       

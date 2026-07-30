@@ -248,13 +248,15 @@ async function main() {
            short_description, overview, key_benefits, process_steps, faq_items,
            category_id, service_category, languages_supported,
            meta_title, meta_description, meta_keywords,
-           cta_primary_text, cta_primary_url
+           cta_primary_text, cta_primary_url,
+           locale, translation_group
          ) VALUES (
            $1, $2, $3, $4, true,
            $5, $6, $7, $8, $9,
            $10, $11, $12,
            $13, $14, $15,
-           $16, $17
+           $16, $17,
+           'en', $3
          )
          ON CONFLICT (slug) DO UPDATE SET
            title = EXCLUDED.title,
@@ -270,6 +272,8 @@ async function main() {
            meta_title = EXCLUDED.meta_title,
            meta_description = EXCLUDED.meta_description,
            meta_keywords = EXCLUDED.meta_keywords,
+           locale = 'en',
+           translation_group = EXCLUDED.slug,
            updated_at = CURRENT_TIMESTAMP
          RETURNING (xmax = 0) AS inserted`,
         [

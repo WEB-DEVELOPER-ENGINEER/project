@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ArrowRight, Scale, Cog, Building, Heart, GraduationCap, FileText } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { Service } from '@/lib/types';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { localizedPath } from '@/lib/locale';
 
 interface RelatedServicesSectionProps {
   services: Service[];
@@ -36,6 +38,7 @@ const getServiceIcon = (iconName?: string) => {
 };
 
 export function RelatedServicesSection({ services, currentService, siteSettings = {} }: RelatedServicesSectionProps) {
+  const { locale } = useLanguage();
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -115,7 +118,7 @@ export function RelatedServicesSection({ services, currentService, siteSettings 
 
                   {/* CTA Link */}
                   <Link 
-                    href={`/services/${service.slug}`}
+                    href={localizedPath(`/services/${service.translation_group || service.slug}`, locale)}
                     className="inline-flex items-center text-brand-orange hover:text-brand-blue font-semibold transition-colors duration-300 group/link"
                     aria-label={`Learn more about ${service.title}`}
                   >

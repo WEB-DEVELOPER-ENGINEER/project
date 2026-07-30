@@ -142,6 +142,8 @@ export interface Service extends BaseEntity {
   meta_description?: string;
   meta_keywords?: string[];
   schema_markup?: any;
+  locale?: string;
+  translation_group?: string;
 }
 
 // Service Feature interface
@@ -390,11 +392,13 @@ export interface BlogPost extends BaseEntity {
   twitter_image?: string;
   canonical_url?: string;
   schema_markup?: any;
-  
+  locale?: string;
+  translation_group?: string;
+
   // Analytics and engagement
   social_shares?: any;
   engagement_metrics?: any;
-  
+
   // Relationships
   blog_author?: BlogAuthor;
   blog_category?: BlogCategory;

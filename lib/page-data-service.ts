@@ -87,7 +87,7 @@ abstract class BasePageDataService<T extends BasePageData> {
     };
   }
 
-  abstract fetchPageData(): Promise<T>;
+  abstract fetchPageData(locale?: string): Promise<T>;
 }
 
 /**
@@ -154,11 +154,11 @@ class ContactPageDataService extends BasePageDataService<ContactPageData> {
  * Services Page Data Service
  */
 class ServicesPageDataService extends BasePageDataService<ServicesPageData> {
-  async fetchPageData(): Promise<ServicesPageData> {
+  async fetchPageData(locale: string = 'en'): Promise<ServicesPageData> {
     try {
       const [baseData, services, categories, features] = await Promise.all([
         this.fetchBaseData('services'),
-        getServices(),
+        getServices(undefined, undefined, locale),
         getServiceCategories(),
         getFeatures()
       ]);
@@ -233,9 +233,9 @@ export async function fetchContactPageData(): Promise<ContactPageData> {
   return service.fetchPageData();
 }
 
-export async function fetchServicesPageData(): Promise<ServicesPageData> {
+export async function fetchServicesPageData(locale: string = 'en'): Promise<ServicesPageData> {
   const service = PageDataServiceFactory.createServicesService();
-  return service.fetchPageData();
+  return service.fetchPageData(locale);
 }
 
 export async function fetchProjectsPageData(): Promise<ProjectsPageData> {

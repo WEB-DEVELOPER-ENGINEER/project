@@ -8,6 +8,8 @@ import { ArrowRight, Scale, Cog, Building, Heart, GraduationCap, FileText, Zap, 
 import { useInView } from 'react-intersection-observer';
 import { Service } from '@/lib/types';
 import { ServiceFilter } from './service-filter';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { localizedPath } from '@/lib/locale';
 
 interface ServicesGridSectionProps {
   services: Service[];
@@ -52,6 +54,7 @@ export function ServicesGridSection({
   enableFiltering = false 
 }: ServicesGridSectionProps) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const { locale } = useLanguage();
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -171,7 +174,7 @@ export function ServicesGridSection({
 
                   {/* CTA Link */}
                   <Link 
-                    href={`/services/${service.slug}`}
+                    href={localizedPath(`/services/${service.translation_group || service.slug}`, locale)}
                     className="inline-flex items-center text-brand-orange hover:text-brand-blue font-semibold transition-colors duration-300 group/link"
                     aria-label={`Learn more about ${service.title}`}
                   >

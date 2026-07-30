@@ -211,13 +211,34 @@ export async function initializeDatabase() {
         meta_title VARCHAR(500),
         meta_description VARCHAR(1000),
         meta_keywords TEXT[],
-        schema_markup JSONB
+        schema_markup JSONB,
+        -- Bilingual routing: each language is its own row (own slug), linked
+        -- by a shared translation_group key so hreflang alternates and the
+        -- language switcher can find the counterpart in the other locale.
+        locale VARCHAR(5) DEFAULT 'en',
+        translation_group VARCHAR(200)
       );
+
+      -- Add locale/translation_group to a pre-existing services table (the
+      -- CREATE TABLE IF NOT EXISTS above is a no-op on a database that
+      -- already has this table from before these columns were introduced).
+      DO $$
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'services' AND column_name = 'locale') THEN
+          ALTER TABLE services ADD COLUMN locale VARCHAR(5) DEFAULT 'en';
+        END IF;
+
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'services' AND column_name = 'translation_group') THEN
+          ALTER TABLE services ADD COLUMN translation_group VARCHAR(200);
+        END IF;
+      END $$;
 
       -- Create indexes for services
       CREATE INDEX IF NOT EXISTS idx_services_active ON services(is_active, sort_order);
       CREATE INDEX IF NOT EXISTS idx_services_slug ON services(slug);
       CREATE INDEX IF NOT EXISTS idx_services_category ON services(category_id);
+      CREATE INDEX IF NOT EXISTS idx_services_locale ON services(locale);
+      CREATE INDEX IF NOT EXISTS idx_services_translation_group ON services(translation_group);
 
       -- Clients
       CREATE TABLE IF NOT EXISTS clients (
@@ -434,7 +455,19 @@ export async function initializeDatabase() {
         IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'blog_posts' AND column_name = 'engagement_metrics') THEN
           ALTER TABLE blog_posts ADD COLUMN engagement_metrics JSONB;
         END IF;
+
+        -- Bilingual routing (see services table for the same pattern)
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'blog_posts' AND column_name = 'locale') THEN
+          ALTER TABLE blog_posts ADD COLUMN locale VARCHAR(5) DEFAULT 'en';
+        END IF;
+
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'blog_posts' AND column_name = 'translation_group') THEN
+          ALTER TABLE blog_posts ADD COLUMN translation_group VARCHAR(200);
+        END IF;
       END $$;
+
+      CREATE INDEX IF NOT EXISTS idx_blog_posts_locale ON blog_posts(locale);
+      CREATE INDEX IF NOT EXISTS idx_blog_posts_translation_group ON blog_posts(translation_group);
 
       -- Create indexes for blog_authors
       CREATE INDEX IF NOT EXISTS idx_blog_authors_slug ON blog_authors(slug);

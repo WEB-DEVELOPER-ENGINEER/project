@@ -14,6 +14,8 @@ import Script from 'next/script';
 
 
 import { LanguageProvider } from '@/components/providers/LanguageProvider';
+import { isRtl } from '@/lib/locale';
+import { getLocale } from '@/lib/locale-server';
 
 // Fallback to system fonts due to network issues
 const inter = { variable: '--font-inter', className: 'font-sans' };
@@ -27,15 +29,16 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const locale = getLocale();
   const [siteSettings, services] = await Promise.all([
     getSiteSettings(),
-    getServices()
+    getServices(undefined, undefined, locale)
   ]);
 
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
 
   return (
-    <html lang="en" className={cn(inter.variable)}>
+    <html lang={locale} dir={isRtl(locale) ? 'rtl' : 'ltr'} className={cn(inter.variable)}>
       <head>
         {/* Google Tag Manager - Initialize dataLayer before GTM loads */}
         {gtmId && (
@@ -87,7 +90,7 @@ export default async function RootLayout({
           Skip to main content
         </a>
         <ErrorBoundary>
-          <LanguageProvider>
+          <LanguageProvider initialLocale={locale}>
             <ClientProvider>
               <JsonLd siteSettings={siteSettings} services={services} />
               {/* Note: each page renders its own <main id="main-content">,

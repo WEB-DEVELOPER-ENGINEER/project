@@ -11,8 +11,10 @@ import { ServiceDetailCTA } from '@/components/sections/service-detail-cta';
 import { RelatedServicesSection } from '@/components/sections/related-services-section';
 import { RelatedBlogPosts } from '@/components/sections/related-blog-posts';
 import { JsonLd } from '@/components/seo/json-ld';
-import { getServiceBySlug, getServices, getSEOMetadata, getBlogPosts } from '@/lib/data-access';
+import { getServiceBySlug, getServices, getSEOMetadata, getBlogPosts, getServiceTranslation } from '@/lib/data-access';
 import { fetchLayoutData } from '@/lib/page-data-fetcher';
+import { getLocale } from '@/lib/locale-server';
+import { localizedPath } from '@/lib/locale';
 
 interface ServicePageProps {
   params: {
@@ -22,9 +24,12 @@ interface ServicePageProps {
 
 export async function generateStaticParams() {
   try {
-    const services = await getServices();
+    // Only English is pre-rendered at build time — /ar/* requests are
+    // rewritten by middleware.ts at request time (see lib/locale-server.ts),
+    // so they're server-rendered on demand rather than statically built.
+    const services = await getServices(undefined, undefined, 'en');
     return services.map((service) => ({
-      slug: service.slug,
+      slug: service.translation_group || service.slug,
     }));
   } catch (error) {
     console.error('Error generating static params for services:', error);
@@ -34,7 +39,8 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: ServicePageProps): Promise<Metadata> {
   try {
-    const service = await getServiceBySlug(params.slug);
+    const locale = getLocale();
+    const service = await getServiceBySlug(params.slug, locale);
     if (!service) {
       return {
         title: 'Service Not Found',
@@ -50,37 +56,52 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
       .replace('jusor-translation.com', 'jusortrans.com')
       .replace(/\/$/, '');
 
-    const title = seoData?.meta_title || `${service.title} | Professional Services`;
-    const description = seoData?.meta_description || 
-      service.content.replace(/<[^>]*>/g, '').substring(0, 160) || 
+    const title = seoData?.meta_title || service.meta_title || `${service.title} | JUSOR Translation Services`;
+    const description = seoData?.meta_description || service.meta_description ||
+      service.content.replace(/<[^>]*>/g, '').substring(0, 160) ||
       `Learn about our ${service.title} service and how it can benefit your business.`;
 
-    const rawUrl = seoData?.canonical_url || `${cleanedBaseUrl}/services/${params.slug}`;
-    const canonicalUrl = rawUrl.replace('jusor-translation.com', 'jusortrans.com');
+    const routeKey = service.translation_group || service.slug;
+    const canonicalUrl = (seoData?.canonical_url || `${cleanedBaseUrl}${localizedPath(`/services/${routeKey}`, locale)}`)
+      .replace('jusor-translation.com', 'jusortrans.com');
     const ogImage = (seoData?.og_image || siteSettings.og_image || '/og-image-service.jpg')
       .replace('jusor-translation.com', 'jusortrans.com');
+
+    // hreflang: find the other-locale version of this exact service (real
+    // translation, only set when one actually exists — see
+    // scripts/seed-services-ar.ts).
+    const otherLocale = locale === 'ar' ? 'en' : 'ar';
+    const translation = service.translation_group
+      ? await getServiceTranslation(service.translation_group, otherLocale)
+      : null;
+    const languages: Record<string, string> = {
+      [locale]: canonicalUrl,
+    };
+    if (translation) {
+      languages[otherLocale] = `${cleanedBaseUrl}${localizedPath(`/services/${translation.translation_group || translation.slug}`, otherLocale)}`;
+      languages['x-default'] = languages['en'] || canonicalUrl;
+    }
 
     return {
       title,
       description,
-      keywords: seoData?.meta_keywords || [
+      keywords: seoData?.meta_keywords || service.meta_keywords || [
         service.title.toLowerCase(),
-        'professional services',
-        'business solutions',
-        'expert consulting'
+        'certified translation dubai',
+        'professional translation services',
       ],
       openGraph: {
         title: seoData?.og_title || title,
         description: seoData?.og_description || description,
         url: canonicalUrl,
         type: 'article',
-        locale: siteSettings.site_locale || 'en_US',
+        locale: locale === 'ar' ? 'ar_AE' : 'en_US',
         siteName: siteSettings.company_name || 'JUSOR Translation Services',
         images: [{
           url: ogImage,
           width: 1200,
           height: 630,
-          alt: `${service.title} - Professional Service`,
+          alt: `${service.title} - JUSOR Translation Services`,
         }],
       },
       twitter: {
@@ -91,6 +112,7 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
       },
       alternates: {
         canonical: canonicalUrl,
+        languages,
       },
       robots: {
         index: true,
@@ -115,11 +137,12 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
 
 export default async function ServiceDetailPage({ params }: ServicePageProps) {
   try {
+    const locale = getLocale();
     const [service, allServices, layoutData, blogPostsResponse] = await Promise.all([
-      getServiceBySlug(params.slug),
-      getServices(),
+      getServiceBySlug(params.slug, locale),
+      getServices(undefined, undefined, locale),
       fetchLayoutData(),
-      getBlogPosts(1, 200).catch(() => ({ data: [] as any[] }))
+      getBlogPosts(1, 200, locale).catch(() => ({ data: [] as any[] }))
     ]);
 
     if (!service) {
@@ -127,14 +150,16 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
     }
 
     // Real blog articles whose related_services (see scripts/seed-articles.ts)
-    // reference this service's slug.
+    // reference this service's canonical (English) slug key — both English
+    // and Arabic articles store related_services using that same key.
+    const serviceKey = service.translation_group || service.slug;
     const relatedArticles = blogPostsResponse.data
-      .filter((post: any) => Array.isArray(post.related_services) && post.related_services.includes(service.slug))
+      .filter((post: any) => Array.isArray(post.related_services) && post.related_services.includes(serviceKey))
       .slice(0, 3);
 
     const { siteSettings, navigationData } = layoutData;
     const footerData = (layoutData as any).footerData || {};
-    
+
     // Get related services (exclude current service), preferring the same
     // category first rather than an arbitrary set of other services.
     const otherServices = allServices.filter(s => s.id !== service.id);
@@ -152,7 +177,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
       '@type': 'Service',
       name: service.title,
       description: service.content.replace(/<[^>]*>/g, ''),
-      url: `${cleanedBaseUrl}/services/${params.slug}`,
+      url: `${cleanedBaseUrl}${localizedPath(`/services/${serviceKey}`, locale)}`,
       provider: {
         '@type': 'Organization',
         name: siteSettings.company_name || 'JUSOR Translation Services',
@@ -190,13 +215,13 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
           '@type': 'ListItem',
           position: 2,
           name: 'Services',
-          item: `${cleanedBaseUrl}/services`,
+          item: `${cleanedBaseUrl}${localizedPath('/services', locale)}`,
         },
         {
           '@type': 'ListItem',
           position: 3,
           name: service.title,
-          item: `${cleanedBaseUrl}/services/${params.slug}`,
+          item: `${cleanedBaseUrl}${localizedPath(`/services/${serviceKey}`, locale)}`,
         },
       ],
     };
