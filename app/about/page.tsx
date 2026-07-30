@@ -12,24 +12,28 @@ import { AboutCTA } from '@/components/sections/about-cta';
 import { JsonLd } from '@/components/seo/json-ld';
 import { getHomepageData, getSiteSettings, getCompanyMetrics } from '@/lib/data-access';
 import { fetchStaticPageData } from '@/lib/page-data-fetcher';
+import { getLocale } from '@/lib/locale-server';
+import { localizedPath } from '@/lib/locale';
 
 export const revalidate = 3600; // ISR: Revalidate every hour
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
+    const locale = getLocale();
     const [homepageData, siteSettings] = await Promise.all([
-      getHomepageData(),
+      getHomepageData(locale),
       getSiteSettings()
     ]);
-    
-    const aboutData = homepageData.about_us;
 
-    const title = `About ${siteSettings?.company_name || 'JUSOR'} | Professional Translation Services`;
-    const description = aboutData?.description || 
+    const aboutData = homepageData.about_us;
+    const baseUrl = (siteSettings?.site_url || 'https://jusortrans.com').replace(/\/$/, '');
+
+    const title = aboutData?.meta_title || `About ${siteSettings?.company_name || 'JUSOR'} | Professional Translation Services`;
+    const description = aboutData?.meta_description || aboutData?.description ||
       `Learn about ${siteSettings?.company_name || 'JUSOR'}, a leading provider of professional translation and localization services. Discover our mission, values, and expert team.`;
 
-    const canonicalUrl = `${siteSettings?.site_url || 'https://jusortrans.com'}/about`;
-    const ogImage = aboutData?.image_url || `${siteSettings?.site_url || 'https://jusortrans.com'}/og-about.jpg`;
+    const canonicalUrl = `${baseUrl}${localizedPath('/about', locale)}`;
+    const ogImage = aboutData?.image_url || `${baseUrl}/og-about.jpg`;
 
     return {
       title,
@@ -48,10 +52,15 @@ export async function generateMetadata(): Promise<Metadata> {
       publisher: siteSettings?.company_name || 'JUSOR',
       alternates: {
         canonical: canonicalUrl,
+        languages: {
+          en: `${baseUrl}/about`,
+          ar: `${baseUrl}/ar/about`,
+          'x-default': `${baseUrl}/about`,
+        },
       },
       openGraph: {
         type: 'website',
-        locale: 'en_US',
+        locale: locale === 'ar' ? 'ar_AE' : 'en_US',
         url: canonicalUrl,
         title: title,
         description: description,
@@ -93,10 +102,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AboutPage() {
   try {
+    const locale = getLocale();
     const [homepageData, layoutData, companyMetrics] = await Promise.all([
-      getHomepageData(),
+      getHomepageData(locale),
       fetchStaticPageData('about'),
-      getCompanyMetrics()
+      getCompanyMetrics(undefined, locale)
     ]);
 
     const teamMembers = homepageData.team_members;
@@ -104,14 +114,22 @@ export default async function AboutPage() {
     // Fall back to baseline content instead of 404ing the whole page when the
     // about_us record can't be read (e.g. a transient DB outage) — a hard
     // notFound() here would tell Google/crawlers the page doesn't exist.
-    const aboutData = homepageData.about_us || {
+    const companyName = layoutData.siteSettings.company_name || 'JUSOR Translation Services';
+    const aboutData = homepageData.about_us || (locale === 'ar' ? {
       id: 0,
-      title: `About ${layoutData.siteSettings.company_name || 'JUSOR Translation Services'}`,
-      description: `${layoutData.siteSettings.company_name || 'JUSOR Translation Services'} is a certified translation office in Dubai, UAE, providing legal, technical, and business translation and interpretation services.`,
+      title: `عن ${companyName}`,
+      description: `${companyName} مكتب ترجمة معتمد في دبي، الإمارات العربية المتحدة، يقدم خدمات الترجمة القانونية والتقنية والتجارية والترجمة الفورية.`,
       is_active: true,
       created_at: '',
       updated_at: '',
-    };
+    } : {
+      id: 0,
+      title: `About ${companyName}`,
+      description: `${companyName} is a certified translation office in Dubai, UAE, providing legal, technical, and business translation and interpretation services.`,
+      is_active: true,
+      created_at: '',
+      updated_at: '',
+    });
 
     // Generate structured data for the about page
     const structuredData = {

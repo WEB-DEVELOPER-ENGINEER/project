@@ -163,7 +163,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     const [layoutData, blogContentSections, companyMetrics, allServices] = await Promise.all([
       fetchStaticPageData('blog'),
       getBlogContentSections(),
-      getCompanyMetrics(),
+      getCompanyMetrics(undefined, postLocale),
       getServices(undefined, undefined, postLocale)
     ]);
 

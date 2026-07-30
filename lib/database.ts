@@ -504,7 +504,7 @@ export async function initializeDatabase() {
       -- Company metrics (for dynamic stats display)
       CREATE TABLE IF NOT EXISTS company_metrics (
         id SERIAL PRIMARY KEY,
-        metric_key VARCHAR(100) UNIQUE NOT NULL, -- e.g., 'projects_completed', 'client_satisfaction'
+        metric_key VARCHAR(100) NOT NULL, -- e.g., 'projects_completed', 'client_satisfaction'
         metric_value VARCHAR(50) NOT NULL, -- e.g., '500+', '99.8%'
         metric_label VARCHAR(100) NOT NULL, -- e.g., 'Projects Completed'
         metric_description TEXT,
@@ -513,9 +513,31 @@ export async function initializeDatabase() {
         category VARCHAR(50), -- e.g., 'stats', 'achievements', 'certifications'
         icon_name VARCHAR(50), -- Lucide icon name
         color_class VARCHAR(50), -- CSS color class
+        locale VARCHAR(5) DEFAULT 'en',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(metric_key, locale)
       );
+
+      -- Add locale to a pre-existing company_metrics table (older databases
+      -- have a plain UNIQUE(metric_key) constraint from before locale
+      -- support existed).
+      DO $$
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'company_metrics' AND column_name = 'locale') THEN
+          ALTER TABLE company_metrics ADD COLUMN locale VARCHAR(5) DEFAULT 'en';
+        END IF;
+        IF EXISTS (
+          SELECT 1 FROM pg_constraint WHERE conname = 'company_metrics_metric_key_key'
+        ) THEN
+          ALTER TABLE company_metrics DROP CONSTRAINT company_metrics_metric_key_key;
+        END IF;
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_constraint WHERE conname = 'company_metrics_metric_key_locale_key'
+        ) THEN
+          ALTER TABLE company_metrics ADD CONSTRAINT company_metrics_metric_key_locale_key UNIQUE (metric_key, locale);
+        END IF;
+      END $$;
 
 
       -- Testimonials
@@ -626,11 +648,28 @@ export async function initializeDatabase() {
         
         -- Legacy field
         image_url VARCHAR(500), -- Keep for backward compatibility
-        
+
+        -- Bilingual routing (see services/blog_posts for the same pattern)
+        locale VARCHAR(5) DEFAULT 'en',
+        translation_group VARCHAR(200),
+
         is_active BOOLEAN DEFAULT true,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
+
+      -- Add locale/translation_group to a pre-existing about_us table
+      DO $$
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'about_us' AND column_name = 'locale') THEN
+          ALTER TABLE about_us ADD COLUMN locale VARCHAR(5) DEFAULT 'en';
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'about_us' AND column_name = 'translation_group') THEN
+          ALTER TABLE about_us ADD COLUMN translation_group VARCHAR(200);
+        END IF;
+      END $$;
+
+      CREATE INDEX IF NOT EXISTS idx_about_us_locale ON about_us(locale);
 
 
       -- Contact form submissions

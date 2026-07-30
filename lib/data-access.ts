@@ -65,11 +65,11 @@ export async function getHomepageData(locale: string = 'en'): Promise<HomepageDa
         ORDER BY s.sort_order ASC, s.created_at DESC
       `, [locale]),
       executeQuery(`
-        SELECT * FROM about_us 
-        WHERE is_active = true 
-        ORDER BY created_at DESC 
+        SELECT * FROM about_us
+        WHERE is_active = true AND locale = $1
+        ORDER BY created_at DESC
         LIMIT 1
-      `),
+      `, [locale]),
       executeQuery(`
         SELECT c.*, 
                json_agg(
@@ -961,17 +961,17 @@ export async function getBlogContentSectionByKey(sectionKey: string): Promise<Bl
 }
 
 // Company Metrics Data Access
-export async function getCompanyMetrics(category?: string): Promise<CompanyMetric[]> {
-  const cacheKey = getCacheKey('company:metrics', { category });
+export async function getCompanyMetrics(category?: string, locale: string = 'en'): Promise<CompanyMetric[]> {
+  const cacheKey = getCacheKey('company:metrics', { category, locale });
   const cached = cacheManager.get<CompanyMetric[]>(cacheKey);
   if (cached) return cached;
 
   try {
-    const query = category 
-      ? `SELECT * FROM company_metrics WHERE is_active = true AND category = $1 ORDER BY display_order ASC`
-      : `SELECT * FROM company_metrics WHERE is_active = true ORDER BY display_order ASC`;
-    
-    const params = category ? [category] : [];
+    const query = category
+      ? `SELECT * FROM company_metrics WHERE is_active = true AND locale = $2 AND category = $1 ORDER BY display_order ASC`
+      : `SELECT * FROM company_metrics WHERE is_active = true AND locale = $1 ORDER BY display_order ASC`;
+
+    const params = category ? [category, locale] : [locale];
     const result = await executeQuery(query, params);
 
     cacheManager.set(cacheKey, result.rows, { 

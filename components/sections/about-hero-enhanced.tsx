@@ -17,15 +17,21 @@ interface AboutHeroEnhancedProps {
 
 export function AboutHeroEnhanced({ aboutData, siteSettings, companyMetrics }: AboutHeroEnhancedProps) {
   const companyName = siteSettings.company_name || 'JUSOR';
-  const foundingYear = siteSettings.founding_date ? new Date(siteSettings.founding_date).getFullYear() : 2008;
-  const yearsInBusiness = new Date().getFullYear() - foundingYear;
 
   // Get dynamic stats from company metrics or use defaults
   const stats = companyMetrics?.slice(0, 3) || [
-    { metric_value: '500+', metric_label: 'Projects Completed' },
-    { metric_value: '50+', metric_label: 'Language Pairs' },
-    { metric_value: '99.8%', metric_label: 'Client Satisfaction' }
+    { metric_value: '500+', metric_label: 'Clients Served' },
+    { metric_value: '100+', metric_label: 'Languages Supported' },
+    { metric_value: '15+', metric_label: 'Years of Experience' }
   ];
+
+  // "Years of Excellence" badge — pulled from the real years-of-experience
+  // metric (see scripts/seed-company-metrics.ts) rather than computed from
+  // a founding date, since the two can legitimately differ: the current
+  // legal entity may be newer than the team's collective institutional
+  // experience, and computing "years in business" from founding_date would
+  // silently contradict the real, separately-tracked experience figure.
+  const yearsBadge = companyMetrics?.find((m) => m.metric_key === 'years_experience')?.metric_value || '15+';
 
   return (
     <section className="relative bg-gradient-to-br from-gray-50 via-white to-blue-50 overflow-hidden">
@@ -43,7 +49,7 @@ export function AboutHeroEnhanced({ aboutData, siteSettings, companyMetrics }: A
             {/* Badge */}
             <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orange">
               <Award className="h-4 w-4 mr-2" />
-              {yearsInBusiness}+ Years of Excellence
+              {yearsBadge} Years of Excellence
             </div>
 
             {/* Main Heading */}
@@ -108,15 +114,17 @@ export function AboutHeroEnhanced({ aboutData, siteSettings, companyMetrics }: A
               )}
             </div>
 
-            {/* Trust Indicators */}
+            {/* Trust Indicators — real accreditations (see
+                scripts/seed-company-metrics.ts), falling back to generic
+                text only if none are seeded yet. */}
             <div className="flex flex-wrap items-center gap-6 pt-6 border-t border-gray-200">
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Award className="h-4 w-4 text-brand-orange" />
-                <span>Certified Translation Services</span>
+                <span>{companyMetrics?.find((m) => m.metric_key === 'iso_certification')?.metric_value || 'Certified Translation Services'}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Users className="h-4 w-4 text-brand-blue" />
-                <span>100+ Professional Translators</span>
+                <span>{companyMetrics?.find((m) => m.metric_key === 'moj_accreditation')?.metric_value || 'Accredited Translation Office'}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Globe className="h-4 w-4 text-brand-orange" />
@@ -172,7 +180,7 @@ export function AboutHeroEnhanced({ aboutData, siteSettings, companyMetrics }: A
                     <Award className="h-6 w-6 text-brand-orange" />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-gray-900">{yearsInBusiness}+</div>
+                    <div className="text-2xl font-bold text-gray-900">{yearsBadge}</div>
                     <div className="text-sm text-gray-600">Years of Excellence</div>
                   </div>
                 </div>
