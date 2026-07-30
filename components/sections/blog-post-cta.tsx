@@ -17,22 +17,18 @@ import {
   Shield,
   Clock
 } from 'lucide-react';
-import { BlogPost } from '@/lib/types';
+import { BlogPost, Service } from '@/lib/types';
 import { trackPhoneClick, trackEmailClick } from '@/lib/analytics-events';
-
-interface BlogPostCTAProps {
-  post: BlogPost;
-  siteSettings?: Record<string, any>;
-}
 
 interface BlogPostCTAProps {
   post: BlogPost;
   companyMetrics?: any[]; // Company metrics from database
   blogContentSections?: any[]; // Blog content sections from database
   siteSettings?: Record<string, any>;
+  relatedServices?: Service[]; // Real services matched to this article's topic
 }
 
-export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [], siteSettings = {} }: BlogPostCTAProps) {
+export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [], siteSettings = {}, relatedServices = [] }: BlogPostCTAProps) {
   // Get benefits from database or use fallbacks
   const getBenefits = () => {
     const benefitsFromDB = companyMetrics.filter(m => m.category === 'benefits');
@@ -47,7 +43,7 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
     return [
       {
         icon: CheckCircle,
-        text: siteSettings.benefit_quality || 'ISO 17100:2015 Certified Quality'
+        text: siteSettings.benefit_quality || 'Certified Translation Quality'
       },
       {
         icon: Globe,
@@ -105,23 +101,13 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
     ];
   };
 
-  const services = [
-    {
-      title: 'Legal Translation',
-      description: 'Certified legal document translation for courts and legal proceedings.',
-      href: '/services/legal-translation'
-    },
-    {
-      title: 'Technical Translation',
-      description: 'Specialized technical documentation and software localization.',
-      href: '/services/technical-translation'
-    },
-    {
-      title: 'Business Translation',
-      description: 'Professional business document and marketing material translation.',
-      href: '/services/business-translation'
-    }
-  ];
+  // Real services relevant to this article's topic (falls back to nothing
+  // rather than fabricated services with broken links).
+  const services = relatedServices.map((s) => ({
+    title: s.title,
+    description: s.short_description || '',
+    href: `/services/${s.slug}`,
+  }));
 
   return (
     <section className="bg-gradient-to-br from-gray-50 via-white to-gray-50 py-16">
@@ -186,13 +172,14 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
         </div>
 
         {/* Services Showcase */}
+        {services.length > 0 && (
         <div className="mb-16">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
-              Our Translation Services
+              Related Services
             </h3>
             <p className="text-lg text-gray-600">
-              Discover our comprehensive range of professional translation and localization services.
+              Explore our services related to the topic of this article.
             </p>
           </div>
 
@@ -218,6 +205,7 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
             ))}
           </div>
         </div>
+        )}
 
         {/* Contact Options */}
         <div className="grid md:grid-cols-3 gap-8">
@@ -238,11 +226,11 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
                 variant="outline"
                 className="border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-white"
               >
-                <a 
-                  href={`tel:${siteSettings.phone || '+1-555-0123'}`}
-                  onClick={() => trackPhoneClick(siteSettings.phone || '+1-555-0123', 'blog_post_cta')}
+                <a
+                  href={`tel:${siteSettings.phone || '+971503244329'}`}
+                  onClick={() => trackPhoneClick(siteSettings.phone || '+971503244329', 'blog_post_cta')}
                 >
-                  {siteSettings.phone || '+1 (555) 012-3456'}
+                  {siteSettings.phone || '+971 50 324 4329'}
                 </a>
               </Button>
             </CardContent>
@@ -318,22 +306,6 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
                   <div className="text-sm text-gray-600">{stat.label}</div>
                 </div>
               ))}
-            </div>
-
-            {/* Certifications */}
-            <div className="flex flex-wrap justify-center items-center gap-4 text-sm text-gray-600">
-              <div className="flex items-center gap-2">
-                <Star className="h-4 w-4 text-yellow-500" />
-                <span>ISO 17100:2015 Certified</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-green-500" />
-                <span>GDPR Compliant</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-blue-500" />
-                <span>ATA Member</span>
-              </div>
             </div>
           </div>
         </div>

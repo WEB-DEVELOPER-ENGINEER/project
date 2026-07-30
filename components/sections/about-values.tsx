@@ -178,7 +178,7 @@ export function AboutValues({ aboutData, siteSettings }: AboutValuesProps) {
                     <Award className="h-12 w-12 text-brand-orange" />
                   </div>
                   <h4 className="text-xl font-bold text-gray-900 mb-3">
-                    ISO 17100:2015 Certified
+                    Certified Translation Services
                   </h4>
                   <p className="text-gray-600">
                     Internationally recognized quality standards

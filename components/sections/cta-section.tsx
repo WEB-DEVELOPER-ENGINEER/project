@@ -11,32 +11,32 @@ interface CTASectionProps {
   siteSettings?: Record<string, any>;
 }
 
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { cn } from '@/lib/utils';
+
 export function CTASection({ ctaSections = [], siteSettings = {} }: CTASectionProps) {
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
+  const { t, isRtl } = useLanguage();
 
-  // Use the first CTA section or fallback to default content
-  const ctaData = ctaSections[0] || {
-    title: siteSettings.cta_default_title || 'Ready to Transform Your Business?',
-    description: siteSettings.cta_default_description || 'Join hundreds of satisfied clients who have revolutionized their digital presence with our enterprise solutions.',
-    primary_button_text: siteSettings.cta_primary_button_text || 'Start Your Project',
-    primary_button_url: siteSettings.cta_primary_button_url || '/get-started',
-    secondary_button_text: siteSettings.cta_secondary_button_text || 'Schedule Call',
-    secondary_button_url: siteSettings.cta_secondary_button_url || '/contact',
-    benefits: []
-  };
+  const title = isRtl ? t('cta.title') : (ctaSections[0]?.title || 'Ready to break linguistic barriers?');
+  const description = isRtl ? t('cta.description') : (ctaSections[0]?.description || 'Get in touch with our certified translation specialists today for a free quote and consulting.');
+  const primaryBtn = isRtl ? t('cta.primaryBtn') : (ctaSections[0]?.primary_button_text || 'Get a Free Quote');
+  const secondaryBtn = isRtl ? t('cta.secondaryBtn') : (ctaSections[0]?.secondary_button_text || 'Learn More');
 
-  // Use benefits from CTA section or fallback to default
-  const benefits = ctaData.benefits?.length > 0 ? ctaData.benefits : (
-    siteSettings.cta_default_benefits || [
-      { benefit_text: 'Free consultation and project assessment' },
-      { benefit_text: 'Dedicated project manager and support team' },
-      { benefit_text: 'Flexible engagement models and pricing' },
-      { benefit_text: '30-day satisfaction guarantee' }
-    ]
-  );
+  const benefits = isRtl ? [
+    { benefit_text: 'استشارة وتدقيق للمستندات مجاناً' },
+    { benefit_text: 'مدير مشروع متخصص وفريق دعم على مدار الساعة' },
+    { benefit_text: 'خطط ترجمة مرنة وأسعار تنافسية' },
+    { benefit_text: 'ضمان الدقة وتصديق الجهات الرسمية' }
+  ] : [
+    { benefit_text: 'Free consultation and document assessment' },
+    { benefit_text: 'Dedicated project manager and 24/7 support' },
+    { benefit_text: 'Flexible translation plans and competitive pricing' },
+    { benefit_text: 'Guaranteed accuracy and certified attestation' }
+  ];
 
   return (
     <section 
@@ -54,10 +54,10 @@ export function CTASection({ ctaSections = [], siteSettings = {} }: CTASectionPr
             id="cta-heading"
             className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl"
           >
-            {ctaData.title}
+            {title}
           </h2>
           <RichText 
-            content={ctaData.description}
+            content={description}
             className="mt-6 text-lg leading-8 text-blue-100 sm:text-xl"
           />
 
@@ -65,7 +65,7 @@ export function CTASection({ ctaSections = [], siteSettings = {} }: CTASectionPr
             {benefits.map((benefit, index) => (
               <div key={index} className="flex items-center text-left text-blue-100">
                 <CheckCircle className="h-5 w-5 text-green-300 mr-3 flex-shrink-0" aria-hidden="true" />
-                <span className="text-sm sm:text-base">{benefit.benefit_text}</span>
+                <span className="text-sm sm:text-base font-medium">{benefit.benefit_text}</span>
               </div>
             ))}
           </div>
@@ -77,9 +77,9 @@ export function CTASection({ ctaSections = [], siteSettings = {} }: CTASectionPr
               className="bg-white text-brand-blue hover:bg-gray-100 font-semibold px-8 py-3 text-lg"
               asChild
             >
-              <Link href={ctaData.primary_button_url}>
-                {ctaData.primary_button_text}
-                <ArrowRight className="ml-2 h-5 w-5" />
+              <Link href="/contact">
+                {primaryBtn}
+                <ArrowRight className={cn('ml-2 h-5 w-5', isRtl && 'rotate-180 mr-2 ml-0')} />
               </Link>
             </Button>
             <Button 
@@ -88,14 +88,14 @@ export function CTASection({ ctaSections = [], siteSettings = {} }: CTASectionPr
               className="border-white text-white hover:bg-white hover:text-brand-blue font-semibold px-8 py-3 text-lg"
               asChild
             >
-              <Link href={ctaData.secondary_button_url}>
-                {ctaData.secondary_button_text}
+              <Link href="/services">
+                {secondaryBtn}
               </Link>
             </Button>
           </div>
 
           <p className="mt-8 text-sm text-blue-200">
-            {siteSettings.cta_footer_text || 'No commitment required • Response within 24 hours • Expert consultation'}
+            {isRtl ? 'بدون التزامات مسبقة • رد خلال أقل من 24 ساعة • استشارة متخصصين' : 'No commitment required • Response within 24 hours • Expert consultation'}
           </p>
         </div>
       </div>

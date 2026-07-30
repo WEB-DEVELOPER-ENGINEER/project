@@ -144,7 +144,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
                       allowFullScreen
                       loading="lazy"
                       referrerPolicy="no-referrer-when-downgrade"
-                      title="Jusor Translation Office Location - Dar Al Wuheida Building, Office 319, Abu Hail, Dubai"
+                      title="Jusor Translation Office Location - Abu Saif Business Center, Al-Kazim Building, Office 40B, Abu Hail, Dubai"
                       className="absolute inset-0"
                       aria-label="Interactive map showing Jusor Translation office location in Dubai"
                     />

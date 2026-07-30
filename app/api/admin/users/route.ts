@@ -12,8 +12,21 @@ const usersCRUD = new AdminCRUD(
   ['email', 'name']
 )
 
+function stripPasswordHash(record: any) {
+  if (record && typeof record === 'object') {
+    const { password_hash, ...safe } = record
+    return safe
+  }
+  return record
+}
+
 export async function GET(request: NextRequest) {
-  return usersCRUD.getList(request)
+  const response = await usersCRUD.getList(request)
+  const body = await response.json()
+  if (Array.isArray(body.data)) {
+    body.data = body.data.map(stripPasswordHash)
+  }
+  return NextResponse.json(body, { status: response.status })
 }
 
 export async function POST(request: NextRequest) {

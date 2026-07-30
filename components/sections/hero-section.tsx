@@ -550,7 +550,7 @@ export function HeroSection({ sliders, siteSettings = {} }: HeroSectionProps) {
                       <Shield className="h-5 w-5 text-green-600" />
                     </div>
                     <div>
-                      <div className="font-semibold text-sm">ISO Certified</div>
+                      <div className="font-semibold text-sm">Certified Translation</div>
                       <div className="text-xs text-gray-600">Quality Assured</div>
                     </div>
                   </div>

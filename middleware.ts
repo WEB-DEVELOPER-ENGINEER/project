@@ -3,24 +3,9 @@ import { NextResponse } from 'next/server'
 
 export default withAuth(
   function middleware(req) {
-    // Add CORS headers for API routes
-    if (req.nextUrl.pathname.startsWith('/api/')) {
-      const response = NextResponse.next()
-      
-      // Add CORS headers
-      response.headers.set('Access-Control-Allow-Origin', '*')
-      response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-      response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-      
-      // Handle preflight requests
-      if (req.method === 'OPTIONS') {
-        return new Response(null, { status: 200, headers: response.headers })
-      }
-      
-      return response
-    }
-    
-    // Add security headers
+    // Note: this matcher excludes /api/* entirely (see `config.matcher` below),
+    // so this handler only ever runs for page routes. CORS is handled per-route
+    // inside the relevant app/api/**/route.ts files instead.
     const response = NextResponse.next()
     response.headers.set('X-Frame-Options', 'DENY')
     response.headers.set('X-Content-Type-Options', 'nosniff')

@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "db:local": "npx tsx scripts/local-db.ts start",
+    "db:local:stop": "npx tsx scripts/local-db.ts stop",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -13,23 +15,18 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:blog-implementation": "npx tsx scripts/test-blog-implementation.ts",
-    "test:admin-panel": "npx tsx scripts/test-admin-panel.ts",
-    "test:image-upload": "npx tsx scripts/test-image-upload.ts",
-    "test:hero-performance": "npx tsx scripts/test-hero-performance.ts",
     "lighthouse": "lhci autorun",
-    "db:init": "npx tsx scripts/init-database.ts",
-    "db:seed": "npx tsx scripts/seed-data.ts",
+    "db:init": "npx tsx scripts/init-db-schema.ts",
+    "db:seed": "npx tsx scripts/seed-all.ts",
     "db:seed-posts": "npx tsx scripts/seed-articles.ts",
     "db:seed-articles": "npx tsx scripts/seed-articles.ts",
     "db:seed-articles:dry-run": "npx tsx scripts/seed-articles.ts --dry-run",
+    "db:seed-site-settings": "npx tsx scripts/seed-site-settings.ts",
+    "db:seed-services": "npx tsx scripts/seed-services.ts",
     "db:migrate-blog-enhancement": "npx tsx scripts/migrate-blog-enhancement.ts",
     "db:migrate-about-enhancement": "npx tsx scripts/migrate-about-us-enhancement.ts",
     "migrate:hero-optimization": "npx tsx scripts/migrate-hero-optimization.ts",
-    "admin:create-user": "npx tsx scripts/create-admin-user.ts",
-    "admin:setup": "npx tsx scripts/setup-admin.ts",
-    "setup:admin": "npx tsx scripts/setup-complete-admin.ts",
-    "setup": "bash scripts/setup-dev.sh"
+    "admin:create-user": "npx tsx scripts/create-admin-user.ts"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^41.4.2",
@@ -118,8 +115,10 @@
     "@types/jest": "^29.5.8",
     "@types/nodemailer": "^6.4.14",
     "@types/pg": "^8.10.9",
+    "embedded-postgres": "^18.4.0-beta.17",
     "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0"
+    "jest-environment-jsdom": "^29.7.0",
+    "tsx": "^4.23.1"
   },
   "engines": {
     "node": ">=18.0.0",

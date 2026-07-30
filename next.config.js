@@ -30,7 +30,11 @@ const nextConfig = {
   // from certain third-party libraries (e.g., Radix UI) during server builds.
   swcMinify: false,
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    // Keep console.error in production so server-side failures remain
+    // visible in logs (this previously stripped errors entirely, making
+    // real bugs fail silently — e.g. a caught error would just call
+    // notFound() with zero trace of what actually went wrong).
+    removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error'] } : false,
   },
   poweredByHeader: false,
   async headers() {

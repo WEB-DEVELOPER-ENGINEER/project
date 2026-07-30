@@ -1,6 +1,10 @@
+'use client';
+
 import Link from 'next/link';
+import { useState } from 'react';
 import { Github, Twitter, Linkedin, Mail, Facebook, Instagram, Youtube } from 'lucide-react';
 import { FooterLogo } from '@/components/ui/logo';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 interface FooterProps {
   footerData?: any;
@@ -8,6 +12,39 @@ interface FooterProps {
 }
 
 export function Footer({ footerData, siteSettings = {} }: FooterProps) {
+  const { t, isRtl } = useLanguage();
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterStatus, setNewsletterStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail.trim()) return;
+
+    setNewsletterStatus('submitting');
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newsletterEmail.split('@')[0],
+          email: newsletterEmail,
+          subject: 'Newsletter Subscription',
+          message: 'Please subscribe this email address to the JUSOR newsletter.',
+          service_type: 'Newsletter Signup',
+        }),
+      });
+      const result = await response.json();
+      if (result.success) {
+        setNewsletterStatus('success');
+        setNewsletterEmail('');
+      } else {
+        setNewsletterStatus('error');
+      }
+    } catch (error) {
+      setNewsletterStatus('error');
+    }
+  };
+
   // Icon mapping for social media
   const getIcon = (iconName: string) => {
     const iconMap: Record<string, any> = {
@@ -26,8 +63,23 @@ export function Footer({ footerData, siteSettings = {} }: FooterProps) {
     return acc;
   }, {}) || {};
 
-  // Get sections from database
-  const sections = footerData?.sections || [];
+  // Get sections from database or fallbacks
+  const sections = isRtl ? [
+    { id: 1, title: t('footer.servicesHeader') },
+    { id: 2, title: t('footer.companyHeader') }
+  ] : (footerData?.sections || []);
+
+  const getLocalizedLinkName = (item: any) => {
+    if (!isRtl) return item.name;
+    const nameLower = (item.name || '').toLowerCase();
+    if (nameLower.includes('legal')) return 'الترجمة القانونية';
+    if (nameLower.includes('technical')) return 'الترجمة التقنية والهندسية';
+    if (nameLower.includes('business')) return 'الترجمة التجارية والشركات';
+    if (nameLower.includes('about')) return 'من نحن';
+    if (nameLower.includes('contact')) return 'تواصل معنا';
+    if (nameLower.includes('privacy')) return 'سياسة الخصوصية';
+    return item.name;
+  };
 
   return (
     <footer className="bg-gray-900" aria-labelledby="footer-heading">
@@ -55,7 +107,7 @@ export function Footer({ footerData, siteSettings = {} }: FooterProps) {
                             href={item.url || item.href}
                             className="text-sm leading-6 text-gray-300 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
                           >
-                            {item.name}
+                            {getLocalizedLinkName(item)}
                           </Link>
                         </li>
                       ))}
@@ -69,34 +121,48 @@ export function Footer({ footerData, siteSettings = {} }: FooterProps) {
           
           <div className="mt-10 xl:mt-0">
             <h3 className="text-sm font-semibold leading-6 text-white">
-              {siteSettings.newsletter_title || 'Subscribe to our newsletter'}
+              {t('footer.newsletterTitle')}
             </h3>
             <p className="mt-2 text-sm leading-6 text-gray-300">
-              {siteSettings.newsletter_description || 'Get the latest updates and insights delivered to your inbox.'}
+              {t('footer.newsletterDesc')}
             </p>
-            <div className="mt-6 sm:flex sm:max-w-md">
-              <label htmlFor="email-address" className="sr-only">
-                Email address
-              </label>
-              <input
-                type="email"
-                name="email-address"
-                id="email-address"
-                autoComplete="email"
-                required
-                className="w-full min-w-0 appearance-none rounded-md border-0 bg-white/5 px-3 py-1.5 text-base text-white shadow-sm ring-1 ring-inset ring-white/10 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-brand-orange sm:w-64 sm:text-sm sm:leading-6"
-                placeholder={siteSettings.newsletter_placeholder || 'Enter your email'}
-                aria-describedby="newsletter-description"
-              />
-              <div className="mt-4 sm:ml-4 sm:mt-0 sm:flex-shrink-0">
-                <button
-                  type="submit"
-                  className="flex w-full items-center justify-center rounded-md bg-brand-orange px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-orange/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
-                >
-                  {siteSettings.newsletter_button_text || 'Subscribe'}
-                </button>
-              </div>
-            </div>
+            {newsletterStatus === 'success' ? (
+              <p className="mt-6 text-sm text-brand-orange font-medium" role="status">
+                Thank you for subscribing!
+              </p>
+            ) : (
+              <form onSubmit={handleNewsletterSubmit} className="mt-6 sm:flex sm:max-w-md" noValidate>
+                <label htmlFor="email-address" className="sr-only">
+                  Email address
+                </label>
+                <input
+                  type="email"
+                  name="email-address"
+                  id="email-address"
+                  autoComplete="email"
+                  required
+                  value={newsletterEmail}
+                  onChange={(e) => setNewsletterEmail(e.target.value)}
+                  className="w-full min-w-0 appearance-none rounded-md border-0 bg-white/5 px-3 py-1.5 text-base text-white shadow-sm ring-1 ring-inset ring-white/10 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-brand-orange sm:w-64 sm:text-sm sm:leading-6"
+                  placeholder={t('footer.newsletterPlaceholder')}
+                  aria-describedby="newsletter-description"
+                />
+                <div className="mt-4 sm:ml-4 sm:mt-0 sm:flex-shrink-0">
+                  <button
+                    type="submit"
+                    disabled={newsletterStatus === 'submitting'}
+                    className="flex w-full items-center justify-center rounded-md bg-brand-orange px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-orange/90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+                  >
+                    {newsletterStatus === 'submitting' ? 'Submitting...' : t('footer.subscribeBtn')}
+                  </button>
+                </div>
+              </form>
+            )}
+            {newsletterStatus === 'error' && (
+              <p className="mt-2 text-sm text-red-400" role="alert">
+                Something went wrong. Please try again.
+              </p>
+            )}
             <div className="mt-6 flex space-x-6">
               {(siteSettings.social_media_links || []).map((item: any, index: number) => {
                 const IconComponent = getIcon(item.icon_name);
@@ -117,10 +183,10 @@ export function Footer({ footerData, siteSettings = {} }: FooterProps) {
         
         <div className="mt-16 border-t border-white/10 pt-8 sm:mt-20 md:flex md:items-center md:justify-between lg:mt-24">
           <p className="text-xs leading-5 text-gray-400">
-            &copy; {new Date().getFullYear()} {siteSettings.company_name}. {siteSettings.copyright_text}
+            &copy; {new Date().getFullYear()} {isRtl ? 'شركة جسور لخدمات الترجمة' : (siteSettings.company_name || 'JUSOR Translation Services')}. {t('footer.copyright')}
           </p>
           <p className="mt-4 text-xs leading-5 text-gray-400 md:mt-0">
-            {siteSettings.footer_tagline}
+            {t('footer.tagline')}
           </p>
         </div>
       </div>

@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Google Translate Integration Styles */
-@import '../components/translate/google-translate-styles.css';
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 

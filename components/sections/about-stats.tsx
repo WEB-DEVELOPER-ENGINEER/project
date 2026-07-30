@@ -178,10 +178,10 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
                     <Award className="h-12 w-12 text-brand-orange" />
                   </div>
                   <h4 className="text-xl font-bold text-gray-900 mb-3">
-                    ISO 17100:2015
+                    Certified Translation
                   </h4>
                   <p className="text-gray-600">
-                    Certified Quality Management
+                    Quality Management Process
                   </p>
                 </div>
               </div>
@@ -244,15 +244,15 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
           <div className="flex flex-wrap justify-center items-center gap-8 text-sm text-gray-600">
             <div className="flex items-center gap-2">
               <Award className="h-5 w-5 text-brand-orange" />
-              <span>ISO 17100:2015 Certified</span>
+              <span>Certified Translation Services</span>
             </div>
             <div className="flex items-center gap-2">
               <Shield className="h-5 w-5 text-brand-blue" />
-              <span>GDPR Compliant</span>
+              <span>Confidential &amp; Secure</span>
             </div>
             <div className="flex items-center gap-2">
               <Star className="h-5 w-5 text-brand-orange" />
-              <span>ATA Member</span>
+              <span>Professional Translators</span>
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle className="h-5 w-5 text-brand-blue" />

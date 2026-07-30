@@ -122,7 +122,7 @@ export function AboutMission({ aboutData, siteSettings }: AboutMissionProps) {
               <div className="flex items-center gap-3">
                 <Award className="h-8 w-8 text-brand-orange" />
                 <div>
-                  <div className="font-bold text-gray-900">ISO Certified</div>
+                  <div className="font-bold text-gray-900">Certified Translation</div>
                   <div className="text-xs text-gray-600">Quality Assured</div>
                 </div>
               </div>

@@ -15,34 +15,38 @@ export async function generateMetadata(): Promise<Metadata> {
     const seoData = await getSEOMetadata('services');
     const { siteSettings } = await fetchServicesPageData();
 
+    const defaultTitle = 'Certified Translation Services in Dubai, UAE | JUSOR';
+    const defaultDescription = 'Explore JUSOR\'s certified translation, legal translation, and interpretation services in Dubai, UAE — accurate, court-accepted, and government-approved translations for individuals and businesses.';
+
     return {
-      title: seoData?.meta_title || 'Professional Services | Expert Solutions',
-      description: seoData?.meta_description || 'Discover our comprehensive range of professional services designed to help your business grow and succeed.',
+      title: seoData?.meta_title || defaultTitle,
+      description: seoData?.meta_description || defaultDescription,
       keywords: (seoData as any)?.meta_keywords || [
-        'professional services',
-        'business solutions',
-        'expert consulting',
-        'digital transformation',
-        'enterprise services'
+        'certified translation dubai',
+        'legal translation services uae',
+        'professional translation services',
+        'document translation dubai',
+        'interpretation services dubai',
+        'jusor translation'
       ],
       openGraph: {
-        title: seoData?.og_title || seoData?.meta_title || 'Professional Services | Expert Solutions',
-        description: seoData?.og_description || seoData?.meta_description || 'Discover our comprehensive range of professional services designed to help your business grow and succeed.',
+        title: seoData?.og_title || seoData?.meta_title || defaultTitle,
+        description: seoData?.og_description || seoData?.meta_description || defaultDescription,
         url: seoData?.canonical_url || `${process.env.NEXT_PUBLIC_SITE_URL}/services`,
         type: 'website',
         locale: siteSettings.site_locale || 'en_US',
-        siteName: siteSettings.company_name || 'Enterprise Solutions',
+        siteName: siteSettings.company_name || 'JUSOR Translation Services',
         images: [{
           url: seoData?.og_image || siteSettings.og_image || '/og-image-services.jpg',
           width: 1200,
           height: 630,
-          alt: 'Professional Services - Expert Solutions',
+          alt: 'JUSOR Translation Services - Certified Translation & Interpretation',
         }],
       },
       twitter: {
         card: 'summary_large_image',
-        title: seoData?.og_title || seoData?.meta_title || 'Professional Services | Expert Solutions',
-        description: seoData?.og_description || seoData?.meta_description || 'Discover our comprehensive range of professional services.',
+        title: seoData?.og_title || seoData?.meta_title || defaultTitle,
+        description: seoData?.og_description || seoData?.meta_description || defaultDescription,
         images: [seoData?.og_image || siteSettings.og_image || '/og-image-services.jpg'],
       },
       alternates: {
@@ -63,8 +67,8 @@ export async function generateMetadata(): Promise<Metadata> {
   } catch (error) {
     console.error('Error generating services page metadata:', error);
     return {
-      title: 'Professional Services | Expert Solutions',
-      description: 'Discover our comprehensive range of professional services designed to help your business grow and succeed.',
+      title: 'Certified Translation Services in Dubai, UAE | JUSOR',
+      description: 'Explore JUSOR\'s certified translation, legal translation, and interpretation services in Dubai, UAE.',
     };
   }
 }
@@ -88,7 +92,7 @@ export default async function ServicesPage() {
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/services/${service.slug}`,
       provider: {
         '@type': 'Organization',
-        name: siteSettings.company_name || 'Enterprise Solutions',
+        name: siteSettings.company_name || 'JUSOR Translation Services',
         url: process.env.NEXT_PUBLIC_SITE_URL,
       },
     })),
@@ -97,10 +101,10 @@ export default async function ServicesPage() {
   const organizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: siteSettings.company_name || 'Enterprise Solutions',
+    name: siteSettings.company_name || 'JUSOR Translation Services',
     url: process.env.NEXT_PUBLIC_SITE_URL,
     logo: `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`,
-    description: siteSettings.site_description || 'Professional services and expert solutions',
+    description: siteSettings.site_description || 'Certified translation, legal translation, and interpretation services in Dubai, UAE',
     address: siteSettings.company_address ? {
       '@type': 'PostalAddress',
       streetAddress: siteSettings.company_address,

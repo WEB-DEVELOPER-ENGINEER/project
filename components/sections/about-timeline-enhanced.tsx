@@ -45,8 +45,8 @@ export function AboutTimelineEnhanced({ aboutData, siteSettings }: AboutTimeline
     },
     {
       year: '2015',
-      title: 'ISO Certification',
-      description: 'Achieved ISO 17100:2015 certification, demonstrating our commitment to quality and international standards in translation services.',
+      title: 'Quality Process Milestone',
+      description: 'Formalized our quality management process, reinforcing our commitment to consistent, high-quality translation services.',
       icon: 'Award',
       sort_order: 3
     },

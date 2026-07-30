@@ -64,15 +64,11 @@ export async function generateMetadata(): Promise<Metadata> {
       },
       alternates: {
         canonical: seoData?.canonical_url || `${process.env.NEXT_PUBLIC_SITE_URL}/contact`,
-        languages: {
-          'en': `${process.env.NEXT_PUBLIC_SITE_URL}/contact`,
-          'ar': `${process.env.NEXT_PUBLIC_SITE_URL}/ar/contact`,
-        },
       },
       other: {
         'contact:phone_number': contactData?.phone || '+971 50 324 4329',
         'contact:email': contactData?.email || 'info@jusortrans.com',
-        'contact:street_address': contactData?.address || 'Dar Al Wuheida Building - Office No. 319 - Abu Hail - Dubai - UAE',
+        'contact:street_address': contactData?.address || 'Abu Saif Business Center - Al-Kazim Building - Block A - M Floor - Office 40B, Abu Hail, Dubai, UAE',
         'contact:locality': 'Dubai',
         'contact:region': 'Dubai',
         'contact:country_name': 'United Arab Emirates',
@@ -123,7 +119,7 @@ export default async function ContactPage() {
         },
         address: {
           '@type': 'PostalAddress',
-          streetAddress: contactData.address || 'Dar Al Wuheida Building - Office No. 319 - Abu Hail',
+          streetAddress: contactData.address || 'Abu Saif Business Center - Al-Kazim Building - Block A - M Floor - Office 40B, Abu Hail',
           addressLocality: 'Dubai',
           addressCountry: 'AE',
         },
@@ -173,7 +169,7 @@ export default async function ContactPage() {
       paymentAccepted: 'Cash, Credit Card, Bank Transfer',
       address: {
         '@type': 'PostalAddress',
-        streetAddress: contactData.address || 'Dar Al Wuheida Building - Office No. 319 - Abu Hail',
+        streetAddress: contactData.address || 'Abu Saif Business Center - Al-Kazim Building - Block A - M Floor - Office 40B, Abu Hail',
         addressLocality: 'Dubai',
         addressRegion: 'Dubai',
         postalCode: '00000',
@@ -225,13 +221,6 @@ export default async function ContactPage() {
             }
           }
         ]
-      },
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: '4.9',
-        reviewCount: '127',
-        bestRating: '5',
-        worstRating: '1'
       }
     };
 
@@ -283,8 +272,8 @@ export default async function ContactPage() {
       contactData: {
         email: 'info@jusortrans.com',
         phone: '+971 50 324 4329',
-        address: 'Dar Al Wuheida Building - Office No. 319 - Abu Hail - Dubai - United Arab Emirates',
-        map_url: 'https://maps.app.goo.gl/kcy1snMZ59b8qwHdA',
+        address: 'Abu Saif Business Center - Al-Kazim Building - Block A - M Floor - Office 40B, Abu Hail, Dubai, United Arab Emirates',
+        map_url: 'https://maps.app.goo.gl/ZKmHjsSHa66CeNjC8',
         instagram_url: 'https://www.instagram.com/Jusor_translation',
         whatsapp_number: '971503244329',
         whatsapp_message: 'Hello Jusor, I would like to inquire about your services.'

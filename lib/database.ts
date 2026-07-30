@@ -14,15 +14,18 @@ if (typeof window === 'undefined') {
 }
 
 // Database configuration with environment variables
-// Fix SSL connection issues by modifying connection string
-let connectionString = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_PRISMA_URL || process.env.POSTGRES_URL || process.env.DATABASE_URL;
-if (connectionString && process.env.NODE_ENV === 'development') {
-  // In development, disable SSL to avoid certificate issues
-  connectionString = connectionString.replace(/sslmode=require/g, 'sslmode=disable');
-  if (!connectionString.includes('sslmode=')) {
-    connectionString += connectionString.includes('?') ? '&sslmode=disable' : '?sslmode=disable';
-  }
-}
+const connectionString = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_PRISMA_URL || process.env.POSTGRES_URL || process.env.DATABASE_URL;
+
+// Whether to require SSL for the connection. This must NOT be inferred from
+// NODE_ENV alone — plenty of real self-hosted Postgres instances (including
+// a bare VPS install without certs configured) have no SSL support at all,
+// and `NODE_ENV=production` is set during `next build` even when building
+// against such a database, which previously made every single query fail
+// with "The server does not support SSL connections" (silently swallowed by
+// each data-access function's try/catch, causing pages to 404 instead of
+// showing the real error). SSL is now only enabled when explicitly
+// requested via DB_SSL=true, or implied by the connection string itself.
+const wantsSsl = process.env.DB_SSL === 'true' || /sslmode=require/.test(connectionString || '');
 
 const dbConfig: any = {
   // Fallback to individual variables or connection string
@@ -31,15 +34,22 @@ const dbConfig: any = {
   database: process.env.DB_NAME || process.env.POSTGRES_DATABASE || 'jusor_nextjs',
   user: process.env.DB_USERNAME || process.env.DB_USER || process.env.POSTGRES_USER || 'postgres',
   password: process.env.DB_PASSWORD || process.env.POSTGRES_PASSWORD || 'postgres',
-  // SSL configuration - disable in development, enable in production
-  ssl: process.env.NODE_ENV === 'production' && (process.env.DATABASE_URL || process.env.POSTGRES_URL) ? {
+  // SSL configuration - only when explicitly requested (see wantsSsl above)
+  ssl: wantsSsl ? {
     rejectUnauthorized: false,
     require: true
   } : false,
   // Force IPv4 to avoid IPv6 connectivity issues
   family: 4,
-  // Optimized pool settings for Next.js development and production
-  max: process.env.NODE_ENV === 'production' ? 20 : 5, // Fewer connections in development
+  // Optimized pool settings for Next.js development and production.
+  // Kept modest even in production: `next build`'s static generation runs
+  // multiple worker processes in parallel, each creating its own pool, so a
+  // large per-pool max here can multiply into exhausting the database's
+  // total max_connections (this previously caused "sorry, too many clients
+  // already" errors during static generation against a modest Postgres
+  // instance — the kind of connection limit a self-hosted VPS database is
+  // likely to have too, not just this local dev database).
+  max: parseInt(process.env.DB_POOL_MAX || (process.env.NODE_ENV === 'production' ? '10' : '5')),
   idleTimeoutMillis: process.env.NODE_ENV === 'production' ? 30000 : 300000, // 5 minutes in dev, 30 seconds in prod
   connectionTimeoutMillis: 10000, // Increase timeout to 10 seconds
   // Additional optimizations
@@ -55,12 +65,10 @@ declare global {
   var __db_pool: Pool | undefined;
 }
 
-// Create or reuse connection pool (prevents multiple instances during hot reload)
+// Create or reuse connection pool (prevents multiple instances during hot
+// reload in dev, and within a single production process/worker).
 export const pool = globalThis.__db_pool ?? new Pool(dbConfig);
-
-if (process.env.NODE_ENV !== 'production') {
-  globalThis.__db_pool = pool;
-}
+globalThis.__db_pool = pool;
 
 // Pool error handling
 pool.on('error', (err) => {
@@ -144,6 +152,22 @@ export async function initializeDatabase() {
       -- Create indexes for sliders
       CREATE INDEX IF NOT EXISTS idx_sliders_active ON sliders(is_active, sort_order);
 
+      -- Service categories (must exist before services.category_id references it)
+      CREATE TABLE IF NOT EXISTS service_categories (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        slug VARCHAR(100) UNIQUE NOT NULL,
+        description TEXT,
+        icon_name VARCHAR(50),
+        color VARCHAR(50),
+        sort_order INTEGER DEFAULT 0,
+        is_active BOOLEAN DEFAULT true,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_service_categories_active ON service_categories(is_active, sort_order);
+
       -- Services
       CREATE TABLE IF NOT EXISTS services (
         id SERIAL PRIMARY KEY,
@@ -154,12 +178,46 @@ export async function initializeDatabase() {
         sort_order INTEGER DEFAULT 0,
         is_active BOOLEAN DEFAULT true,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        -- Enhanced content fields (see Service interface in lib/types.ts)
+        short_description TEXT,
+        overview TEXT,
+        key_benefits TEXT[],
+        service_features JSONB,
+        process_steps JSONB,
+        service_highlights JSONB,
+        specifications JSONB,
+        success_metrics JSONB,
+        client_testimonial JSONB,
+        related_services TEXT[],
+        service_category VARCHAR(100),
+        category_id INTEGER REFERENCES service_categories(id) ON DELETE SET NULL,
+        service_type VARCHAR(100),
+        pricing_model VARCHAR(100),
+        delivery_time VARCHAR(100),
+        team_size VARCHAR(100),
+        languages_supported TEXT[],
+        certifications TEXT[],
+        industry_focus TEXT[],
+        service_tags TEXT[],
+        cta_primary_text VARCHAR(200),
+        cta_secondary_text VARCHAR(200),
+        cta_primary_url VARCHAR(500),
+        cta_secondary_url VARCHAR(500),
+        hero_image_url VARCHAR(500),
+        gallery_images JSONB,
+        video_url VARCHAR(500),
+        faq_items JSONB,
+        meta_title VARCHAR(500),
+        meta_description VARCHAR(1000),
+        meta_keywords TEXT[],
+        schema_markup JSONB
       );
 
       -- Create indexes for services
       CREATE INDEX IF NOT EXISTS idx_services_active ON services(is_active, sort_order);
       CREATE INDEX IF NOT EXISTS idx_services_slug ON services(slug);
+      CREATE INDEX IF NOT EXISTS idx_services_category ON services(category_id);
 
       -- Clients
       CREATE TABLE IF NOT EXISTS clients (
@@ -283,8 +341,29 @@ export async function initializeDatabase() {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
-      -- Blog posts table already exists, add new columns if they don't exist
-      DO $$ 
+      -- Blog posts base table (created here if this is a fresh database;
+      -- the DO block below then adds/adjusts columns for older databases
+      -- that already had a narrower blog_posts table).
+      CREATE TABLE IF NOT EXISTS blog_posts (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(500) NOT NULL,
+        slug VARCHAR(500) UNIQUE NOT NULL,
+        description TEXT,
+        content TEXT NOT NULL,
+        image_url VARCHAR(500),
+        author VARCHAR(200),
+        meta_title VARCHAR(500),
+        meta_description VARCHAR(1000),
+        published_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        is_published BOOLEAN DEFAULT true,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_blog_posts_slug ON blog_posts(slug);
+      CREATE INDEX IF NOT EXISTS idx_blog_posts_published ON blog_posts(is_published, published_date DESC);
+
+      DO $$
       BEGIN
         ALTER TABLE blog_posts ALTER COLUMN title TYPE VARCHAR(500);
         ALTER TABLE blog_posts ALTER COLUMN slug TYPE VARCHAR(500);

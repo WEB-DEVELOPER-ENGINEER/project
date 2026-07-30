@@ -9,8 +9,9 @@ import { ServiceDetailSpecifications } from '@/components/sections/service-detai
 import { ServiceDetailFAQ } from '@/components/sections/service-detail-faq';
 import { ServiceDetailCTA } from '@/components/sections/service-detail-cta';
 import { RelatedServicesSection } from '@/components/sections/related-services-section';
+import { RelatedBlogPosts } from '@/components/sections/related-blog-posts';
 import { JsonLd } from '@/components/seo/json-ld';
-import { getServiceBySlug, getServices, getSEOMetadata } from '@/lib/data-access';
+import { getServiceBySlug, getServices, getSEOMetadata, getBlogPosts } from '@/lib/data-access';
 import { fetchLayoutData } from '@/lib/page-data-fetcher';
 
 interface ServicePageProps {
@@ -74,7 +75,7 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
         url: canonicalUrl,
         type: 'article',
         locale: siteSettings.site_locale || 'en_US',
-        siteName: siteSettings.company_name || 'Enterprise Solutions',
+        siteName: siteSettings.company_name || 'JUSOR Translation Services',
         images: [{
           url: ogImage,
           width: 1200,
@@ -114,23 +115,32 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
 
 export default async function ServiceDetailPage({ params }: ServicePageProps) {
   try {
-    const [service, allServices, layoutData] = await Promise.all([
+    const [service, allServices, layoutData, blogPostsResponse] = await Promise.all([
       getServiceBySlug(params.slug),
       getServices(),
-      fetchLayoutData()
+      fetchLayoutData(),
+      getBlogPosts(1, 200).catch(() => ({ data: [] as any[] }))
     ]);
 
     if (!service) {
       notFound();
     }
 
+    // Real blog articles whose related_services (see scripts/seed-articles.ts)
+    // reference this service's slug.
+    const relatedArticles = blogPostsResponse.data
+      .filter((post: any) => Array.isArray(post.related_services) && post.related_services.includes(service.slug))
+      .slice(0, 3);
+
     const { siteSettings, navigationData } = layoutData;
     const footerData = (layoutData as any).footerData || {};
     
-    // Get related services (exclude current service)
-    const relatedServices = allServices
-      .filter(s => s.id !== service.id)
-      .slice(0, 3);
+    // Get related services (exclude current service), preferring the same
+    // category first rather than an arbitrary set of other services.
+    const otherServices = allServices.filter(s => s.id !== service.id);
+    const sameCategory = otherServices.filter(s => s.category_id != null && s.category_id === service.category_id);
+    const rest = otherServices.filter(s => !(s.category_id != null && s.category_id === service.category_id));
+    const relatedServices = [...sameCategory, ...rest].slice(0, 3);
 
     const cleanedBaseUrl = (siteSettings.site_url || 'https://jusortrans.com')
       .replace('jusor-translation.com', 'jusortrans.com')
@@ -145,7 +155,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
       url: `${cleanedBaseUrl}/services/${params.slug}`,
       provider: {
         '@type': 'Organization',
-        name: siteSettings.company_name || 'Enterprise Solutions',
+        name: siteSettings.company_name || 'JUSOR Translation Services',
         url: cleanedBaseUrl,
         logo: `${cleanedBaseUrl}/logo.png`,
       },
@@ -191,10 +201,25 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
       ],
     };
 
+    const faqItems = Array.isArray(service.faq_items) ? service.faq_items : [];
+    const faqSchema = faqItems.length > 0 ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqItems.map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.answer.replace(/<[^>]*>/g, ''),
+        },
+      })),
+    } : null;
+
     return (
       <>
         <JsonLd data={serviceSchema} />
         <JsonLd data={breadcrumbSchema} />
+        {faqSchema && <JsonLd data={faqSchema} />}
         <Navigation siteSettings={siteSettings} navigationData={navigationData} />
         
         <main id="main-content">
@@ -224,14 +249,21 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
           />
           
           {relatedServices.length > 0 && (
-            <RelatedServicesSection 
+            <RelatedServicesSection
               services={relatedServices}
               currentService={service}
               siteSettings={siteSettings}
             />
           )}
-          
-          <ServiceDetailCTA 
+
+          {relatedArticles.length > 0 && (
+            <RelatedBlogPosts
+              posts={relatedArticles}
+              siteSettings={siteSettings}
+            />
+          )}
+
+          <ServiceDetailCTA
             service={service}
             siteSettings={siteSettings}
           />

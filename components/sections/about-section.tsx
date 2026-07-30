@@ -12,12 +12,33 @@ interface AboutSectionProps {
   siteSettings?: Record<string, any>;
 }
 
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { cn } from '@/lib/utils';
+
 export function AboutSection({ aboutUs, siteSettings = {} }: AboutSectionProps) {
+  const { t, isRtl } = useLanguage();
+
   // Get achievements from site settings or use defaults
-  const achievements = siteSettings.about_achievements || [
+  const achievements = isRtl ? [
     {
       icon: 'Award',
-      title: 'ISO 9001:2015 Certified',
+      title: 'خدمات ترجمة معتمدة',
+      description: 'نظام إدارة جودة للترجمة'
+    },
+    {
+      icon: 'Users',
+      title: '500+ عميل واثق',
+      description: 'محل ثقة كبرى الشركات والمؤسسات'
+    },
+    {
+      icon: 'Globe',
+      title: '50+ زوج لغوي',
+      description: 'تغطية شاملة لجميع اللغات العالمية'
+    }
+  ] : [
+    {
+      icon: 'Award',
+      title: 'Certified Translation Services',
       description: 'Quality management system certification'
     },
     {
@@ -32,8 +53,15 @@ export function AboutSection({ aboutUs, siteSettings = {} }: AboutSectionProps) 
     }
   ];
 
-  // Get features from site settings or use defaults
-  const features = siteSettings.about_features || [
+  // Get features
+  const features = isRtl ? [
+    'مترجمون احترافيون معتمدون',
+    'إجراءات تدقيق وضمان الجودة',
+    'دعم متواصل على مدار الساعة',
+    'تسليم سريع في المواعيد',
+    'أسعار تنافسية مدروسة',
+    'سرية تامة للمعلومات والمستندات'
+  ] : [
     'Certified professional translators',
     'Quality assurance process',
     '24/7 customer support',
@@ -42,6 +70,10 @@ export function AboutSection({ aboutUs, siteSettings = {} }: AboutSectionProps) 
     'Confidentiality guaranteed'
   ];
 
+  const displayTitle = isRtl ? t('about.sectionTitle') : aboutUs.title;
+  const displaySlogan = isRtl ? t('about.slogan') : aboutUs.slogan;
+  const displayDescription = isRtl ? t('about.description') : aboutUs.description;
+
   // Icon mapping
   const getIcon = (iconName: string) => {
     const iconMap: Record<string, any> = { Award, Users, Globe };
@@ -49,38 +81,38 @@ export function AboutSection({ aboutUs, siteSettings = {} }: AboutSectionProps) 
   };
 
   return (
-    <section id="about-section" className="section-padding bg-white">
+    <section id="about-section" className="section-padding bg-white dark:bg-gray-900">
       <div className="container">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Content */}
           <div className="space-y-8">
             <div className="space-y-4">
               <div className="inline-flex items-center rounded-full bg-brand-blue/10 px-4 py-2 text-sm font-medium text-brand-blue">
-                {siteSettings.about_badge_text || `About ${siteSettings.company_name || 'Our Company'} Translation`}
+                {isRtl ? 'عن شركة جسور للترجمة' : `About ${siteSettings.company_name || 'JUSOR'} Translation`}
               </div>
               
-              <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                {aboutUs.title}
+              <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl">
+                {displayTitle}
               </h2>
               
-              {aboutUs.slogan && (
+              {displaySlogan && (
                 <p className="text-xl text-brand-orange font-medium">
-                  {aboutUs.slogan}
+                  {displaySlogan}
                 </p>
               )}
               
               <div 
-                className="text-lg text-gray-600 leading-relaxed prose prose-lg max-w-none"
-                dangerouslySetInnerHTML={{ __html: aboutUs.description }}
+                className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed prose prose-lg max-w-none"
+                dangerouslySetInnerHTML={{ __html: displayDescription }}
               />
             </div>
 
             {/* Features List */}
             <div className="grid sm:grid-cols-2 gap-4">
-              {features.map((feature: any, index: number) => (
+              {features.map((feature: string, index: number) => (
                 <div key={index} className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span className="text-gray-700">{feature}</span>
+                  <span className="text-gray-700 dark:text-gray-300 font-medium">{feature}</span>
                 </div>
               ))}
             </div>
@@ -94,18 +126,17 @@ export function AboutSection({ aboutUs, siteSettings = {} }: AboutSectionProps) 
                   window.location.href = '/contact';
                 }}
               >
-                {siteSettings.about_cta_primary_text || 'Get Started Today'}
+                {isRtl ? 'ابدأ الآن' : 'Get Started Today'}
               </Button>
               <Button 
                 variant="outline" 
                 size="lg"
                 className="border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"
                 onClick={() => {
-                  // Navigate to about page or services
-                  window.location.href = siteSettings.about_cta_secondary_url || '/services';
+                  window.location.href = '/services';
                 }}
               >
-                {siteSettings.about_cta_secondary_text || 'View All Services'}
+                {t('services.viewAll')}
               </Button>
             </div>
           </div>
@@ -118,7 +149,7 @@ export function AboutSection({ aboutUs, siteSettings = {} }: AboutSectionProps) 
                 {aboutUs.image_url ? (
                   <Image
                     src={aboutUs.image_url}
-                    alt={aboutUs.title}
+                    alt={displayTitle}
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 50vw"
@@ -127,23 +158,27 @@ export function AboutSection({ aboutUs, siteSettings = {} }: AboutSectionProps) 
                   <div className="flex items-center justify-center h-full bg-gradient-to-br from-brand-orange/20 to-brand-blue/20">
                     <div className="text-center p-8">
                       <Globe className="h-16 w-16 mx-auto mb-4 text-brand-blue" />
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">Global Translation Services</h3>
-                      <p className="text-gray-600">Connecting businesses worldwide through language</p>
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+                        {isRtl ? 'خدمات ترجمة عالمية معتمدة' : 'Global Translation Services'}
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-300">
+                        {isRtl ? 'نربط مؤسستك بالعالم عبر لغة متقنة وترجمة معتمدة' : 'Connecting businesses worldwide through language'}
+                      </p>
                     </div>
                   </div>
                 )}
               </div>
 
               {/* Floating Achievement Card */}
-              <div className="absolute -bottom-6 -right-6 hidden lg:block">
-                <Card className="bg-white shadow-xl border-0">
+              <div className={cn('absolute -bottom-6 hidden lg:block', isRtl ? '-left-6' : '-right-6')}>
+                <Card className="bg-white dark:bg-gray-800 shadow-xl border-0">
                   <CardContent className="p-6">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-brand-orange mb-1">
-                        {siteSettings.about_experience_years || '15+'}
+                        15+
                       </div>
-                      <div className="text-sm text-gray-600">
-                        {siteSettings.about_experience_label || 'Years Experience'}
+                      <div className="text-sm text-gray-600 dark:text-gray-300">
+                        {isRtl ? 'عاماً من الخبرة' : 'Years Experience'}
                       </div>
                     </div>
                   </CardContent>
@@ -154,7 +189,7 @@ export function AboutSection({ aboutUs, siteSettings = {} }: AboutSectionProps) 
             {/* Achievement Cards */}
             <div className="grid gap-4">
               {achievements.map((achievement: any, index: number) => (
-                <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-shadow">
+                <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white dark:bg-gray-800">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <div className="bg-brand-orange/10 p-3 rounded-lg">
@@ -164,10 +199,10 @@ export function AboutSection({ aboutUs, siteSettings = {} }: AboutSectionProps) 
                         })()}
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">
+                        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
                           {achievement.title}
                         </h3>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-gray-600 dark:text-gray-300">
                           {achievement.description}
                         </p>
                       </div>

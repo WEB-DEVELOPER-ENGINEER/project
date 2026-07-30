@@ -12,7 +12,7 @@ import { format } from 'date-fns';
 
 interface RelatedBlogPostsProps {
   posts: BlogPost[];
-  currentPost: BlogPost;
+  currentPost?: BlogPost;
   siteSettings?: Record<string, any>;
 }
 

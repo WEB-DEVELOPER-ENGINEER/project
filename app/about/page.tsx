@@ -28,8 +28,8 @@ export async function generateMetadata(): Promise<Metadata> {
     const description = aboutData?.description || 
       `Learn about ${siteSettings?.company_name || 'JUSOR'}, a leading provider of professional translation and localization services. Discover our mission, values, and expert team.`;
 
-    const canonicalUrl = `${siteSettings?.site_url || 'https://jusor.com'}/about`;
-    const ogImage = aboutData?.image_url || `${siteSettings?.site_url || 'https://jusor.com'}/og-about.jpg`;
+    const canonicalUrl = `${siteSettings?.site_url || 'https://jusortrans.com'}/about`;
+    const ogImage = aboutData?.image_url || `${siteSettings?.site_url || 'https://jusortrans.com'}/og-about.jpg`;
 
     return {
       title,
@@ -99,12 +99,19 @@ export default async function AboutPage() {
       getCompanyMetrics()
     ]);
 
-    const aboutData = homepageData.about_us;
     const teamMembers = homepageData.team_members;
 
-    if (!aboutData) {
-      notFound();
-    }
+    // Fall back to baseline content instead of 404ing the whole page when the
+    // about_us record can't be read (e.g. a transient DB outage) — a hard
+    // notFound() here would tell Google/crawlers the page doesn't exist.
+    const aboutData = homepageData.about_us || {
+      id: 0,
+      title: `About ${layoutData.siteSettings.company_name || 'JUSOR Translation Services'}`,
+      description: `${layoutData.siteSettings.company_name || 'JUSOR Translation Services'} is a certified translation office in Dubai, UAE, providing legal, technical, and business translation and interpretation services.`,
+      is_active: true,
+      created_at: '',
+      updated_at: '',
+    };
 
     // Generate structured data for the about page
     const structuredData = {

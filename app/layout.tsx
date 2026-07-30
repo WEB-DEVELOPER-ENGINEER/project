@@ -12,11 +12,8 @@ import { getSiteSettings, getServices } from '@/lib/data-access';
 import dynamic from 'next/dynamic';
 import Script from 'next/script';
 
-// Dynamically import GoogleTranslateProvider to ensure it's only loaded on client
-const GoogleTranslateProvider = dynamic(
-  () => import('@/components/translate/google-translate-provider').then(mod => ({ default: mod.GoogleTranslateProvider })),
-  { ssr: false }
-);
+
+import { LanguageProvider } from '@/components/providers/LanguageProvider';
 
 // Fallback to system fonts due to network issues
 const inter = { variable: '--font-inter', className: 'font-sans' };
@@ -86,20 +83,27 @@ export default async function RootLayout({
             />
           </noscript>
         )}
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
         <ErrorBoundary>
-          <ClientProvider>
-            <GoogleTranslateProvider>
+          <LanguageProvider>
+            <ClientProvider>
               <JsonLd siteSettings={siteSettings} services={services} />
+              {/* Note: each page renders its own <main id="main-content">,
+                  so this wrapper must not also be a <main> — nesting two
+                  <main> landmarks per page is invalid HTML and confuses
+                  screen readers. */}
               <div className="flex min-h-screen flex-col">
-                <main className="flex-1">
+                <div className="flex-1">
                   {children}
-                </main>
+                </div>
               </div>
               <GlobalWhatsAppButton siteSettings={siteSettings} />
               <Analytics />
               <CookieConsent />
-            </GoogleTranslateProvider>
-          </ClientProvider>
+            </ClientProvider>
+          </LanguageProvider>
         </ErrorBoundary>
       </body>
     </html>

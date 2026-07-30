@@ -515,7 +515,7 @@ export { parseDocx, buildSeedFromDocx }
 /*                  Article -> BlogPost transformation                       */
 /* -------------------------------------------------------------------------- */
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || 'https://jusor.com'
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || 'https://jusortrans.com'
 
 const DEFAULT_AUTHOR_NAME = 'JUSOR Team'
 
@@ -614,7 +614,19 @@ function buildExcerpt(text: string, max = 220): string {
 
 function buildMetaTitle(title: string, isArabic: boolean): string {
   const suffix = isArabic ? ' | جوسور' : ' | Jusor Certified Translation'
-  const max = 60
+  // Note: many of these article titles share the same opening words
+  // ("Certified Legal Translation for ..."), so the truncation budget must
+  // be generous enough to preserve the distinguishing part of the title —
+  // otherwise multiple articles collapse to an identical, duplicate
+  // <title> tag (a real SEO defect: search engines penalize duplicate
+  // titles across distinct pages). The shared prefixes here run up to
+  // ~48 chars before the distinguishing topic starts, so the budget needs
+  // real headroom past that — 100 chars reliably reaches a unique word for
+  // every article in this set (verified against all current titles).
+  // Search engines will simply display a shorter version in results; the
+  // underlying <title> tag stays genuinely unique per page, which matters
+  // more than exact SERP pixel width.
+  const max = 100
   const maxTitle = max - suffix.length
   if (title.length <= maxTitle) return title + suffix
   return truncate(title, maxTitle) + suffix
@@ -704,14 +716,20 @@ function computeReadingTime(html: string): number {
 
 /* -------------------------- Related services ---------------------------- */
 
+// These slugs must match scripts/seed-services.ts's actual catalog —
+// updated 2026-07-30 to fix a mismatch where this list referenced slugs
+// (e.g. 'certified-translation', 'attestation-services') that don't exist
+// in the real seeded services, which silently broke related-service links.
 const SERVICE_KEYWORD_RULES: Array<{ slug: string; patterns: RegExp[] }> = [
-  { slug: 'certified-translation', patterns: [/certified/i, /معتمد/] },
-  { slug: 'legal-translation', patterns: [/legal/i, /court/i, /arbitration/i, /قانوني/] },
-  { slug: 'technical-translation', patterns: [/technical/i, /engineering/i, /aviation/i, /oil/i, /gas/i, /energy/i] },
-  { slug: 'business-translation', patterns: [/business/i, /commercial/, /corporate/i, /امتياز/] },
-  { slug: 'attestation-services', patterns: [/attestation/i, /MOFA/i, /MOJ/i, /تصديق/] },
-  { slug: 'document-translation', patterns: [/document/i, /مستند/] },
-  { slug: 'apostille-services', patterns: [/apostille/i] },
+  { slug: 'certified-document-translation', patterns: [/certified/i, /معتمد/, /apostille/i] },
+  { slug: 'legal-translation', patterns: [/legal/i, /\blaw\b/i, /قانوني/] },
+  { slug: 'court-litigation-translation', patterns: [/court/i, /arbitration/i, /litigation/i, /محكمة/, /تحكيم/] },
+  { slug: 'technical-engineering-translation', patterns: [/technical/i, /engineering/i, /aviation/i, /\boil\b/i, /\bgas\b/i, /energy/i, /طيران/, /طاقة/] },
+  { slug: 'financial-business-translation', patterns: [/financial/i, /\btax\b/i, /\bVAT\b/, /bank/i, /ضريبة/, /بنك/] },
+  { slug: 'contracts-corporate-document-translation', patterns: [/contract/i, /franchise/i, /corporate governance/i, /عقد/, /فرانشايز/] },
+  { slug: 'immigration-visa-translation', patterns: [/attestation/i, /MOFA/i, /MOJ/i, /visa/i, /immigration/i, /golden visa/i, /تصديق/, /تأشيرة/] },
+  { slug: 'academic-certificate-translation', patterns: [/academic/i, /diploma/i, /transcript/i, /أكاديمي/] },
+  { slug: 'medical-translation', patterns: [/medical/i, /pharmaceutical/i, /طبي/] },
 ]
 
 function inferRelatedServices(title: string, fullText: string): string[] {
@@ -946,6 +964,48 @@ async function ensureSchemaReady(client: any): Promise<void> {
   `)
 }
 
+// The category slugs this script's inferCategorySlug() already assigns to
+// articles (see CATEGORY_RULES above). Without matching rows in
+// blog_categories, every post silently gets category_id = NULL, which is
+// what happens on a freshly-provisioned database. These are organizational
+// labels for content that already exists — not business claims — so it's
+// safe to seed them here rather than requiring a separate manual step.
+const BLOG_CATEGORY_SEEDS: Array<{ name: string; slug: string; description: string; color: string }> = [
+  { name: 'Legal Translation', slug: 'legal', description: 'Certified translation for legal, court, and arbitration documents.', color: 'blue' },
+  { name: 'Technical & Industry', slug: 'technical', description: 'Translation for aviation, energy, oil & gas, and other technical sectors.', color: 'orange' },
+  { name: 'Business & Corporate', slug: 'business', description: 'Translation for corporate, commercial, and franchise agreements.', color: 'green' },
+  { name: 'Medical Translation', slug: 'medical', description: 'Translation for medical and pharmaceutical documents.', color: 'red' },
+  { name: 'Academic Translation', slug: 'academic', description: 'Translation for academic and research documents.', color: 'purple' },
+  { name: 'Guides & Insights', slug: 'insights', description: 'Practical guides on certified translation and attestation procedures.', color: 'teal' },
+  { name: 'General', slug: 'general', description: 'General certified translation topics.', color: 'gray' },
+]
+
+async function ensureReferenceData(client: any): Promise<void> {
+  for (const cat of BLOG_CATEGORY_SEEDS) {
+    await client.query(
+      `INSERT INTO blog_categories (name, slug, description, color, is_active, sort_order)
+       VALUES ($1, $2, $3, $4, true, 0)
+       ON CONFLICT (slug) DO NOTHING`,
+      [cat.name, cat.slug, cat.description, cat.color]
+    )
+  }
+
+  // A single non-personal "team" byline, matching the fallback already used
+  // in components/sections/blog-post-author.tsx — deliberately not a named
+  // individual with invented credentials.
+  await client.query(
+    `INSERT INTO blog_authors (name, slug, title, bio, is_active, sort_order)
+     VALUES ($1, $2, $3, $4, true, 0)
+     ON CONFLICT (slug) DO NOTHING`,
+    [
+      'JUSOR Team',
+      'jusor-team',
+      'Translation & Localization Experts',
+      'Our team of certified translators and localization specialists brings decades of combined experience in delivering high-quality language services across multiple industries.',
+    ]
+  )
+}
+
 async function loadCategories(client: any): Promise<CategoryLookup> {
   const byId = new Map<number, { id: number; name: string; slug: string }>()
   const bySlug = new Map<string, { id: number; name: string; slug: string }>()
@@ -1102,6 +1162,9 @@ async function main() {
     await client.query('BEGIN')
     console.log('\n🔧 Preparing schema (ensuring unique slug constraint)…')
     await ensureSchemaReady(client)
+
+    console.log('🔧 Ensuring blog categories and default author exist…')
+    await ensureReferenceData(client)
 
     console.log('🔎 Loading reference data (categories, authors)…')
     const categories = await loadCategories(client)

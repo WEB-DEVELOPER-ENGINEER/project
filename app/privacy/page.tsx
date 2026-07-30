@@ -1,22 +1,37 @@
 import { Metadata } from 'next';
 import { Navigation } from '@/components/layout/navigation';
 import { Footer } from '@/components/layout/footer';
+import { fetchStaticPageData } from '@/lib/page-data-fetcher';
 
-export const metadata: Metadata = {
-  title: 'Privacy Policy',
-  description: 'Learn how Enterprise Solutions collects, uses, and protects your personal information. GDPR and CCPA compliant privacy policy.',
-  robots: { index: true, follow: true },
-  openGraph: {
-    title: 'Privacy Policy | Enterprise Solutions',
-    description: 'Learn how Enterprise Solutions collects, uses, and protects your personal information. GDPR and CCPA compliant privacy policy.',
-    url: 'https://jusortrans.com/privacy',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { siteSettings } = await fetchStaticPageData('privacy');
+  const companyName = siteSettings.company_name || 'JUSOR Translation Services';
+  const description = `Learn how ${companyName} collects, uses, and protects your personal information. GDPR and CCPA compliant privacy policy.`;
 
-export default function PrivacyPage() {
+  return {
+    title: 'Privacy Policy',
+    description,
+    robots: { index: true, follow: true },
+    alternates: {
+      canonical: `${siteSettings.site_url || 'https://jusortrans.com'}/privacy`,
+    },
+    openGraph: {
+      title: `Privacy Policy | ${companyName}`,
+      description,
+      url: `${siteSettings.site_url || 'https://jusortrans.com'}/privacy`,
+    },
+  };
+}
+
+export default async function PrivacyPage() {
+  const { siteSettings, navigationData, footerData } = await fetchStaticPageData('privacy');
+  const companyName = siteSettings.company_name || 'JUSOR Translation Services';
+  const contactEmail = siteSettings.company_email || siteSettings.contact_email || 'info@jusortrans.com';
+  const contactAddress = siteSettings.company_address || 'Abu Saif Business Center - Al-Kazim Building - Block A - M Floor - Office 40B, Abu Hail, Dubai, United Arab Emirates';
+
   return (
     <>
-      <Navigation />
+      <Navigation siteSettings={siteSettings} navigationData={navigationData} />
       <main id="main-content">
         <section className="section-padding pt-24">
           <div className="container max-w-4xl">
@@ -142,16 +157,16 @@ export default function PrivacyPage() {
                   please contact us at:
                 </p>
                 <div className="bg-gray-50 p-6 rounded-lg mt-4">
-                  <p><strong>Email:</strong> privacy@enterprise-solutions.com</p>
-                  <p><strong>Address:</strong> 123 Business Street, San Francisco, CA 94105</p>
-                  <p><strong>Data Protection Officer:</strong> dpo@enterprise-solutions.com</p>
+                  <p><strong>Company:</strong> {companyName}</p>
+                  <p><strong>Email:</strong> {contactEmail}</p>
+                  <p><strong>Address:</strong> {contactAddress}</p>
                 </div>
               </section>
             </div>
           </div>
         </section>
       </main>
-      <Footer />
+      <Footer footerData={footerData} siteSettings={siteSettings} />
     </>
   );
 }

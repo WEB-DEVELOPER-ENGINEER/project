@@ -14,7 +14,13 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  return usersCRUD.getOne(params.id)
+  const response = await usersCRUD.getOne(params.id)
+  const body = await response.json()
+  if (body?.data && typeof body.data === 'object') {
+    const { password_hash, ...safe } = body.data
+    body.data = safe
+  }
+  return NextResponse.json(body, { status: response.status })
 }
 
 export async function PUT(

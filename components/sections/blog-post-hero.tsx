@@ -16,7 +16,12 @@ interface BlogPostHeroProps {
 
 export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
   const publishedDate = new Date(post.published_date);
-  const readingTime = Math.ceil(post.content.split(' ').length / 200); // 200 words per minute
+  // Prefer the reading time computed at seed time (which accounts for Arabic
+  // reading at ~150 wpm vs ~200 wpm for English) over a flat re-estimate here,
+  // which previously always assumed English reading speed for every article.
+  const isArabicContent = /[؀-ۿ]/.test(post.content);
+  const readingTime = post.reading_time
+    ?? Math.ceil(post.content.split(/\s+/).filter(Boolean).length / (isArabicContent ? 150 : 200));
 
   const getBlogCategory = (title: string): { name: string; color: string } => {
     const categories = [
@@ -29,11 +34,23 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
     ];
 
     const titleLower = title.toLowerCase();
-    const category = categories.find(cat => 
+    const category = categories.find(cat =>
       cat.keywords.some(keyword => titleLower.includes(keyword))
     );
 
     return category || { name: 'General', color: 'bg-gray-100 text-gray-800' };
+  };
+
+  // Prefer the real linked category from the database over the keyword
+  // guess, which is only a fallback for posts without one.
+  const categoryColorBySlug: Record<string, string> = {
+    legal: 'bg-blue-100 text-blue-800',
+    technical: 'bg-green-100 text-green-800',
+    business: 'bg-purple-100 text-purple-800',
+    medical: 'bg-red-100 text-red-800',
+    academic: 'bg-yellow-100 text-yellow-800',
+    insights: 'bg-orange-100 text-orange-800',
+    general: 'bg-gray-100 text-gray-800',
   };
 
   const handleShare = async () => {
@@ -60,7 +77,12 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
     // You could show a toast notification here
   };
 
-  const category = getBlogCategory(post.title);
+  const category = post.blog_category
+    ? {
+        name: post.blog_category.name,
+        color: categoryColorBySlug[post.blog_category.slug] || 'bg-gray-100 text-gray-800',
+      }
+    : getBlogCategory(post.title);
 
   return (
     <section className="relative bg-gradient-to-br from-gray-50 to-white">

@@ -31,7 +31,7 @@ export function JsonLd({ siteSettings = {}, services = [], data }: JsonLdProps) 
     },
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": siteSettings.company_street_address || siteSettings.company_address || "Dar Al Wuheida Building - Office No. 319 - Abu Hail",
+      "streetAddress": siteSettings.company_street_address || siteSettings.company_address || "Abu Saif Business Center - Al-Kazim Building - Block A - M Floor - Office 40B, Abu Hail",
       "addressLocality": siteSettings.company_city || "Dubai",
       "addressRegion": siteSettings.company_state || siteSettings.company_region || "Dubai",
       "postalCode": siteSettings.company_postal_code || "00000",
@@ -88,37 +88,6 @@ export function JsonLd({ siteSettings = {}, services = [], data }: JsonLdProps) 
     }
   };
 
-  const personSchema = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "name": siteSettings.company_founder_name || "JUSOR Translation Director",
-    "jobTitle": siteSettings.company_founder_title || "Founder & Director",
-    "worksFor": {
-      "@type": "Organization",
-      "name": siteSettings.company_name || "JUSOR Translation Services"
-    },
-    "sameAs": finalSameAs
-  };
-
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": siteSettings.site_url || "https://jusortrans.com/"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Professional Translation Services",
-        "item": siteSettings.site_url || "https://jusortrans.com"
-      }
-    ]
-  };
-
   return (
     <>
       {data ? (
@@ -154,20 +123,6 @@ export function JsonLd({ siteSettings = {}, services = [], data }: JsonLdProps) 
           />
         </>
       )}
-      <script
-        type="application/ld+json"
-        suppressHydrationWarning
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(personSchema)
-        }}
-      />
-      <script
-        type="application/ld+json"
-        suppressHydrationWarning
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbSchema)
-        }}
-      />
     </>
   );
 }

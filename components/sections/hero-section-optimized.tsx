@@ -190,10 +190,13 @@ const useOptimizedTransitions = (slidersLength: number) => {
   };
 };
 
+import { useLanguage } from '@/components/providers/LanguageProvider';
+
 export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSectionProps) {
   const [isVisible, setIsVisible] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
   const autoplayTimerRef = useRef<NodeJS.Timeout>();
+  const { t, isRtl } = useLanguage();
 
   // Use optimized hooks
   const { currentSlide, isTransitioning, nextSlideIndex, transitionToSlide, nextSlide, prevSlide, goToSlide } = 
@@ -304,13 +307,42 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
 
   // Memoize current slider data to prevent unnecessary re-renders
   const currentSliderData = useMemo(() => {
-    return sliders[currentSlide] || {
-      title: siteSettings.hero_fallback_title || 'Professional Translation Services',
-      description: siteSettings.hero_fallback_description || 'Expert translation services for legal, technical, and business documents.',
-      media_type: 'image' as const,
+    const defaultData = sliders[currentSlide];
+    if (isRtl) {
+      return {
+        title: t('hero.title'),
+        description: t('hero.description'),
+        media_type: (defaultData?.media_type || 'image') as 'image' | 'video',
+        image_url: defaultData?.image_url || null,
+        video_url: defaultData?.video_url || null,
+        video_thumbnail_url: defaultData?.video_thumbnail_url || null,
+        video_platform: defaultData?.video_platform,
+        video_embed_id: defaultData?.video_embed_id,
+        video_quality: defaultData?.video_quality,
+        video_start_time: defaultData?.video_start_time,
+        video_end_time: defaultData?.video_end_time,
+        video_privacy_mode: defaultData?.video_privacy_mode,
+        video_autoplay: defaultData?.video_autoplay || false,
+        video_muted: defaultData?.video_muted ?? true,
+        video_loop: defaultData?.video_loop ?? true,
+        media_alt_text: t('hero.title'),
+        media_caption: null,
+        lazy_loading: true
+      };
+    }
+    return defaultData || {
+      title: t('hero.title'),
+      description: t('hero.description'),
+      media_type: 'image' as 'image' | 'video',
       image_url: null,
       video_url: null,
       video_thumbnail_url: null,
+      video_platform: undefined,
+      video_embed_id: undefined,
+      video_quality: undefined,
+      video_start_time: undefined,
+      video_end_time: undefined,
+      video_privacy_mode: undefined,
       video_autoplay: false,
       video_muted: true,
       video_loop: true,
@@ -318,21 +350,21 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
       media_caption: null,
       lazy_loading: true
     };
-  }, [sliders, currentSlide, siteSettings]);
+  }, [sliders, currentSlide, isRtl, t]);
 
   // Memoize trust indicators and stats
-  const trustIndicators = useMemo(() => siteSettings.hero_trust_indicators || [
-    { icon: 'Shield', text: 'Certified Translators' },
-    { icon: 'Clock', text: '24/7 Support' },
-    { icon: 'Globe', text: '50+ Languages' },
-    { icon: 'FileText', text: 'All Document Types' }
-  ], [siteSettings]);
+  const trustIndicators = useMemo(() => [
+    { icon: 'Shield', text: t('hero.badgeIso') },
+    { icon: 'Clock', text: t('hero.badgeSupport') },
+    { icon: 'Globe', text: t('hero.badgeLanguages') },
+    { icon: 'FileText', text: isRtl ? 'كافة أنواع المستندات' : 'All Document Types' }
+  ], [isRtl, t]);
 
-  const heroStats = useMemo(() => siteSettings.hero_stats || [
-    { value: '1000+', label: 'Projects Completed' },
-    { value: '50+', label: 'Languages Supported' },
-    { value: '24/7', label: 'Customer Support' }
-  ], [siteSettings]);
+  const heroStats = useMemo(() => [
+    { value: '1000+', label: isRtl ? 'مشروع مكتمل' : 'Projects Completed' },
+    { value: '50+', label: isRtl ? 'لغة مدعومة' : 'Languages Supported' },
+    { value: '24/7', label: isRtl ? 'دعم متواصل' : 'Customer Support' }
+  ], [isRtl]);
 
   // Optimized click handlers with analytics
   const handlePrimaryClick = useCallback(() => {
@@ -385,7 +417,7 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
             <div className="space-y-8 order-2 lg:order-1">
               <div className="space-y-4">
                 <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orange">
-                  {siteSettings.hero_badge_text || '🌟 Certified Translation Services in Dubai'}
+                  {isRtl ? '🌟 خدمات الترجمة المعتمدة في دبي' : '🌟 Certified Translation Services in Dubai'}
                 </div>
                 
                 <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
@@ -423,7 +455,7 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
                   className="bg-brand-orange hover:bg-brand-orange/90 text-white px-8 py-3 text-lg"
                   onClick={handlePrimaryClick}
                 >
-                  {siteSettings.hero_primary_button_text || 'Get Free Quote'}
+                  {t('hero.ctaQuote')}
                 </Button>
                 <Button 
                   variant="outline" 
@@ -431,7 +463,7 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
                   className="border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white px-8 py-3 text-lg"
                   onClick={handleSecondaryClick}
                 >
-                  {siteSettings.hero_secondary_button_text || 'Our Services'}
+                  {t('hero.ctaServices')}
                 </Button>
               </div>
 
@@ -614,7 +646,7 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
                         <Shield className="h-5 w-5 text-green-600" />
                       </div>
                       <div>
-                        <div className="font-semibold text-sm">ISO Certified</div>
+                        <div className="font-semibold text-sm">Certified Translation</div>
                         <div className="text-xs text-gray-600">Quality Assured</div>
                       </div>
                     </div>
@@ -651,32 +683,13 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
           {`Slide ${currentSlide + 1} of ${sliders.length}: ${currentSliderData.title}`}
         </div>
 
-        {/* Optimized Structured Data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              "name": "JUSOR Translation Services",
-              "description": currentSliderData.description,
-              "url": typeof window !== 'undefined' ? window.location.origin : '',
-              "logo": currentSliderData.media_type === 'image' ? currentSliderData.image_url : currentSliderData.video_thumbnail_url,
-              "image": currentSliderData.media_type === 'image' ? currentSliderData.image_url : currentSliderData.video_thumbnail_url,
-              "contactPoint": {
-                "@type": "ContactPoint",
-                "telephone": "+971-XX-XXXXXXX",
-                "contactType": "customer service",
-                "availableLanguage": ["en", "ar"]
-              },
-              "areaServed": {
-                "@type": "Country",
-                "name": "United Arab Emirates"
-              },
-              "serviceType": "Translation Services"
-            })
-          }}
-        />
+        {/* Note: Organization schema is already rendered once, correctly,
+            with real data from site_settings in components/seo/json-ld.tsx
+            (root layout). A second Organization schema was previously
+            duplicated here with a `window.location.origin` value that
+            differed between server and client render (a guaranteed
+            hydration mismatch) and a literal placeholder phone number
+            ("+971-XX-XXXXXXX") that was never replaced with a real one. */}
 
         {/* Video Structured Data (only when needed) */}
         {currentSliderData.media_type === 'video' && currentSliderData.video_url && (

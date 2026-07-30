@@ -112,7 +112,7 @@ export function AboutHeroEnhanced({ aboutData, siteSettings, companyMetrics }: A
             <div className="flex flex-wrap items-center gap-6 pt-6 border-t border-gray-200">
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Award className="h-4 w-4 text-brand-orange" />
-                <span>ISO 17100:2015 Certified</span>
+                <span>Certified Translation Services</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Users className="h-4 w-4 text-brand-blue" />

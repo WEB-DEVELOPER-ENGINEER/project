@@ -13,13 +13,21 @@ interface TestimonialsSectionProps {
   siteSettings?: Record<string, any>;
 }
 
-export function TestimonialsSection({ testimonials, siteSettings = {} }: TestimonialsSectionProps) {
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { cn } from '@/lib/utils';
+
+export function TestimonialsSection({ testimonials: rawTestimonials, siteSettings = {} }: TestimonialsSectionProps) {
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
   
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { t, isRtl } = useLanguage();
+
+  // Always use the real testimonials from the database, regardless of
+  // language — do not substitute fabricated reviewer names/quotes for Arabic.
+  const testimonials = rawTestimonials || [];
 
   // Don't render if no testimonials
   if (!testimonials || testimonials.length === 0) {
@@ -45,19 +53,19 @@ export function TestimonialsSection({ testimonials, siteSettings = {} }: Testimo
 
   return (
     <section 
-      className="section-padding bg-gray-50"
+      className="section-padding bg-gray-50 dark:bg-gray-900/50"
       aria-labelledby="testimonials-heading"
     >
       <div className="container">
         <div className="mx-auto max-w-2xl text-center">
           <h2 
             id="testimonials-heading"
-            className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+            className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl"
           >
-            {siteSettings.testimonials_section_title || 'What Our Clients Say'}
+            {t('testimonials.sectionTitle')}
           </h2>
-          <p className="mt-4 text-lg leading-8 text-gray-600">
-            {siteSettings.testimonials_section_description || 'Trusted by industry leaders worldwide for exceptional results and service.'}
+          <p className="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-300">
+            {t('testimonials.sectionSubtitle')}
           </p>
         </div>
 
@@ -67,7 +75,7 @@ export function TestimonialsSection({ testimonials, siteSettings = {} }: Testimo
             inView ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
           }`}
         >
-          <Card className="relative overflow-hidden shadow-xl">
+          <Card className="relative overflow-hidden shadow-xl bg-white dark:bg-gray-800 border-0">
             <CardContent className="p-8 sm:p-12">
               <div className="flex justify-between items-center mb-8">
                 <div className="flex space-x-1">
@@ -90,7 +98,7 @@ export function TestimonialsSection({ testimonials, siteSettings = {} }: Testimo
                     onClick={prevTestimonial}
                     aria-label="Previous testimonial"
                   >
-                    <ChevronLeft className="h-4 w-4" />
+                    <ChevronLeft className={cn('h-4 w-4', isRtl && 'rotate-180')} />
                   </Button>
                   <Button
                     variant="outline"
@@ -98,29 +106,26 @@ export function TestimonialsSection({ testimonials, siteSettings = {} }: Testimo
                     onClick={nextTestimonial}
                     aria-label="Next testimonial"
                   >
-                    <ChevronRight className="h-4 w-4" />
+                    <ChevronRight className={cn('h-4 w-4', isRtl && 'rotate-180')} />
                   </Button>
                 </div>
               </div>
 
               <QuoteText 
                 content={`"${testimonials[currentIndex].description}"`}
-                className="text-xl leading-8 text-gray-900 sm:text-2xl sm:leading-9"
+                className="text-xl leading-8 text-gray-900 dark:text-gray-100 sm:text-2xl sm:leading-9"
               />
 
               <div className="mt-8 flex items-center">
-                <img
-                  className="h-12 w-12 rounded-full object-cover"
-                  src={testimonials[currentIndex].image_url}
-                  alt={`${testimonials[currentIndex].name} profile`}
-                  loading="lazy"
-                />
-                <div className="ml-4">
-                  <div className="font-semibold text-gray-900">
+                <div className="h-12 w-12 rounded-full bg-brand-orange/20 flex items-center justify-center font-bold text-brand-orange text-lg">
+                  {testimonials[currentIndex].name.slice(0, 1)}
+                </div>
+                <div className={cn('ml-4', isRtl && 'mr-4 ml-0')}>
+                  <div className="font-semibold text-gray-900 dark:text-gray-100">
                     {testimonials[currentIndex].name}
                   </div>
-                  <div className="text-gray-600">
-                    {testimonials[currentIndex].position}, {testimonials[currentIndex].company}
+                  <div className="text-gray-600 dark:text-gray-300 text-sm">
+                    {testimonials[currentIndex].position}، {testimonials[currentIndex].company}
                   </div>
                 </div>
               </div>

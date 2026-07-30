@@ -10,11 +10,6 @@ import { Mail, Linkedin, Twitter, Globe, Award, Users } from 'lucide-react';
 
 interface BlogPostAuthorProps {
   author: string;
-  siteSettings?: Record<string, any>;
-}
-
-interface BlogPostAuthorProps {
-  author: string;
   authorData?: any; // Blog author data from database
   companyMetrics?: any[]; // Company metrics from database
   siteSettings?: Record<string, any>;
@@ -45,7 +40,7 @@ export function BlogPostAuthor({ author, authorData: dbAuthorData, companyMetric
         image: siteSettings.team_image || '/team/jusor-team.jpg',
         expertise: siteSettings.team_expertise || ['Legal Translation', 'Technical Documentation', 'Business Localization', 'Certified Translation'],
         achievements: companyMetrics.filter(m => m.category === 'achievements').map(m => m.metric_label) || [
-          'ISO 17100:2015 Certified',
+          'Certified Translation Services',
           'Professional Translation Services',
           'Quality Assurance Process'
         ],
@@ -54,41 +49,6 @@ export function BlogPostAuthor({ author, authorData: dbAuthorData, companyMetric
           linkedin: siteSettings.linkedin_url,
           twitter: siteSettings.twitter_url,
           website: siteSettings.site_url
-        }
-      },
-      'Dr. Sarah Johnson': {
-        name: 'Dr. Sarah Johnson',
-        title: 'Senior Legal Translation Specialist',
-        bio: 'Dr. Sarah Johnson is a certified legal translator with over 15 years of experience in international law and cross-border legal documentation. She holds a PhD in Comparative Law and is certified by multiple international translation associations.',
-        image: '/team/sarah-johnson.jpg',
-        expertise: ['Legal Translation', 'Court Interpretation', 'Contract Localization', 'Regulatory Compliance'],
-        achievements: [
-          'PhD in Comparative Law',
-          'ATA Certified Translator',
-          'Court-Certified Interpreter',
-          '1000+ Legal Documents Translated'
-        ],
-        social: {
-          email: 'sarah.johnson@jusor.com',
-          linkedin: 'https://linkedin.com/in/sarahjohnson',
-        }
-      },
-      'Michael Chen': {
-        name: 'Michael Chen',
-        title: 'Technical Translation Director',
-        bio: 'Michael Chen specializes in technical and software localization with a background in computer science and linguistics. He leads our technical translation team and has worked with major tech companies on global product launches.',
-        image: '/team/michael-chen.jpg',
-        expertise: ['Software Localization', 'Technical Documentation', 'API Translation', 'UI/UX Localization'],
-        achievements: [
-          'MS in Computer Science',
-          'Certified Localization Manager',
-          '200+ Software Products Localized',
-          'Agile Localization Expert'
-        ],
-        social: {
-          email: 'michael.chen@jusor.com',
-          linkedin: 'https://linkedin.com/in/michaelchen',
-          twitter: 'https://twitter.com/michaelchen'
         }
       }
     };

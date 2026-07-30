@@ -15,7 +15,7 @@ export function ServicesCTASection({ siteSettings = {} }: ServicesCTASectionProp
     threshold: 0.1,
   });
 
-  const companyName = siteSettings.company_name || 'Enterprise Solutions';
+  const companyName = siteSettings.company_name || 'JUSOR Translation Services';
   const ctaTitle = siteSettings.services_cta_title || 'Ready to Transform Your Business?';
   const ctaDescription = siteSettings.services_cta_description || 
     'Join hundreds of satisfied clients who have accelerated their growth with our professional services. Let\'s discuss how we can help you achieve your goals.';

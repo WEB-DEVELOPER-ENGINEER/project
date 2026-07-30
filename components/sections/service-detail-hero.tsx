@@ -47,7 +47,7 @@ export function ServiceDetailHero({ service, siteSettings = {} }: ServiceDetailH
       }))
     : [];
 
-  const companyName = siteSettings.company_name || 'Enterprise Solutions';
+  const companyName = siteSettings.company_name || 'JUSOR Translation Services';
 
   const handleContactClick = () => {
     window.location.href = '/contact';

@@ -14,8 +14,16 @@ interface ProjectsSectionProps {
   siteSettings?: Record<string, any>;
 }
 
-export function ProjectsSection({ projects, siteSettings = {} }: ProjectsSectionProps) {
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { cn } from '@/lib/utils';
+
+export function ProjectsSection({ projects: rawProjects, siteSettings = {} }: ProjectsSectionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { t, isRtl } = useLanguage();
+
+  // Always use the real projects from the database, regardless of language —
+  // do not substitute fabricated case studies/client claims for Arabic.
+  const projects = rawProjects || [];
 
   if (!projects || projects.length === 0) {
     return null;
@@ -37,34 +45,19 @@ export function ProjectsSection({ projects, siteSettings = {} }: ProjectsSection
     );
   };
 
-  const projectCategories = [
-    { name: 'Legal Translation', color: 'bg-blue-100 text-blue-800' },
-    { name: 'Technical Translation', color: 'bg-green-100 text-green-800' },
-    { name: 'Business Translation', color: 'bg-purple-100 text-purple-800' },
-    { name: 'Medical Translation', color: 'bg-red-100 text-red-800' },
-    { name: 'Academic Translation', color: 'bg-yellow-100 text-yellow-800' },
-  ];
-
-  const getCategoryStyle = (title: string) => {
-    const category = projectCategories.find(cat => 
-      title.toLowerCase().includes(cat.name.toLowerCase().split(' ')[0])
-    );
-    return category ? category.color : 'bg-gray-100 text-gray-800';
-  };
-
   return (
-    <section id="projects-section" className="section-padding bg-white">
+    <section id="projects-section" className="section-padding bg-white dark:bg-gray-900">
       <div className="container">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center rounded-full bg-brand-blue/10 px-4 py-2 text-sm font-medium text-brand-blue mb-4">
-            {siteSettings.projects_section_badge || 'Our Projects'}
+            {isRtl ? 'مشاريعنا المنفذة' : 'Our Projects'}
           </div>
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4">
-            {siteSettings.projects_section_title || 'Successful Translation Projects'}
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl mb-4">
+            {t('projects.sectionTitle')}
           </h2>
-          <p className="text-lg text-gray-600">
-            {siteSettings.projects_section_description || 'Explore our portfolio of successful translation projects across various industries and document types, showcasing our expertise and quality standards.'}
+          <p className="text-lg text-gray-600 dark:text-gray-300">
+            {t('projects.sectionSubtitle')}
           </p>
         </div>
 
@@ -75,17 +68,17 @@ export function ProjectsSection({ projects, siteSettings = {} }: ProjectsSection
             <>
               <button
                 onClick={prevSlide}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white shadow-lg rounded-full p-3 hover:shadow-xl transition-all"
+                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white dark:bg-gray-800 shadow-lg rounded-full p-3 hover:shadow-xl transition-all"
                 aria-label="Previous projects"
               >
-                <ChevronLeft className="h-6 w-6 text-gray-600" />
+                <ChevronLeft className={cn('h-6 w-6 text-gray-600 dark:text-gray-300', isRtl && 'rotate-180')} />
               </button>
               <button
                 onClick={nextSlide}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white shadow-lg rounded-full p-3 hover:shadow-xl transition-all"
+                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white dark:bg-gray-800 shadow-lg rounded-full p-3 hover:shadow-xl transition-all"
                 aria-label="Next projects"
               >
-                <ChevronRight className="h-6 w-6 text-gray-600" />
+                <ChevronRight className={cn('h-6 w-6 text-gray-600 dark:text-gray-300', isRtl && 'rotate-180')} />
               </button>
             </>
           )}
@@ -93,7 +86,7 @@ export function ProjectsSection({ projects, siteSettings = {} }: ProjectsSection
           {/* Projects Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {currentProjects.map((project) => (
-              <Card key={project.id} className="group hover:shadow-xl transition-all duration-300 border-0 bg-white overflow-hidden">
+              <Card key={project.id} className="group hover:shadow-xl transition-all duration-300 border-0 bg-white dark:bg-gray-800 overflow-hidden">
                 <CardContent className="p-0">
                   {/* Project Image */}
                   <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-brand-orange/10 to-brand-blue/10">
@@ -109,13 +102,12 @@ export function ProjectsSection({ projects, siteSettings = {} }: ProjectsSection
                       <div className="flex items-center justify-center h-full bg-gradient-to-br from-brand-orange/20 to-brand-blue/20">
                         <div className="text-center p-6">
                           <FileText className="h-12 w-12 mx-auto mb-3 text-brand-blue" />
-                          <h4 className="font-semibold text-gray-900">Translation Project</h4>
+                          <h4 className="font-semibold text-gray-900 dark:text-gray-100">
+                            {isRtl ? 'مشروع ترجمة معتمد' : 'Translation Project'}
+                          </h4>
                         </div>
                       </div>
                     )}
-                    
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     
                     {/* View Project Button */}
                     <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -123,45 +115,30 @@ export function ProjectsSection({ projects, siteSettings = {} }: ProjectsSection
                         size="sm" 
                         className="w-full bg-white/90 hover:bg-white text-gray-900"
                         onClick={() => {
-                          // Navigate to project details or open modal
                           window.location.href = `/projects/${project.slug}`;
                         }}
                       >
                         <ExternalLink className="h-4 w-4 mr-2" />
-                        View Project
+                        {isRtl ? 'عرض تفاصيل المشروع' : 'View Project'}
                       </Button>
                     </div>
                   </div>
 
                   {/* Project Content */}
                   <div className="p-6">
-                    {/* Category Badge */}
-                    <Badge 
-                      variant="secondary" 
-                      className={`mb-3 ${getCategoryStyle(project.title)}`}
-                    >
-                      {project.title.includes('Legal') ? 'Legal' :
-                       project.title.includes('Technical') ? 'Technical' :
-                       project.title.includes('Business') ? 'Business' :
-                       project.title.includes('Medical') ? 'Medical' :
-                       project.title.includes('Academic') ? 'Academic' : 'Translation'}
+                    <Badge variant="secondary" className="mb-3 bg-brand-orange/10 text-brand-orange">
+                      {isRtl ? (project.category || 'ترجمة معتمدة') : 'Certified Translation'}
                     </Badge>
 
-                    <h3 className="font-bold text-xl text-gray-900 mb-3 line-clamp-2">
+                    <h3 className="font-bold text-xl text-gray-900 dark:text-gray-100 mb-3 line-clamp-2">
                       {project.title}
                     </h3>
                     
-                    <div className="text-gray-600 text-sm line-clamp-3 mb-4">
+                    <div className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 mb-4">
                       <SimpleText 
                         content={project.description}
-                        className="text-gray-600 text-sm"
+                        className="text-gray-600 dark:text-gray-300 text-sm"
                       />
-                    </div>
-
-                    {/* Project Stats */}
-                    <div className="flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-gray-100">
-                      <span>Project #{project.id.toString().padStart(3, '0')}</span>
-                      <span>{project.images?.length || 0} Images</span>
                     </div>
                   </div>
                 </CardContent>
@@ -190,32 +167,32 @@ export function ProjectsSection({ projects, siteSettings = {} }: ProjectsSection
 
         {/* CTA Section */}
         <div className="text-center mt-16">
-          <div className="bg-gradient-to-r from-brand-orange/5 to-brand-blue/5 rounded-2xl p-8 border">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              {siteSettings.projects_cta_title || 'Ready to Start Your Translation Project?'}
+          <div className="bg-gradient-to-r from-brand-orange/5 to-brand-blue/5 rounded-2xl p-8 border border-gray-100 dark:border-gray-800">
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+              {isRtl ? 'جاهز للبدء في مشروع الترجمة الخاص بك؟' : 'Ready to Start Your Translation Project?'}
             </h3>
-            <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-              {siteSettings.projects_cta_description || 'Join hundreds of satisfied clients who trust us for their translation needs. Get a free quote for your project today.'}
+            <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
+              {isRtl ? 'انضم إلى مئات العملاء الواثقين في خدماتنا المعتمدة. احصل على عرض سعر مجاني لمشروعك اليوم.' : 'Join hundreds of satisfied clients who trust us for their translation needs. Get a free quote for your project today.'}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 size="lg"
-                className="bg-brand-orange hover:bg-brand-orange/90"
+                className="bg-brand-orange hover:bg-brand-orange/90 text-white"
                 onClick={() => {
                   window.location.href = '/contact';
                 }}
               >
-                {siteSettings.projects_cta_primary_text || 'Get Free Quote'}
+                {t('hero.ctaQuote')}
               </Button>
               <Button 
                 variant="outline" 
                 size="lg"
                 className="border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"
                 onClick={() => {
-                  window.location.href = siteSettings.projects_cta_secondary_url || '/projects';
+                  window.location.href = '/projects';
                 }}
               >
-                {siteSettings.projects_cta_secondary_text || 'View All Projects'}
+                {isRtl ? 'عرض كافة المشاريع' : 'View All Projects'}
               </Button>
             </div>
           </div>

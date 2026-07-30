@@ -17,7 +17,7 @@ export function ServiceDetailCTA({ service, siteSettings = {} }: ServiceDetailCT
     threshold: 0.1,
   });
 
-  const companyName = siteSettings.company_name || 'Enterprise Solutions';
+  const companyName = siteSettings.company_name || 'JUSOR Translation Services';
   const companyPhone = siteSettings.company_phone;
   const companyEmail = siteSettings.company_email;
 

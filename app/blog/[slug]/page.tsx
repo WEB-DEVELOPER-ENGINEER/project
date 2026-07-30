@@ -8,14 +8,17 @@ import { BlogPostAuthor } from '@/components/sections/blog-post-author';
 import { RelatedBlogPosts } from '@/components/sections/related-blog-posts';
 import { BlogPostCTA } from '@/components/sections/blog-post-cta';
 import { JsonLd } from '@/components/seo/json-ld';
-import { 
-  getBlogPostBySlug, 
-  getRelatedBlogPosts, 
+import {
+  getBlogPostBySlug,
+  getRelatedBlogPosts,
   getSEOMetadata,
   getBlogContentSections,
-  getCompanyMetrics
+  getCompanyMetrics,
+  getServices,
+  getBlogPosts
 } from '@/lib/data-access';
 import { fetchStaticPageData } from '@/lib/page-data-fetcher';
+import { extractFaqItems } from '@/lib/extract-faq';
 import { BlogPost } from '@/lib/types';
 
 interface BlogPostPageProps {
@@ -26,15 +29,14 @@ interface BlogPostPageProps {
 
 export async function generateStaticParams() {
   try {
-    // We'll generate paths for published blog posts only
-    const { executeQuery } = await import('@/lib/database');
-    const result = await executeQuery(`
-      SELECT slug FROM blog_posts 
-      WHERE is_published = true 
-      ORDER BY published_date DESC
-    `);
-    
-    return result.rows.map((post: any) => ({
+    // Use the real database slugs (getBlogPosts already falls back to the
+    // static docx dataset itself if the DB is unreachable — see
+    // lib/data-access.ts). Previously this read lib/blog-data.ts directly,
+    // whose "en-N-..."-prefixed slugs don't match any real database row,
+    // so every statically-generated blog path 404'd once the database was
+    // actually reachable.
+    const { data: posts } = await getBlogPosts(1, 500);
+    return posts.map((post) => ({
       slug: post.slug,
     }));
   } catch (error) {
@@ -70,17 +72,14 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     const ogImage = (seoData?.og_image || post.image_url || `${cleanedBaseUrl}/og-blog-default.jpg`)
       .replace('jusor-translation.com', 'jusortrans.com');
 
+    const postTags = Array.isArray(post.tags) && post.tags.length > 0
+      ? post.tags
+      : ['translation', 'localization', 'language services'];
+
     return {
       title,
       description,
-      keywords: [
-        'translation',
-        'localization',
-        'language services',
-        'blog',
-        post.title.split(' ').slice(0, 3).join(' '),
-        siteSettings.company_name || 'JUSOR'
-      ],
+      keywords: [...postTags, siteSettings.company_name || 'JUSOR'],
       authors: [{ name: post.author }],
       creator: post.author,
       publisher: siteSettings.company_name || 'JUSOR',
@@ -97,8 +96,8 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
         publishedTime: post.published_date,
         modifiedTime: post.updated_at,
         authors: [post.author],
-        section: 'Translation & Localization',
-        tags: ['translation', 'localization', 'language services'],
+        section: post.blog_category?.name || 'Translation & Localization',
+        tags: postTags,
         images: [{
           url: ogImage,
           width: 1200,
@@ -136,11 +135,12 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   try {
-    const [post, layoutData, blogContentSections, companyMetrics] = await Promise.all([
+    const [post, layoutData, blogContentSections, companyMetrics, allServices] = await Promise.all([
       getBlogPostBySlug(params.slug),
       fetchStaticPageData('blog'),
       getBlogContentSections(),
-      getCompanyMetrics()
+      getCompanyMetrics(),
+      getServices()
     ]);
 
     if (!post) {
@@ -149,6 +149,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
     // Get related posts
     const relatedPosts = await getRelatedBlogPosts(post.slug, 3);
+
+    // Real services referenced by this article's related_services slugs
+    // (see scripts/seed-articles.ts inferRelatedServices) — only services
+    // that actually exist in the catalog are linked.
+    const relatedServiceSlugs = new Set(post.related_services || []);
+    const relatedServices = allServices.filter((s) => relatedServiceSlugs.has(s.slug)).slice(0, 3);
 
     const cleanedBaseUrl = (layoutData.siteSettings.site_url || 'https://jusortrans.com')
       .replace('jusor-translation.com', 'jusortrans.com')
@@ -167,7 +173,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         "height": 630
       } : undefined,
       "author": {
-        "@type": "Person",
+        "@type": /team/i.test(post.author) ? "Organization" : "Person",
         "name": post.author,
         "url": `${cleanedBaseUrl}/about#team`
       },
@@ -185,15 +191,56 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         "@type": "WebPage",
         "@id": `${cleanedBaseUrl}/blog/${post.slug}`
       },
-      "articleSection": "Translation & Localization",
-      "keywords": ["translation", "localization", "language services"],
+      "articleSection": post.blog_category?.name || "Translation & Localization",
+      "keywords": Array.isArray(post.tags) && post.tags.length > 0
+        ? post.tags
+        : ["translation", "localization", "language services"],
       "wordCount": post.content.split(' ').length,
       "articleBody": post.content.replace(/<[^>]*>/g, '').substring(0, 500) + '...'
+    };
+
+    // Build FAQPage schema from the real Q&A content already in the article
+    // body (see lib/extract-faq.ts) — a genuine AEO/GEO win, not fabricated.
+    const faqItems = extractFaqItems(post.content);
+    const faqSchema = faqItems.length > 0 ? {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqItems.map((item) => ({
+        "@type": "Question",
+        "name": item.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": item.answer,
+        },
+      })),
+    } : null;
+
+    const breadcrumbSchema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": `${cleanedBaseUrl}/` },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": `${cleanedBaseUrl}/blog` },
+        ...(post.blog_category ? [{
+          "@type": "ListItem",
+          "position": 3,
+          "name": post.blog_category.name,
+          "item": `${cleanedBaseUrl}/blog?category=${post.blog_category.slug}`,
+        }] : []),
+        {
+          "@type": "ListItem",
+          "position": post.blog_category ? 4 : 3,
+          "name": post.title,
+          "item": `${cleanedBaseUrl}/blog/${post.slug}`,
+        },
+      ],
     };
 
     return (
       <>
         <JsonLd data={structuredData} />
+        <JsonLd data={breadcrumbSchema} />
+        {faqSchema && <JsonLd data={faqSchema} />}
 
         <Navigation 
           navigationData={layoutData.navigationData}
@@ -231,11 +278,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           )}
 
           {/* Call-to-Action Section */}
-          <BlogPostCTA 
+          <BlogPostCTA
             post={post}
             companyMetrics={companyMetrics}
             blogContentSections={blogContentSections}
             siteSettings={layoutData.siteSettings}
+            relatedServices={relatedServices}
           />
         </main>
 

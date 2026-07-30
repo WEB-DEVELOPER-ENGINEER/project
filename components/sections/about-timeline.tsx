@@ -51,8 +51,8 @@ export function AboutTimeline({ aboutData, siteSettings }: AboutTimelineProps) {
     },
     {
       year: (foundingYear + 8).toString(),
-      title: 'ISO Certification',
-      description: 'Achieved ISO 17100:2015 certification, demonstrating our commitment to international quality standards.',
+      title: 'Quality Process Milestone',
+      description: 'Formalized our quality management process, demonstrating our commitment to international quality standards.',
       icon: Award,
       color: 'text-purple-600',
       bgColor: 'bg-purple-100'

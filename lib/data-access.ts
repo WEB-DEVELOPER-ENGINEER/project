@@ -32,6 +32,8 @@ import {
   SearchFilters
 } from './types';
 
+import { englishArticles, arabicArticles } from './blog-data';
+
 function getCacheKey(prefix: string, params?: Record<string, any>): string {
   if (!params) return prefix;
   const sortedParams = Object.keys(params)
@@ -633,19 +635,24 @@ export async function getBlogPosts(page: number = 1, limit: number = 6): Promise
     });
     return response;
   } catch (error) {
-    console.error('Error fetching blog posts:', error);
+    console.error('Error fetching blog posts, returning loaded docx dataset:', error);
+    const allArticles = [...englishArticles, ...arabicArticles] as unknown as BlogPost[];
+    const offset = (page - 1) * limit;
+    const paginated = allArticles.slice(offset, offset + limit);
+    const total = allArticles.length;
+    const totalPages = Math.ceil(total / limit);
+
     return {
-      success: false,
-      data: [],
+      success: true,
+      data: paginated,
       pagination: {
-        page: 1,
+        page,
         limit,
-        total: 0,
-        total_pages: 0,
-        has_next: false,
-        has_prev: false
-      },
-      error: 'Failed to fetch blog posts'
+        total,
+        total_pages: totalPages,
+        has_next: page < totalPages,
+        has_prev: page > 1
+      }
     };
   }
 }
@@ -717,8 +724,10 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
     }
     return post;
   } catch (error) {
-    console.error('Error fetching blog post:', error);
-    return null;
+    console.error('Error fetching blog post, searching in loaded docx dataset:', error);
+    const allArticles = [...englishArticles, ...arabicArticles];
+    const found = allArticles.find(a => a.slug === slug || a.slug === decodedSlug || decodeURIComponent(a.slug) === decodedSlug);
+    return (found as unknown as BlogPost) || null;
   }
 }
 
@@ -729,17 +738,26 @@ export async function getRelatedBlogPosts(currentSlug: string, limit: number = 3
   if (cached) return cached;
 
   try {
+    // Look up the current post's category so we can rank same-category posts first
+    const currentPostResult = await executeQuery(
+      `SELECT category_id, tags FROM blog_posts WHERE slug = $1 OR slug = $2 LIMIT 1`,
+      [currentSlug, decodedSlug]
+    );
+    const currentCategoryId = currentPostResult.rows[0]?.category_id ?? null;
+
     const result = await executeQuery(`
-      SELECT bp.*, 
+      SELECT bp.*,
              ba.name as author_name, ba.slug as author_slug, ba.title as author_title,
              bc.name as category_name, bc.slug as category_slug, bc.color as category_color
       FROM blog_posts bp
       LEFT JOIN blog_authors ba ON bp.author_id = ba.id
       LEFT JOIN blog_categories bc ON bp.category_id = bc.id
       WHERE bp.slug != $1 AND bp.slug != $2 AND bp.is_published = true
-      ORDER BY bp.published_date DESC, bp.created_at DESC
+      ORDER BY
+        CASE WHEN $4::int IS NOT NULL AND bp.category_id = $4::int THEN 0 ELSE 1 END,
+        bp.published_date DESC, bp.created_at DESC
       LIMIT $3
-    `, [currentSlug, decodedSlug, limit]);
+    `, [currentSlug, decodedSlug, limit, currentCategoryId]);
 
     const posts = result.rows.map(row => ({
       ...row,

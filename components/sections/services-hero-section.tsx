@@ -16,7 +16,7 @@ export function ServicesHeroSection({ services, siteSettings = {} }: ServicesHer
     threshold: 0.1,
   });
 
-  const companyName = siteSettings.company_name || 'Enterprise Solutions';
+  const companyName = siteSettings.company_name || 'JUSOR Translation Services';
   const heroTitle = siteSettings.services_hero_title || 'Professional Services That Drive Results';
   const heroDescription = siteSettings.services_hero_description || 
     'Comprehensive solutions designed to accelerate your business growth and digital transformation journey.';

@@ -62,10 +62,6 @@ export async function generateMetadata(): Promise<Metadata> {
       },
       alternates: {
         canonical: seoData?.canonical_url || `${process.env.NEXT_PUBLIC_SITE_URL}/projects`,
-        languages: {
-          'en': `${process.env.NEXT_PUBLIC_SITE_URL}/projects`,
-          'ar': `${process.env.NEXT_PUBLIC_SITE_URL}/ar/projects`,
-        },
       },
       robots: {
         index: true,
