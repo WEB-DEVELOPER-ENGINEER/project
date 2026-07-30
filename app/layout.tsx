@@ -8,7 +8,7 @@ import { GlobalWhatsAppButton } from '@/components/ui/global-whatsapp-button';
 import { ClientProvider, ErrorBoundary } from '@/components/providers';
 import { cn } from '@/lib/utils';
 import { generateMetadata as generateSiteMetadata } from '@/lib/metadata';
-import { getSiteSettings, getServices } from '@/lib/data-access';
+import { getSiteSettings, getServices, getCompanyMetrics } from '@/lib/data-access';
 import dynamic from 'next/dynamic';
 import Script from 'next/script';
 
@@ -30,9 +30,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const locale = getLocale();
-  const [siteSettings, services] = await Promise.all([
+  const [siteSettings, services, certifications] = await Promise.all([
     getSiteSettings(),
-    getServices(undefined, undefined, locale)
+    getServices(undefined, undefined, locale),
+    getCompanyMetrics('achievements', locale)
   ]);
 
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
@@ -92,7 +93,7 @@ export default async function RootLayout({
         <ErrorBoundary>
           <LanguageProvider initialLocale={locale}>
             <ClientProvider>
-              <JsonLd siteSettings={siteSettings} services={services} />
+              <JsonLd siteSettings={siteSettings} services={services} certifications={certifications} />
               {/* Note: each page renders its own <main id="main-content">,
                   so this wrapper must not also be a <main> — nesting two
                   <main> landmarks per page is invalid HTML and confuses

@@ -8,10 +8,12 @@ import { ContactMapSection } from '@/components/sections/contact-map-section';
 import { ContactCTASection } from '@/components/sections/contact-cta-section';
 import { JsonLd } from '@/components/seo/json-ld';
 import { fetchContactPageData } from '@/lib/page-data-service';
-import { getSEOMetadata } from '@/lib/data-access';
+import { getSEOMetadata, getCompanyMetrics } from '@/lib/data-access';
+import { getLocale } from '@/lib/locale-server';
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
+    const locale = getLocale();
     const [seoData, { siteSettings, contactData }] = await Promise.all([
       getSEOMetadata('contact').catch(() => null),
       fetchContactPageData()
@@ -63,7 +65,12 @@ export async function generateMetadata(): Promise<Metadata> {
         site: '@jusortranslation',
       },
       alternates: {
-        canonical: seoData?.canonical_url || `${process.env.NEXT_PUBLIC_SITE_URL}/contact`,
+        canonical: seoData?.canonical_url || `${process.env.NEXT_PUBLIC_SITE_URL}${locale === 'ar' ? '/ar' : ''}/contact`,
+        languages: {
+          en: `${process.env.NEXT_PUBLIC_SITE_URL}/contact`,
+          ar: `${process.env.NEXT_PUBLIC_SITE_URL}/ar/contact`,
+          'x-default': `${process.env.NEXT_PUBLIC_SITE_URL}/contact`,
+        },
       },
       other: {
         'contact:phone_number': contactData?.phone || '+971 50 324 4329',
@@ -96,7 +103,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ContactPage() {
   try {
-    const { siteSettings, navigationData, contactData, footerData } = await fetchContactPageData();
+    const locale = getLocale();
+    const [{ siteSettings, navigationData, contactData, footerData }, certifications] = await Promise.all([
+      fetchContactPageData(),
+      getCompanyMetrics('achievements', locale),
+    ]);
 
     // Generate structured data for contact page
     const contactSchema = {
@@ -192,6 +203,13 @@ export default async function ContactPage() {
         '@type': 'Place',
         name: 'Dubai, UAE and surrounding areas'
       },
+      ...(certifications.length > 0 ? {
+        hasCredential: certifications.map((cert) => ({
+          '@type': 'EducationalOccupationalCredential',
+          credentialCategory: cert.metric_value,
+          name: cert.metric_label,
+        })),
+      } : {}),
       hasOfferCatalog: {
         '@type': 'OfferCatalog',
         name: 'Translation Services',

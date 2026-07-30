@@ -1,10 +1,11 @@
 interface JsonLdProps {
   siteSettings?: Record<string, any>;
   services?: any[];
+  certifications?: any[]; // Real accreditations from company_metrics (category='achievements') — see scripts/seed-company-metrics.ts
   data?: any; // Allow passing custom schema data
 }
 
-export function JsonLd({ siteSettings = {}, services = [], data }: JsonLdProps) {
+export function JsonLd({ siteSettings = {}, services = [], certifications = [], data }: JsonLdProps) {
   const socialLinks = Array.isArray(siteSettings.social_media_links)
     ? siteSettings.social_media_links.map((link: any) => typeof link === 'string' ? link : link?.url).filter(Boolean)
     : [];
@@ -37,7 +38,17 @@ export function JsonLd({ siteSettings = {}, services = [], data }: JsonLdProps) 
       "postalCode": siteSettings.company_postal_code || "00000",
       "addressCountry": siteSettings.company_country || "AE"
     },
-    "sameAs": finalSameAs
+    "sameAs": finalSameAs,
+    // Real accreditations only (ISO 9001:2015, MOJ, Dubai Courts/DIFC, DIAC,
+    // etc. — see scripts/seed-company-metrics.ts). Omitted entirely if none
+    // are seeded, rather than falling back to a placeholder claim.
+    ...(certifications.length > 0 ? {
+      "hasCredential": certifications.map((cert) => ({
+        "@type": "EducationalOccupationalCredential",
+        "credentialCategory": cert.metric_value,
+        "name": cert.metric_label,
+      })),
+    } : {}),
   };
 
   const websiteSchema = {
