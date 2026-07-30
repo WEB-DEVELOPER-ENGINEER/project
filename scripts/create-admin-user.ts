@@ -1,30 +1,39 @@
 #!/usr/bin/env npx tsx
 
 /**
- * Script to create an admin user for the admin panel on remote Supabase DB
+ * Creates (or updates the password of) an admin user for the /admin panel.
+ *
+ * Connects to whichever database the app itself is configured to use (via
+ * lib/database.ts, which reads DATABASE_URL / DB_* from .env.local/.env) —
+ * so this targets your local dev database by default, not production.
+ *
+ * SECURITY: this script previously hardcoded a live remote Postgres host,
+ * user, and plaintext password. That credential was committed to a public
+ * repository and must be treated as compromised and rotated. Never
+ * hardcode connection credentials here — set them via environment
+ * variables instead.
+ *
+ * Usage:
+ *   ADMIN_EMAIL=you@example.com ADMIN_PASSWORD='<strong-password>' npx tsx scripts/create-admin-user.ts
  */
 
 import bcrypt from 'bcryptjs'
-import { Pool } from 'pg'
-
-// Create a pool using the DATABASE_URL (Supabase Postgres connection string)
-const pool = new Pool({
-  user: "postgres.upfyfznpurjtwplozpre",
-  host: "aws-1-us-east-1.pooler.supabase.com",
-  database: "postgres",
-  password: "X52S2K9DT5daYe1y",
-  port: 6543,
-  ssl: { rejectUnauthorized: false },
-})
+import { pool } from '../lib/database'
 
 async function createAdminUser() {
-  const email = process.env.ADMIN_EMAIL || 'admin@jusor.com'
-  const password = process.env.ADMIN_PASSWORD || 'admin123'
+  const email = process.env.ADMIN_EMAIL || 'admin@jusortrans.com'
+  const password = process.env.ADMIN_PASSWORD
   const name = process.env.ADMIN_NAME || 'Admin User'
   const role = 'admin'
 
+  if (!password) {
+    console.error('❌ ADMIN_PASSWORD is required — refusing to create an admin user with a default/guessable password.')
+    console.error("   Example: ADMIN_EMAIL=you@example.com ADMIN_PASSWORD='<strong-password>' npx tsx scripts/create-admin-user.ts")
+    process.exit(1)
+  }
+
   try {
-    console.log('Connecting to remote Supabase DB...')
+    console.log('Connecting to the configured database...')
     const client = await pool.connect()
     console.log('Connected!')
 
@@ -63,9 +72,9 @@ async function createAdminUser() {
 
     console.log('\n=== Admin User Details ===')
     console.log(`Email: ${email}`)
-    console.log(`Password: ${password}`)
     console.log(`Name: ${name}`)
     console.log(`Role: ${role}`)
+    console.log('Password: (as supplied via ADMIN_PASSWORD — not echoed)')
     console.log('\nYou can now login to the admin panel at /admin')
     
   } catch (error) {

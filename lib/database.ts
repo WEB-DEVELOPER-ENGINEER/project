@@ -63,6 +63,7 @@ if (connectionString) {
 // Global variable to prevent multiple pool instances in development (Next.js hot reload)
 declare global {
   var __db_pool: Pool | undefined;
+  var __db_pool_listeners_attached: boolean | undefined;
 }
 
 // Create or reuse connection pool (prevents multiple instances during hot
@@ -70,21 +71,29 @@ declare global {
 export const pool = globalThis.__db_pool ?? new Pool(dbConfig);
 globalThis.__db_pool = pool;
 
-// Pool error handling
-pool.on('error', (err) => {
-  console.error('Database pool error:', err);
-  // In production, you might want to restart the application or send alerts
-});
+// Attach listeners only once per pool instance. This module is re-evaluated
+// on every hot reload, but the pool above is deliberately reused — without
+// this guard each reload stacked another 'error' listener onto the same
+// pool, leaking listeners until Node warned about a suspected memory leak
+// (MaxListenersExceededWarning at 11 listeners).
+if (!globalThis.__db_pool_listeners_attached) {
+  globalThis.__db_pool_listeners_attached = true;
 
-// Only log connection events in production or when DEBUG is enabled
-if (process.env.NODE_ENV === 'production' || process.env.NEXT_PUBLIC_DEBUG === 'true') {
-  pool.on('connect', () => {
-    console.log('Database client connected');
+  pool.on('error', (err) => {
+    console.error('Database pool error:', err);
+    // In production, you might want to restart the application or send alerts
   });
 
-  pool.on('remove', () => {
-    console.log('Database client removed');
-  });
+  // Only log connection events in production or when DEBUG is enabled
+  if (process.env.NODE_ENV === 'production' || process.env.NEXT_PUBLIC_DEBUG === 'true') {
+    pool.on('connect', () => {
+      console.log('Database client connected');
+    });
+
+    pool.on('remove', () => {
+      console.log('Database client removed');
+    });
+  }
 }
 
 // Database initialization and migration functions
