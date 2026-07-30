@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Github, Twitter, Linkedin, Mail, Facebook, Instagram, Youtube } from 'lucide-react';
 import { FooterLogo } from '@/components/ui/logo';
 import { useLanguage } from '@/components/providers/LanguageProvider';
+import { localizedPath } from '@/lib/locale';
 
 interface FooterProps {
   footerData?: any;
@@ -12,7 +13,7 @@ interface FooterProps {
 }
 
 export function Footer({ footerData, siteSettings = {} }: FooterProps) {
-  const { t, isRtl } = useLanguage();
+  const { t, isRtl, locale } = useLanguage();
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterStatus, setNewsletterStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
@@ -104,7 +105,7 @@ export function Footer({ footerData, siteSettings = {} }: FooterProps) {
                       {sectionLinks.map((item: any, index: number) => (
                         <li key={item.id || index}>
                           <Link
-                            href={item.url || item.href}
+                            href={localizedPath(item.url || item.href || '/', locale)}
                             className="text-sm leading-6 text-gray-300 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
                           >
                             {getLocalizedLinkName(item)}

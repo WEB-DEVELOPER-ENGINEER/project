@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Filter, X } from 'lucide-react';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { translateCategoryName } from '@/lib/i18n/translations';
 
 interface ServiceCategory {
   id: number;
@@ -30,6 +32,7 @@ export function ServiceFilter({
   services = []
 }: ServiceFilterProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const { t, locale } = useLanguage();
 
   useEffect(() => {
     setIsVisible(true);
@@ -50,6 +53,8 @@ export function ServiceFilter({
     return null;
   }
 
+  const activeCategoryObj = categories.find(c => c.slug === activeCategory);
+
   return (
     <div 
       className={`mb-12 transition-all duration-700 ${
@@ -64,12 +69,12 @@ export function ServiceFilter({
               <Filter className="w-5 h-5 text-brand-orange" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                Filter Services
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                {t('services.filterTitle')}
               </h3>
-              <p className="text-sm text-gray-600">
-                {servicesCount} service{servicesCount !== 1 ? 's' : ''} 
-                {activeCategory && ` in ${categories.find(c => c.slug === activeCategory)?.name}`}
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {servicesCount} {servicesCount === 1 ? t('services.serviceCount') : t('services.servicesCount')}{' '}
+                {activeCategoryObj && `${t('services.inCategory')} ${translateCategoryName(activeCategoryObj.name, locale)}`}
               </p>
             </div>
           </div>
@@ -80,10 +85,10 @@ export function ServiceFilter({
               variant="outline"
               size="sm"
               onClick={() => onCategoryChange(null)}
-              className="text-gray-600 hover:text-gray-900 border-gray-300"
+              className="text-gray-600 hover:text-gray-900 border-gray-300 dark:text-gray-300 dark:border-gray-700"
             >
               <X className="w-4 h-4 mr-2" />
-              Clear Filter
+              {t('services.clearFilter')}
             </Button>
           )}
         </div>
@@ -98,10 +103,10 @@ export function ServiceFilter({
             className={`transition-all duration-300 ${
               activeCategory === null
                 ? 'bg-brand-blue hover:bg-brand-blue/90 text-white shadow-lg'
-                : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-300'
+                : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700'
             }`}
           >
-            All Services
+            {t('services.allServices')}
           </Button>
 
           {/* Category Buttons */}
@@ -118,7 +123,7 @@ export function ServiceFilter({
                 className={`transition-all duration-300 ${
                   isActive
                     ? 'text-white shadow-lg'
-                    : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-300 hover:border-gray-400'
+                    : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-300 hover:border-gray-400 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700'
                 }`}
                 style={{
                   backgroundColor: isActive ? category.color : undefined,
@@ -129,39 +134,39 @@ export function ServiceFilter({
                 <Badge 
                   variant="secondary" 
                   className={`mr-2 ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-600'
+                    isActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
                   }`}
                 >
                   {serviceCount}
                 </Badge>
-                {category.name}
+                {translateCategoryName(category.name, locale)}
               </Button>
             );
           })}
         </div>
 
         {/* Active Filter Display */}
-        {activeCategory && (
-          <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+        {activeCategoryObj && (
+          <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200 dark:from-blue-950/20 dark:to-indigo-950/20 dark:border-blue-800/30">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-blue-900">
-                  Active Filter:
+                <span className="text-sm font-medium text-blue-900 dark:text-blue-300">
+                  {t('services.activeFilter')}
                 </span>
                 <Badge 
                   className="text-white"
                   style={{ 
-                    backgroundColor: categories.find(c => c.slug === activeCategory)?.color || '#3B82F6' 
+                    backgroundColor: activeCategoryObj.color || '#3B82F6' 
                   }}
                 >
-                  {categories.find(c => c.slug === activeCategory)?.name}
+                  {translateCategoryName(activeCategoryObj.name, locale)}
                 </Badge>
               </div>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => onCategoryChange(null)}
-                className="text-blue-700 hover:text-blue-900 hover:bg-blue-100"
+                className="text-blue-700 hover:text-blue-900 hover:bg-blue-100 dark:text-blue-300 dark:hover:bg-blue-950"
               >
                 <X className="w-4 h-4" />
               </Button>

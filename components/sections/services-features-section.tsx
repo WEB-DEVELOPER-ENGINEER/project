@@ -3,6 +3,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { CheckCircle, Award, Users, Clock, Shield, Zap, Globe } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 interface ServicesFeaturesSectionProps {
   features: any[];
@@ -37,51 +38,32 @@ export function ServicesFeaturesSection({ features, siteSettings = {} }: Service
     triggerOnce: true,
     threshold: 0.1,
   });
+  const { isRtl } = useLanguage();
 
-  // Default features if none provided from database
-  const defaultFeatures = [
-    {
-      id: 1,
-      title: 'Expert Team',
-      description: 'Certified professionals with years of industry experience and proven track records.',
-      icon_name: 'award'
-    },
-    {
-      id: 2,
-      title: 'Collaborative Approach',
-      description: 'We work closely with your team to ensure seamless integration and knowledge transfer.',
-      icon_name: 'users'
-    },
-    {
-      id: 3,
-      title: 'Fast Delivery',
-      description: 'Efficient processes and agile methodologies ensure timely project completion.',
-      icon_name: 'clock'
-    },
-    {
-      id: 4,
-      title: 'Secure & Reliable',
-      description: 'Enterprise-grade security measures and robust infrastructure for peace of mind.',
-      icon_name: 'shield'
-    },
-    {
-      id: 5,
-      title: 'Scalable Solutions',
-      description: 'Future-proof architectures that grow with your business needs and requirements.',
-      icon_name: 'zap'
-    },
-    {
-      id: 6,
-      title: 'Global Reach',
-      description: 'Worldwide service delivery with local expertise and cultural understanding.',
-      icon_name: 'globe'
-    }
+  // Default features if none provided from database — JUSOR's real
+  // differentiators (see the company's corporate profile), not generic
+  // software-agency boilerplate.
+  const defaultFeatures = isRtl ? [
+    { id: 1, title: 'الخبرة المزدوجة', description: 'مترجمون قانونيون معتمدون إلى جانب خبراء متخصصين — محامون تجاريون، مهندسون، ومحللون ماليون.', icon_name: 'users' },
+    { id: 2, title: 'منظومة تدقيق ثلاثية', description: 'ترجمة تخصصية، مراجعة فنية وقانونية، ثم تدقيق نهائي مطابق لمعايير ISO 9001:2015.', icon_name: 'award' },
+    { id: 3, title: 'اعتماد تنظيمي حقيقي', description: 'معتمدة من وزارة العدل، محاكم دبي، DIFC، ومركز دبي للتحكيم الدولي (DIAC).', icon_name: 'shield' },
+    { id: 4, title: 'الحفاظ على التنسيق', description: 'قفل الأرقام والمعادلات والرموز الهندسية أثناء التنسيق لمطابقة هيكلية بنسبة 100%.', icon_name: 'checkcircle' },
+    { id: 5, title: 'سرية تامة', description: 'اتفاقيات عدم إفشاء صارمة وتشفير لنقل الملفات لحماية بياناتكم الحساسة.', icon_name: 'shield' },
+    { id: 6, title: 'خبرة بالعربية والإنجليزية', description: 'تغطية شاملة للغتين العربية والإنجليزية عبر القطاعات القانونية والتقنية والمالية.', icon_name: 'globe' },
+  ] : [
+    { id: 1, title: 'Dual-Discipline Mastery', description: 'Licensed legal translators working alongside domain experts — corporate lawyers, engineers, and financial analysts.', icon_name: 'users' },
+    { id: 2, title: 'Three-Tier QA Process', description: 'SME drafting, technical and legal verification, then a final ISO 9001:2015 compliance check.', icon_name: 'award' },
+    { id: 3, title: 'Real Regulatory Accreditation', description: 'Accredited by the UAE Ministry of Justice, Dubai Courts, DIFC Courts, and DIAC.', icon_name: 'shield' },
+    { id: 4, title: 'Structural Preservation', description: 'Numbers, formulas, and engineering symbols are locked during layout for 100% structural accuracy.', icon_name: 'checkcircle' },
+    { id: 5, title: 'Ironclad Confidentiality', description: 'Strict NDAs and encrypted file transfer protocols protect your sensitive documents.', icon_name: 'shield' },
+    { id: 6, title: 'Arabic & English Expertise', description: 'Full coverage across legal, technical, and financial sectors in both languages.', icon_name: 'globe' },
   ];
 
   const displayFeatures = features && features.length > 0 ? features : defaultFeatures;
-  const sectionTitle = siteSettings.services_features_title || 'Why Choose Our Services';
-  const sectionDescription = siteSettings.services_features_description || 
-    'We combine industry expertise with innovative approaches to deliver exceptional results for your business.';
+  const sectionTitle = siteSettings.services_features_title || (isRtl ? 'لماذا تختار خدماتنا' : 'Why Choose Our Services');
+  const sectionDescription = siteSettings.services_features_description || (isRtl
+    ? 'نجمع بين الخبرة القانونية والتقنية ونظام إدارة جودة معتمد لتقديم نتائج دقيقة يمكن الاعتماد عليها.'
+    : 'We combine legal, technical, and industry expertise with a certified quality management process to deliver results you can rely on.');
 
   return (
     <section 
@@ -159,20 +141,22 @@ export function ServicesFeaturesSection({ features, siteSettings = {} }: Service
           <div className="bg-white rounded-2xl shadow-lg p-8 lg:p-12">
             <div className="text-center mb-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Trusted by Businesses Worldwide
+                {isRtl ? 'موثوقون من قبل الشركات' : 'Trusted by Businesses Worldwide'}
               </h3>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                Our commitment to excellence has earned us the trust of companies across industries and continents.
+                {isRtl
+                  ? 'التزامنا بالتميز نال ثقة الشركات عبر مختلف القطاعات.'
+                  : 'Our commitment to excellence has earned us the trust of companies across industries.'}
               </p>
             </div>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               <div className="text-center">
                 <div className="text-3xl lg:text-4xl font-bold text-brand-orange mb-2">
                   99%
                 </div>
                 <div className="text-gray-600 font-medium">
-                  Client Satisfaction
+                  {isRtl ? 'رضا العملاء' : 'Client Satisfaction'}
                 </div>
               </div>
               <div className="text-center">
@@ -180,7 +164,7 @@ export function ServicesFeaturesSection({ features, siteSettings = {} }: Service
                   500+
                 </div>
                 <div className="text-gray-600 font-medium">
-                  Projects Delivered
+                  {isRtl ? 'مشروع منجز' : 'Projects Delivered'}
                 </div>
               </div>
               <div className="text-center">
@@ -188,7 +172,7 @@ export function ServicesFeaturesSection({ features, siteSettings = {} }: Service
                   50+
                 </div>
                 <div className="text-gray-600 font-medium">
-                  Expert Team Members
+                  {isRtl ? 'عضو فريق خبير' : 'Expert Team Members'}
                 </div>
               </div>
               <div className="text-center">
@@ -196,7 +180,7 @@ export function ServicesFeaturesSection({ features, siteSettings = {} }: Service
                   24/7
                 </div>
                 <div className="text-gray-600 font-medium">
-                  Support Available
+                  {isRtl ? 'دعم متواصل' : 'Support Available'}
                 </div>
               </div>
             </div>

@@ -5,6 +5,7 @@ export interface TranslationDictionary {
     home: string;
     about: string;
     services: string;
+    projects: string;
     blog: string;
     contact: string;
     contactUs: string;
@@ -33,6 +34,13 @@ export interface TranslationDictionary {
     medicalTitle: string;
     medicalContent: string;
     viewAll: string;
+    filterTitle: string;
+    clearFilter: string;
+    allServices: string;
+    activeFilter: string;
+    serviceCount: string;
+    servicesCount: string;
+    inCategory: string;
   };
   about: {
     sectionTitle: string;
@@ -86,6 +94,7 @@ export const translations: Record<Locale, TranslationDictionary> = {
       home: "Home",
       about: "About Us",
       services: "Services",
+      projects: "Projects",
       blog: "Blog",
       contact: "Contact",
       contactUs: "Contact Us",
@@ -113,7 +122,14 @@ export const translations: Record<Locale, TranslationDictionary> = {
       businessContent: "Corporate agreements, financial reports, marketing copy, and compliance documentation translations.",
       medicalTitle: "Medical Translation",
       medicalContent: "Accurate translation of clinical trials, medical reports, pharmaceutical guides, and patents.",
-      viewAll: "View All Services"
+      viewAll: "View All Services",
+      filterTitle: "Filter Services",
+      clearFilter: "Clear Filter",
+      allServices: "All Services",
+      activeFilter: "Active Filter:",
+      serviceCount: "service",
+      servicesCount: "services",
+      inCategory: "in"
     },
     about: {
       sectionTitle: "About JUSOR Translation Services",
@@ -165,6 +181,7 @@ export const translations: Record<Locale, TranslationDictionary> = {
       home: "الرئيسية",
       about: "من نحن",
       services: "خدماتنا",
+      projects: "أعمالنا",
       blog: "المدونة",
       contact: "تواصل معنا",
       contactUs: "اتصل بنا",
@@ -192,7 +209,14 @@ export const translations: Record<Locale, TranslationDictionary> = {
       businessContent: "ترجمة العقود التجارية، والتقارير المالية، والسياسات، والمواد التسويقية للشركات.",
       medicalTitle: "الترجمة الطبية والدوائية",
       medicalContent: "ترجمة معتمدة للتقارير الطبية والتجارب السريرية والأدلة الدوائية وبراءات الاختراع.",
-      viewAll: "عرض جميع الخدمات"
+      viewAll: "عرض جميع الخدمات",
+      filterTitle: "تصفية الخدمات",
+      clearFilter: "مسح التصفية",
+      allServices: "جميع الخدمات",
+      activeFilter: "التصفية النشطة:",
+      serviceCount: "خدمة",
+      servicesCount: "خدمة",
+      inCategory: "في"
     },
     about: {
       sectionTitle: "عن شركة جسور لخدمات الترجمة",
@@ -240,3 +264,15 @@ export const translations: Record<Locale, TranslationDictionary> = {
     }
   }
 };
+
+export function translateCategoryName(name: string, locale: Locale): string {
+  const nameLower = (name || '').toLowerCase();
+  if (locale === 'ar') {
+    if (nameLower.includes('translation')) return 'خدمات الترجمة';
+    if (nameLower.includes('legal')) return 'الخدمات القانونية';
+    if (nameLower.includes('technical')) return 'الخدمات التقنية';
+    if (nameLower.includes('business')) return 'حلول الأعمال';
+    if (nameLower.includes('digital')) return 'الخدمات الرقمية';
+  }
+  return name;
+}

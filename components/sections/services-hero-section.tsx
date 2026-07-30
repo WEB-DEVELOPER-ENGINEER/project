@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { Service } from '@/lib/types';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 interface ServicesHeroSectionProps {
   services: Service[];
@@ -15,18 +16,27 @@ export function ServicesHeroSection({ services, siteSettings = {} }: ServicesHer
     triggerOnce: true,
     threshold: 0.1,
   });
+  const { isRtl } = useLanguage();
 
   const companyName = siteSettings.company_name || 'JUSOR Translation Services';
-  const heroTitle = siteSettings.services_hero_title || 'Professional Services That Drive Results';
-  const heroDescription = siteSettings.services_hero_description || 
-    'Comprehensive solutions designed to accelerate your business growth and digital transformation journey.';
+  const heroTitle = siteSettings.services_hero_title || (isRtl
+    ? 'خدمات ترجمة معتمدة في دبي، الإمارات'
+    : 'Certified Translation Services in Dubai, UAE');
+  const heroDescription = siteSettings.services_hero_description || (isRtl
+    ? 'من الترجمة القانونية والتقنية المعتمدة إلى الترجمة الفورية والتوطين — خدمات لغوية دقيقة بموجب نظام إدارة جودة ISO 9001:2015 للشركات والأفراد في دولة الإمارات.'
+    : 'From certified legal and technical translation to interpretation and localization — accurate, ISO 9001:2015-managed language services for businesses and individuals in the UAE.');
 
-  // Key benefits/highlights
-  const highlights = [
-    'Expert consultation and strategy',
-    'Proven methodologies and best practices',
-    'Scalable solutions for any business size',
-    'Dedicated support and ongoing partnership'
+  // Key benefits/highlights — real accreditations, not generic filler
+  const highlights = isRtl ? [
+    'نظام إدارة جودة معتمد بشهادة ISO 9001:2015',
+    'ترجمات معتمدة رسمياً من وزارة العدل (MOJ)',
+    'خبرة قانونية وتقنية بالعربية والإنجليزية',
+    'سرية تامة باتفاقيات عدم إفشاء موقّعة',
+  ] : [
+    'ISO 9001:2015 certified quality process',
+    'MOJ-accredited certified translations',
+    'Arabic and English legal & technical expertise',
+    'Confidential handling with signed NDAs',
   ];
 
   const handleScrollToServices = () => {
@@ -64,7 +74,7 @@ export function ServicesHeroSection({ services, siteSettings = {} }: ServicesHer
             }`}
           >
             <CheckCircle className="mr-2 h-4 w-4" aria-hidden="true" />
-            Professional Services
+            {isRtl ? 'خدماتنا' : 'Our Services'}
           </div>
 
           {/* Main heading */}
@@ -118,28 +128,28 @@ export function ServicesHeroSection({ services, siteSettings = {} }: ServicesHer
               onClick={handleScrollToServices}
               aria-describedby="explore-services-description"
             >
-              Explore Our Services
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true" />
+              {isRtl ? 'استكشف خدماتنا' : 'Explore Our Services'}
+              <ArrowRight className={`h-5 w-5 group-hover:translate-x-1 transition-transform duration-300 ${isRtl ? 'mr-2 rotate-180' : 'ml-2'}`} aria-hidden="true" />
             </Button>
-            
-            <Button 
-              variant="outline" 
+
+            <Button
+              variant="outline"
               size="lg"
               className="border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white px-8 py-3 text-lg font-semibold transition-all duration-300"
               onClick={handleContactClick}
               aria-describedby="get-consultation-description"
             >
-              Get Free Consultation
+              {isRtl ? 'احصل على استشارة مجانية' : 'Get a Free Consultation'}
             </Button>
           </div>
 
           {/* Screen reader descriptions */}
           <div className="sr-only">
             <p id="explore-services-description">
-              Scroll down to view our comprehensive range of professional services
+              {isRtl ? 'مرر لأسفل لعرض مجموعتنا الشاملة من خدمات الترجمة المعتمدة' : 'Scroll down to view our comprehensive range of certified translation services'}
             </p>
             <p id="get-consultation-description">
-              Contact us for a free consultation about your business needs
+              {isRtl ? 'تواصل معنا للحصول على استشارة مجانية حول احتياجاتك' : 'Contact us for a free consultation about your translation needs'}
             </p>
           </div>
 
@@ -156,15 +166,15 @@ export function ServicesHeroSection({ services, siteSettings = {} }: ServicesHer
                     {services.length}+
                   </div>
                   <div className="text-gray-600 font-medium">
-                    Professional Services
+                    {isRtl ? 'خدمة متخصصة' : 'Specialized Services'}
                   </div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-brand-blue mb-2">
-                    10+
+                    15+
                   </div>
                   <div className="text-gray-600 font-medium">
-                    Years Experience
+                    {isRtl ? 'عاماً من الخبرة' : 'Years of Experience'}
                   </div>
                 </div>
                 <div className="text-center">
@@ -172,7 +182,7 @@ export function ServicesHeroSection({ services, siteSettings = {} }: ServicesHer
                     500+
                   </div>
                   <div className="text-gray-600 font-medium">
-                    Successful Projects
+                    {isRtl ? 'عميل' : 'Clients Served'}
                   </div>
                 </div>
               </div>

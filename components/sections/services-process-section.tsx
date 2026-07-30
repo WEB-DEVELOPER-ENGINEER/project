@@ -1,8 +1,9 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { MessageSquare, FileSearch, Cog, Rocket, CheckCircle } from 'lucide-react';
+import { FileText, MessageSquare, ShieldCheck, PackageCheck, CheckCircle } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 interface ServicesProcessSectionProps {
   siteSettings?: Record<string, any>;
@@ -13,40 +14,26 @@ export function ServicesProcessSection({ siteSettings = {} }: ServicesProcessSec
     triggerOnce: true,
     threshold: 0.1,
   });
+  const { isRtl } = useLanguage();
 
-  const sectionTitle = siteSettings.services_process_title || 'Our Proven Process';
-  const sectionDescription = siteSettings.services_process_description || 
-    'We follow a structured, transparent approach that ensures successful project delivery and exceeds client expectations.';
+  const sectionTitle = siteSettings.services_process_title || (isRtl ? 'كيف نعمل' : 'Our Translation Process');
+  const sectionDescription = siteSettings.services_process_description || (isRtl
+    ? 'منظومة تدقيق ثلاثية معتمدة بشهادة ISO 9001:2015 تضمن دقة كل ترجمة من الاستلام حتى التسليم.'
+    : 'A three-tier, ISO 9001:2015-managed quality process ensures accuracy from submission through delivery.');
 
-  const processSteps = [
-    {
-      id: 1,
-      title: 'Discovery & Consultation',
-      description: 'We start by understanding your business goals, challenges, and requirements through detailed consultation sessions.',
-      icon: MessageSquare,
-      color: 'from-blue-500 to-blue-600'
-    },
-    {
-      id: 2,
-      title: 'Analysis & Planning',
-      description: 'Our experts analyze your needs and create a comprehensive strategy with clear timelines and deliverables.',
-      icon: FileSearch,
-      color: 'from-green-500 to-green-600'
-    },
-    {
-      id: 3,
-      title: 'Implementation',
-      description: 'We execute the plan using industry best practices, keeping you informed throughout the development process.',
-      icon: Cog,
-      color: 'from-orange-500 to-orange-600'
-    },
-    {
-      id: 4,
-      title: 'Launch & Support',
-      description: 'After thorough testing, we launch your solution and provide ongoing support to ensure continued success.',
-      icon: Rocket,
-      color: 'from-purple-500 to-purple-600'
-    }
+  // Matches the same real process steps used per-service (see
+  // scripts/seed-services.ts PROCESS_STEPS) — not generic software-agency
+  // boilerplate.
+  const processSteps = isRtl ? [
+    { id: 1, title: 'أرسل مستندك', description: 'أرسل لنا مستندك عبر نموذج التواصل أو البريد الإلكتروني أو واتساب — نقبل ملفات PDF وWord والمستندات الممسوحة ضوئياً.', icon: FileText, color: 'from-blue-500 to-blue-600' },
+    { id: 2, title: 'عرض السعر والتأكيد', description: 'نراجع المستند وزوج اللغات ونؤكد النطاق والجدول الزمني للتسليم معك قبل البدء.', icon: MessageSquare, color: 'from-green-500 to-green-600' },
+    { id: 3, title: 'الترجمة والمراجعة', description: 'يقوم مترجم مؤهل بإعداد الترجمة، تليها مراجعة فنية وقانونية وتدقيق نهائي مطابق لمعايير الآيزو.', icon: ShieldCheck, color: 'from-orange-500 to-orange-600' },
+    { id: 4, title: 'التسليم', description: 'تستلم الترجمة المكتملة، مع التصديق والختم إذا كانت الخدمة تتطلب ذلك.', icon: PackageCheck, color: 'from-purple-500 to-purple-600' },
+  ] : [
+    { id: 1, title: 'Submit Your Document', description: 'Send us your document via our contact form, email, or WhatsApp — we accept PDF, Word, and scanned image formats.', icon: FileText, color: 'from-blue-500 to-blue-600' },
+    { id: 2, title: 'Quote & Confirmation', description: 'We review the document and language pair and confirm scope and delivery timeline with you before starting.', icon: MessageSquare, color: 'from-green-500 to-green-600' },
+    { id: 3, title: 'Translation & Review', description: 'A qualified translator prepares the translation, followed by technical/legal verification and a final ISO compliance check.', icon: ShieldCheck, color: 'from-orange-500 to-orange-600' },
+    { id: 4, title: 'Delivery', description: 'You receive the completed translation, with certification/stamping included where the service requires it.', icon: PackageCheck, color: 'from-purple-500 to-purple-600' },
   ];
 
   return (
@@ -140,23 +127,25 @@ export function ServicesProcessSection({ siteSettings = {} }: ServicesProcessSec
             <div className="flex items-center justify-center mb-6">
               <CheckCircle className="h-12 w-12 text-brand-orange mr-4" aria-hidden="true" />
               <h3 className="text-2xl lg:text-3xl font-bold text-gray-900">
-                Ready to Get Started?
+                {isRtl ? 'هل أنت مستعد للبدء؟' : 'Ready to Get Started?'}
               </h3>
             </div>
             <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Let's discuss your project requirements and create a customized solution that drives your business forward.
+              {isRtl
+                ? 'أرسل مستندك اليوم واحصل على عرض سعر مجاني لاحتياجات الترجمة المعتمدة الخاصة بك.'
+                : "Send us your document today and get a free quote for your certified translation needs."}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button 
+              <button
                 className="bg-brand-orange hover:bg-brand-orange/90 text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2"
                 onClick={() => {
                   window.location.href = '/contact';
                 }}
                 aria-label="Start your project consultation"
               >
-                Start Your Project
+                {isRtl ? 'ابدأ مشروعك' : 'Start Your Project'}
               </button>
-              <button 
+              <button
                 className="border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2"
                 onClick={() => {
                   const servicesSection = document.getElementById('services-grid-section');
@@ -166,7 +155,7 @@ export function ServicesProcessSection({ siteSettings = {} }: ServicesProcessSec
                 }}
                 aria-label="View all available services"
               >
-                View All Services
+                {isRtl ? 'عرض جميع الخدمات' : 'View All Services'}
               </button>
             </div>
           </div>

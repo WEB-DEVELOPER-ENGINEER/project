@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Phone, Mail, MessageCircle } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { trackPhoneClick, trackEmailClick } from '@/lib/analytics-events';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 interface ServicesCTASectionProps {
   siteSettings?: Record<string, any>;
@@ -14,11 +15,13 @@ export function ServicesCTASection({ siteSettings = {} }: ServicesCTASectionProp
     triggerOnce: true,
     threshold: 0.1,
   });
+  const { isRtl } = useLanguage();
 
   const companyName = siteSettings.company_name || 'JUSOR Translation Services';
-  const ctaTitle = siteSettings.services_cta_title || 'Ready to Transform Your Business?';
-  const ctaDescription = siteSettings.services_cta_description || 
-    'Join hundreds of satisfied clients who have accelerated their growth with our professional services. Let\'s discuss how we can help you achieve your goals.';
+  const ctaTitle = siteSettings.services_cta_title || (isRtl ? 'هل تحتاج ترجمة معتمدة؟' : 'Need a Certified Translation?');
+  const ctaDescription = siteSettings.services_cta_description || (isRtl
+    ? 'أرسل مستندك اليوم واحصل على عرض سعر مجاني من فريقنا المعتمد من وزارة العدل.'
+    : "Send us your document today and get a free quote from our MOJ-accredited translation team.");
   const companyPhone = siteSettings.company_phone;
   const companyEmail = siteSettings.company_email;
 

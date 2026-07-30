@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { HeaderLogo, MobileLogo } from '@/components/ui/logo';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/components/providers/LanguageProvider';
+import { localizedPath } from '@/lib/locale';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 
 interface NavigationProps {
@@ -17,7 +18,7 @@ interface NavigationProps {
 export function Navigation({ navigationData, siteSettings = {} }: NavigationProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { t, isRtl } = useLanguage();
+  const { t, isRtl, locale } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,16 +30,22 @@ export function Navigation({ navigationData, siteSettings = {} }: NavigationProp
 
   // Use navigation data from database or fallback translations
   const rawNavigation = navigationData?.header_items || [];
-  
+
   const getNavLabel = (item: any) => {
     const nameLower = (item.name || '').toLowerCase();
     if (nameLower.includes('home') || nameLower.includes('الرئيسية')) return t('nav.home');
     if (nameLower.includes('about') || nameLower.includes('عن') || nameLower.includes('من نحن')) return t('nav.about');
     if (nameLower.includes('service') || nameLower.includes('خدمات')) return t('nav.services');
+    if (nameLower.includes('project') || nameLower.includes('أعمال') || nameLower.includes('مشاريع')) return t('nav.projects');
     if (nameLower.includes('blog') || nameLower.includes('مدونة')) return t('nav.blog');
     if (nameLower.includes('contact') || nameLower.includes('تواصل')) return t('nav.contact');
     return item.name;
   };
+
+  // Nav links are stored unprefixed (e.g. "/about") in the database — map
+  // them into the active locale so an Arabic visitor stays on /ar/* instead
+  // of being silently dropped back onto the English pages.
+  const navHref = (item: any) => localizedPath(item.link || item.href || '/', locale);
 
   return (
     <header className={cn(
@@ -55,7 +62,7 @@ export function Navigation({ navigationData, siteSettings = {} }: NavigationProp
           {rawNavigation.map((item: any) => (
             <Link
               key={item.name}
-              href={item.link || item.href}
+              href={navHref(item)}
               className="text-sm font-semibold leading-6 text-gray-900 dark:text-gray-100 hover:text-brand-orange transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2"
             >
               {getNavLabel(item)}
@@ -66,12 +73,12 @@ export function Navigation({ navigationData, siteSettings = {} }: NavigationProp
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4 lg:items-center">
           <LanguageSwitcher variant="compact" />
           <Button variant="outline" asChild>
-            <Link href={siteSettings.nav_contact_url || '/contact'}>
+            <Link href={localizedPath(siteSettings.nav_contact_url || '/contact', locale)}>
               {t('nav.contactUs')}
             </Link>
           </Button>
           <Button asChild>
-            <Link href={siteSettings.nav_cta_url || '/contact'}>
+            <Link href={localizedPath(siteSettings.nav_cta_url || '/contact', locale)}>
               {t('nav.getStarted')}
               <ArrowRight className={cn('ml-2 h-4 w-4', isRtl && 'rotate-180 mr-2 ml-0')} />
             </Link>
@@ -120,7 +127,7 @@ export function Navigation({ navigationData, siteSettings = {} }: NavigationProp
                   {rawNavigation.map((item: any) => (
                     <Link
                       key={item.name}
-                      href={item.link || item.href}
+                      href={navHref(item)}
                       className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800"
                       onClick={() => setMobileMenuOpen(false)}
                     >
@@ -133,12 +140,12 @@ export function Navigation({ navigationData, siteSettings = {} }: NavigationProp
                     <LanguageSwitcher variant="full" />
                   </div>
                   <Button variant="outline" className="w-full" asChild>
-                    <Link href={siteSettings.nav_contact_url || '/contact'} onClick={() => setMobileMenuOpen(false)}>
+                    <Link href={localizedPath(siteSettings.nav_contact_url || '/contact', locale)} onClick={() => setMobileMenuOpen(false)}>
                       {t('nav.contactUs')}
                     </Link>
                   </Button>
                   <Button className="w-full" asChild>
-                    <Link href={siteSettings.nav_cta_url || '/contact'} onClick={() => setMobileMenuOpen(false)}>
+                    <Link href={localizedPath(siteSettings.nav_cta_url || '/contact', locale)} onClick={() => setMobileMenuOpen(false)}>
                       {t('nav.getStarted')}
                       <ArrowRight className={cn('ml-2 h-4 w-4', isRtl && 'rotate-180 mr-2 ml-0')} />
                     </Link>

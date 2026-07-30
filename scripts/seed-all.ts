@@ -11,6 +11,7 @@ import { execSync } from 'child_process';
 
 const scripts = [
   'scripts/seed-site-settings.ts',
+  'scripts/seed-navigation.ts',
   'scripts/seed-services.ts',
   'scripts/seed-articles.ts',
 ];

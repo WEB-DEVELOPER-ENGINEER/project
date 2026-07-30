@@ -10,6 +10,7 @@ import { Service } from '@/lib/types';
 import { ServiceFilter } from './service-filter';
 import { useLanguage } from '@/components/providers/LanguageProvider';
 import { localizedPath } from '@/lib/locale';
+import { translateCategoryName } from '@/lib/i18n/translations';
 
 interface ServicesGridSectionProps {
   services: Service[];
@@ -74,9 +75,10 @@ export function ServicesGridSection({
     return null;
   }
 
-  const sectionTitle = siteSettings.services_grid_title || 'Our Professional Services';
-  const sectionDescription = siteSettings.services_grid_description || 
-    'Comprehensive solutions tailored to meet your unique business needs and drive sustainable growth.';
+  const sectionTitle = siteSettings.services_grid_title || (locale === 'ar' ? 'خدماتنا الاحترافية' : 'Our Professional Services');
+  const sectionDescription = siteSettings.services_grid_description || (locale === 'ar'
+    ? 'حلول شاملة مصممة لتلبية احتياجات عملك الفريدة ودفع عجلة النمو المستدام.'
+    : 'Comprehensive solutions tailored to meet your unique business needs and drive sustainable growth.');
 
   const displayServices = enableFiltering ? filteredServices : services;
 
@@ -159,7 +161,7 @@ export function ServicesGridSection({
                         className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white"
                         style={{ backgroundColor: service.category.color }}
                       >
-                        {service.category.name}
+                        {translateCategoryName(service.category.name, locale)}
                       </span>
                     </div>
                   )}
