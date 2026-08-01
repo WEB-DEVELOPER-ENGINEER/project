@@ -242,7 +242,7 @@ export function BlogPostAuthor({ author, authorData: dbAuthorData, companyMetric
                     asChild
                     className="bg-brand-orangeText hover:bg-brand-orangeText/90"
                   >
-                    <Link href="/contact">
+                    <Link href={localizedPath("/contact", locale)}>
                       {bc.getFreeQuote}
                     </Link>
                   </Button>
@@ -251,7 +251,7 @@ export function BlogPostAuthor({ author, authorData: dbAuthorData, companyMetric
                     asChild
                     className="border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"
                   >
-                    <Link href="/services">
+                    <Link href={localizedPath("/services", locale)}>
                       {bc.viewOurServices}
                     </Link>
                   </Button>

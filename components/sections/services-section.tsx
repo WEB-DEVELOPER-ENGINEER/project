@@ -150,7 +150,7 @@ export function ServicesSection({ services, siteSettings = {} }: ServicesSection
                 size="lg"
                 className="bg-brand-orangeText hover:bg-brand-orangeText/90"
                 onClick={() => {
-                  window.location.href = '/contact';
+                  window.location.href = localizedPath('/contact', locale);
                 }}
               >
                 {isRtl ? 'طلب عرض سعر مخصص' : 'Get Custom Quote'}
@@ -161,7 +161,7 @@ export function ServicesSection({ services, siteSettings = {} }: ServicesSection
                 className="border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"
                 asChild
               >
-                <Link href="/services">
+                <Link href={localizedPath('/services', locale)}>
                   {t('services.viewAll')}
                   <ArrowRight className={cn('ml-2 h-5 w-5', isRtl && 'rotate-180 mr-2 ml-0')} />
                 </Link>

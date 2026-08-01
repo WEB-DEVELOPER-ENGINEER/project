@@ -6,6 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Calendar, Clock, Globe, MapPin, Share2 } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { Project } from '@/lib/types';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { localizedPath } from '@/lib/locale';
 
 interface ProjectDetailHeroProps {
   project: Project;
@@ -17,50 +19,54 @@ export function ProjectDetailHero({ project, siteSettings = {} }: ProjectDetailH
     triggerOnce: true,
     threshold: 0.1,
   });
+  const { locale, isRtl } = useLanguage();
+
+  const text = {
+    en: {
+      home: 'Home',
+      projects: 'Projects',
+      backToProjects: 'Back to Projects',
+      goToHomepage: 'Go to homepage',
+      goToProjects: 'Go to projects page'
+    },
+    ar: {
+      home: 'الرئيسية',
+      projects: 'المشاريع',
+      backToProjects: 'العودة إلى المشاريع',
+      goToHomepage: 'الذهاب إلى الصفحة الرئيسية',
+      goToProjects: 'الذهاب إلى صفحة المشاريع'
+    }
+  }[locale] || {
+    home: 'Home',
+    projects: 'Projects',
+    backToProjects: 'Back to Projects',
+    goToHomepage: 'Go to homepage',
+    goToProjects: 'Go to projects page'
+  };
 
   const formatDate = (dateString: string) => {
     try {
-      return new Date(dateString).toLocaleDateString('en-US', {
+      return new Date(dateString).toLocaleDateString(locale === 'ar' ? 'ar-EG' : 'en-US', {
         year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+        month: 'long'
       });
     } catch {
-      return 'Recently';
-    }
-  };
-
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: project.title,
-          text: project.description,
-          url: window.location.href,
-        });
-      } catch (error) {
-        console.log('Error sharing:', error);
-      }
-    } else {
-      // Fallback to copying URL
-      navigator.clipboard.writeText(window.location.href);
-      // You could show a toast notification here
+      return locale === 'ar' ? 'حديث' : 'Recent';
     }
   };
 
   return (
     <section 
       ref={ref}
-      className="relative overflow-hidden bg-gradient-to-br from-white via-gray-50 to-blue-50 pt-24 pb-16"
-      aria-labelledby="project-hero-heading"
+      className="relative bg-gray-50 pt-32 pb-16 overflow-hidden border-b border-gray-200"
+      aria-label="Project details header"
     >
-      {/* Background decoration */}
-      <div className="absolute inset-0 bg-grid-gray-100/50 bg-[size:20px_20px] opacity-30" />
-      <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-gradient-to-br from-brand-orange/20 to-brand-blue/20 blur-3xl" />
+      {/* Background Graphic Elements */}
+      <div className="absolute top-0 right-0 h-96 w-96 rounded-full bg-gradient-to-br from-brand-orange/20 to-brand-blue/20 blur-3xl" />
       <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-gradient-to-tr from-brand-blue/20 to-brand-orange/20 blur-3xl" />
       
       <div className="container relative">
-        <div className="max-w-4xl">
+        <div className="max-w-4xl text-left rtl:text-right">
           {/* Breadcrumb */}
           <nav 
             aria-label="Breadcrumb"
@@ -68,28 +74,28 @@ export function ProjectDetailHero({ project, siteSettings = {} }: ProjectDetailH
               inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
           >
-            <ol className="flex items-center space-x-2 text-sm text-gray-600">
+            <ol className="flex items-center space-x-2 rtl:space-x-reverse text-sm text-gray-600">
               <li>
                 <Link 
-                  href="/" 
+                  href={localizedPath("/", locale)} 
                   className="hover:text-brand-orangeText transition-colors duration-200"
-                  aria-label="Go to homepage"
+                  aria-label={text.goToHomepage}
                 >
-                  Home
+                  {text.home}
                 </Link>
               </li>
               <li className="text-gray-400">/</li>
               <li>
                 <Link 
-                  href="/projects" 
+                  href={localizedPath("/projects", locale)} 
                   className="hover:text-brand-orangeText transition-colors duration-200"
-                  aria-label="Go to projects page"
+                  aria-label={text.goToProjects}
                 >
-                  Projects
+                  {text.projects}
                 </Link>
               </li>
               <li className="text-gray-400">/</li>
-              <li className="text-brand-orangeText font-medium" aria-current="page">
+              <li className="text-brand-orangeText font-medium truncate max-w-xs" aria-current="page" title={project.title}>
                 {project.title}
               </li>
             </ol>
@@ -102,33 +108,13 @@ export function ProjectDetailHero({ project, siteSettings = {} }: ProjectDetailH
             }`}
           >
             <Button variant="outline" asChild>
-              <Link href="/projects" className="inline-flex items-center">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Projects
+              <Link href={localizedPath("/projects", locale)} className="inline-flex items-center rtl:flex-row-reverse">
+                <ArrowLeft className="mr-2 h-4 w-4 rtl:mr-0 rtl:ml-2 rtl:rotate-180" />
+                <span>{text.backToProjects}</span>
               </Link>
             </Button>
           </div>
 
-          {/* Project Header */}
-          <div className="grid lg:grid-cols-3 gap-8 items-start">
-            <div className="lg:col-span-2">
-              {/* Project Meta */}
-              <div 
-                className={`flex flex-wrap items-center gap-6 text-sm text-gray-600 mb-6 transition-all duration-700 delay-200 ${
-                  inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                }`}
-              >
-                <div className="flex items-center text-sm text-gray-500 mb-4">
-                  {project.project_date && (
-                    <>
-                      <Calendar className="h-4 w-4 mr-2" />
-                      <span>{new Date(project.project_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</span>
-                      <span className="mx-2">•</span>
-                    </>
-                  )}
-                  {project.category && (
-                    <>
-                      <Badge variant="secondary" className="bg-brand-orange/10 text-brand-orangeText">
                         {project.category.charAt(0).toUpperCase() + project.category.slice(1)}
                       </Badge>
                       <span className="mx-2">•</span>

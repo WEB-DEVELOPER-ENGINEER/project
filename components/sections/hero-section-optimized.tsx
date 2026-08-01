@@ -191,12 +191,13 @@ const useOptimizedTransitions = (slidersLength: number) => {
 };
 
 import { useLanguage } from '@/components/providers/LanguageProvider';
+import { localizedPath } from '@/lib/locale';
 
 export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSectionProps) {
   const [isVisible, setIsVisible] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
   const autoplayTimerRef = useRef<NodeJS.Timeout>();
-  const { t, isRtl } = useLanguage();
+  const { t, isRtl, locale } = useLanguage();
 
   // Use optimized hooks
   const { currentSlide, isTransitioning, nextSlideIndex, transitionToSlide, nextSlide, prevSlide, goToSlide } = 
@@ -376,8 +377,8 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
         value: 1
       });
     }
-    window.location.href = '/contact';
-  }, []);
+    window.location.href = localizedPath('/contact', locale);
+  }, [locale]);
 
   const handleSecondaryClick = useCallback(() => {
     document.getElementById('services-section')?.scrollIntoView({ 
@@ -588,7 +589,10 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
                       className={`absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg transition-all duration-200 ${
                         isTransitioning ? 'cursor-not-allowed opacity-50' : 'hover:bg-white hover:scale-110'
                       }`}
-                      aria-label={`Previous slide. Currently showing slide ${currentSlide + 1} of ${sliders.length}: ${currentSliderData.title}`}
+                      aria-label={isRtl 
+                        ? `الشريحة السابقة. معروض حالياً الشريحة ${currentSlide + 1} من ${sliders.length}: ${currentSliderData.title}`
+                        : `Previous slide. Currently showing slide ${currentSlide + 1} of ${sliders.length}: ${currentSliderData.title}`
+                      }
                       tabIndex={0}
                       role="button"
                     >
@@ -600,7 +604,10 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
                       className={`absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg transition-all duration-200 ${
                         isTransitioning ? 'cursor-not-allowed opacity-50' : 'hover:bg-white hover:scale-110'
                       }`}
-                      aria-label={`Next slide. Currently showing slide ${currentSlide + 1} of ${sliders.length}: ${currentSliderData.title}`}
+                      aria-label={isRtl 
+                        ? `الشريحة التالية. معروض حالياً الشريحة ${currentSlide + 1} من ${sliders.length}: ${currentSliderData.title}`
+                        : `Next slide. Currently showing slide ${currentSlide + 1} of ${sliders.length}: ${currentSliderData.title}`
+                      }
                       tabIndex={0}
                       role="button"
                     >
@@ -611,7 +618,7 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
                     <div 
                       className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2"
                       role="tablist"
-                      aria-label="Slide navigation"
+                      aria-label={isRtl ? "التنقل بين الشرائح" : "Slide navigation"}
                     >
                       {sliders.map((slider, index) => (
                         <button
@@ -621,7 +628,10 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
                           className={`w-3 h-3 rounded-full transition-all duration-200 flex items-center justify-center ${
                             index === currentSlide ? 'bg-white scale-125' : 'bg-white/60 hover:bg-white/80'
                           } ${isTransitioning ? 'cursor-not-allowed opacity-50' : ''}`}
-                          aria-label={`Go to slide ${index + 1}: ${slider.title}. ${index === currentSlide ? 'Currently active' : ''}`}
+                          aria-label={isRtl
+                            ? `الذهاب إلى الشريحة ${index + 1}: ${slider.title}. ${index === currentSlide ? 'نشطة حالياً' : ''}`
+                            : `Go to slide ${index + 1}: ${slider.title}. ${index === currentSlide ? 'Currently active' : ''}`
+                          }
                           aria-current={index === currentSlide ? 'true' : 'false'}
                           tabIndex={0}
                           role="tab"
@@ -680,7 +690,10 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
           aria-atomic="true"
           role="status"
         >
-          {`Slide ${currentSlide + 1} of ${sliders.length}: ${currentSliderData.title}`}
+          {isRtl 
+            ? `الشريحة ${currentSlide + 1} من ${sliders.length}: ${currentSliderData.title}`
+            : `Slide ${currentSlide + 1} of ${sliders.length}: ${currentSliderData.title}`
+          }
         </div>
 
         {/* Note: Organization schema is already rendered once, correctly,

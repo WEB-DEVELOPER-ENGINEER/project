@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { localizedPath } from '@/lib/locale';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, MessageCircle, Phone, Mail, Clock, CheckCircle, Star } from 'lucide-react';
@@ -213,7 +214,7 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
             {/* Additional Services Link */}
             <div className="mt-6 text-center">
               <Link 
-                href="/services"
+                href={localizedPath("/services", locale)}
                 className="inline-flex items-center text-white hover:text-brand-orangeText transition-colors duration-300 font-medium focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-blue rounded"
               >
                 {c.exploreAllServices}

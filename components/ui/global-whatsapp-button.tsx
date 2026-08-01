@@ -2,12 +2,14 @@
 
 import { WhatsAppFloatingButton } from './whatsapp-floating-button';
 import { useEffect, useState } from 'react';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 interface GlobalWhatsAppButtonProps {
   siteSettings?: Record<string, any>;
 }
 
 export function GlobalWhatsAppButton({ siteSettings }: GlobalWhatsAppButtonProps) {
+  const { locale } = useLanguage();
   const [whatsappData, setWhatsappData] = useState<{
     phoneNumber: string;
     message: string;
@@ -19,14 +21,15 @@ export function GlobalWhatsAppButton({ siteSettings }: GlobalWhatsAppButtonProps
                        siteSettings?.whatsapp_phone || 
                        '971503244329';
     
-    const message = siteSettings?.whatsapp_message || 
-                   'Hello Jusor, I would like to inquire about your services.';
+    const message = siteSettings?.whatsapp_message || (locale === 'ar'
+                   ? 'مرحباً جسور، أود الاستفسار عن خدماتكم.'
+                   : 'Hello Jusor, I would like to inquire about your services.');
 
     setWhatsappData({
       phoneNumber,
       message
     });
-  }, [siteSettings]);
+  }, [siteSettings, locale]);
 
   // Don't render if no WhatsApp data
   if (!whatsappData) {

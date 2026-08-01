@@ -20,6 +20,7 @@ import { trackPhoneClick, trackEmailClick } from '@/lib/analytics-events';
 import { useLanguage } from '@/components/providers/LanguageProvider';
 import { ABOUT_CONTENT } from '@/lib/content/about-content';
 import { companyName as resolveCompanyName } from '@/lib/company';
+import { localizedPath } from '@/lib/locale';
 
 interface AboutCTAProps {
   siteSettings: Record<string, any>;
@@ -56,7 +57,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
               size="lg"
               className="bg-white text-brand-orangeText hover:bg-gray-50 font-semibold text-lg px-8 py-4"
             >
-              <Link href="/contact">
+              <Link href={localizedPath("/contact", locale)}>
                 <FileText className="h-6 w-6 mr-2" />
                 {ac.getFreeQuote}
                 <ArrowRight className="h-6 w-6 ml-2" />
@@ -69,7 +70,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
               className="border-white text-white hover:bg-white hover:text-brand-orangeText font-semibold text-lg px-8 py-4"
               asChild
             >
-              <Link href="/services">
+              <Link href={localizedPath("/services", locale)}>
                 <Globe className="h-6 w-6 mr-2" />
                 {ac.exploreServices}
               </Link>
@@ -166,7 +167,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
                 className="border-white text-white hover:bg-white hover:text-brand-orangeText w-full"
                 asChild
               >
-                <Link href="/contact">
+                <Link href={localizedPath("/contact", locale)}>
                   {ac.bookConsultation}
                 </Link>
               </Button>
@@ -191,7 +192,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
                   className="border-white text-white hover:bg-white hover:text-brand-orangeText"
                   asChild
                 >
-                  <Link href="/services">
+                  <Link href={localizedPath("/services", locale)}>
                     {ac.viewAllServices}
                   </Link>
                 </Button>
@@ -200,7 +201,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
                   className="border-white text-white hover:bg-white hover:text-brand-orangeText"
                   asChild
                 >
-                  <Link href="/projects">
+                  <Link href={localizedPath("/projects", locale)}>
                     {ac.seeOurWork}
                   </Link>
                 </Button>

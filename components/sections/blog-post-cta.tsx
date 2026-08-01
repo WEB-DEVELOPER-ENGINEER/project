@@ -154,7 +154,7 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
                     size="lg"
                     className="bg-white text-brand-orangeText hover:bg-gray-50 font-semibold"
                   >
-                    <Link href="/contact">
+                    <Link href={localizedPath("/contact", locale)}>
                       <FileText className="h-5 w-5 mr-2" />
                       {bc.getFreeQuote}
                     </Link>
@@ -165,7 +165,7 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
                     size="lg"
                     className="border-white text-white hover:bg-white hover:text-brand-orangeText"
                   >
-                    <Link href="/services">
+                    <Link href={localizedPath("/services", locale)}>
                       {bc.viewAllServices}
                       <ArrowRight className="h-5 w-5 ml-2" />
                     </Link>

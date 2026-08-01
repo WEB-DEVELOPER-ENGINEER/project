@@ -102,7 +102,7 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
           <ol className="flex items-center space-x-2 text-sm text-gray-600">
             <li>
               <Link 
-                href="/" 
+                href={localizedPath("/", locale)} 
                 className="hover:text-brand-orangeText transition-colors"
                 aria-label={bc.goToHomepage}
               >
@@ -112,7 +112,7 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
             <li className="text-gray-400">/</li>
             <li>
               <Link 
-                href="/blog" 
+                href={localizedPath("/blog", locale)} 
                 className="hover:text-brand-orangeText transition-colors"
                 aria-label={bc.goToBlog}
               >
@@ -128,7 +128,7 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
 
         {/* Back to Blog Button */}
         <div className="mb-8">
-          <Link href="/blog">
+          <Link href={localizedPath("/blog", locale)}>
             <Button 
               variant="outline" 
               size="sm"

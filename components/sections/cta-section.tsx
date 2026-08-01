@@ -13,13 +13,14 @@ interface CTASectionProps {
 
 import { useLanguage } from '@/components/providers/LanguageProvider';
 import { cn } from '@/lib/utils';
+import { localizedPath } from '@/lib/locale';
 
 export function CTASection({ ctaSections = [], siteSettings = {} }: CTASectionProps) {
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
-  const { t, isRtl } = useLanguage();
+  const { t, isRtl, locale } = useLanguage();
 
   const title = isRtl ? t('cta.title') : (ctaSections[0]?.title || 'Ready to break linguistic barriers?');
   const description = isRtl ? t('cta.description') : (ctaSections[0]?.description || 'Get in touch with our certified translation specialists today for a free quote and consulting.');
@@ -77,7 +78,7 @@ export function CTASection({ ctaSections = [], siteSettings = {} }: CTASectionPr
               className="bg-white text-brand-blue hover:bg-gray-100 font-semibold px-8 py-3 text-lg"
               asChild
             >
-              <Link href="/contact">
+              <Link href={localizedPath("/contact", locale)}>
                 {primaryBtn}
                 <ArrowRight className={cn('ml-2 h-5 w-5', isRtl && 'rotate-180 mr-2 ml-0')} />
               </Link>
@@ -88,7 +89,7 @@ export function CTASection({ ctaSections = [], siteSettings = {} }: CTASectionPr
               className="border-white text-white hover:bg-white hover:text-brand-blue font-semibold px-8 py-3 text-lg"
               asChild
             >
-              <Link href="/services">
+              <Link href={localizedPath("/services", locale)}>
                 {secondaryBtn}
               </Link>
             </Button>
