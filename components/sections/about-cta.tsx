@@ -17,12 +17,16 @@ import {
   Users
 } from 'lucide-react';
 import { trackPhoneClick, trackEmailClick } from '@/lib/analytics-events';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { ABOUT_CONTENT } from '@/lib/content/about-content';
 
 interface AboutCTAProps {
   siteSettings: Record<string, any>;
 }
 
 export function AboutCTA({ siteSettings }: AboutCTAProps) {
+  const { locale } = useLanguage();
+  const ac = ABOUT_CONTENT[locale].cta;
   const companyName = siteSettings.company_name || 'JUSOR';
 
   return (
@@ -76,7 +80,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
           <div className="flex flex-wrap justify-center items-center gap-8 text-white/80">
             <div className="flex items-center gap-2">
               <CheckCircle className="h-5 w-5" />
-              <span>Free Consultation</span>
+              <span>{ac.freeConsultation}</span>
             </div>
             <div className="flex items-center gap-2">
               <Star className="h-5 w-5" />
@@ -176,10 +180,10 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
           <Card className="bg-white/5 backdrop-blur-sm border-white/10">
             <CardContent className="p-8">
               <h3 className="text-2xl font-bold text-white mb-4">
-                Learn More About Our Services
+                {ac.learnMoreTitle}
               </h3>
               <p className="text-white/80 mb-6">
-                Explore our comprehensive range of translation and localization services, 
+                {ac.learnMoreBody}
                 from legal and technical documents to marketing materials and software localization.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">

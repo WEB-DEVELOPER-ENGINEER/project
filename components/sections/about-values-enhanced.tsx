@@ -6,6 +6,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { RichText } from '@/components/ui/safe-html';
 import { Heart, Target, Users, Globe, Award, Shield, Lightbulb, Handshake } from 'lucide-react';
 import { AboutUs, AboutValue } from '@/lib/types';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { ABOUT_CONTENT } from '@/lib/content/about-content';
 
 interface AboutValuesEnhancedProps {
   aboutData: AboutUs;
@@ -34,6 +36,8 @@ const colorMap = {
 };
 
 export function AboutValuesEnhanced({ aboutData, siteSettings }: AboutValuesEnhancedProps) {
+  const { locale } = useLanguage();
+  const ac = ABOUT_CONTENT[locale].values;
   const companyName = siteSettings.company_name || 'JUSOR';
 
   // Default values if none provided
@@ -110,10 +114,10 @@ export function AboutValuesEnhanced({ aboutData, siteSettings }: AboutValuesEnha
             Our Values
           </div>
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-            What Drives Us Forward
+            {ac.heading}
           </h2>
           <p className="text-lg text-gray-600">
-            The core principles that guide our work and define our commitment to excellence
+            {ac.subheading}
           </p>
         </div>
 
@@ -167,7 +171,7 @@ export function AboutValuesEnhanced({ aboutData, siteSettings }: AboutValuesEnha
                       Our Core Values
                     </h3>
                     <p className="text-gray-600">
-                      Principles that guide everything we do
+                      {ac.principlesCaption}
                     </p>
                   </div>
                 </div>
@@ -178,14 +182,14 @@ export function AboutValuesEnhanced({ aboutData, siteSettings }: AboutValuesEnha
             <div className="absolute -bottom-6 -right-6 bg-white rounded-xl p-6 shadow-xl border">
               <div className="text-center">
                 <div className="text-2xl font-bold text-brand-orange mb-1">100%</div>
-                <div className="text-sm text-gray-600">Commitment</div>
+                <div className="text-sm text-gray-600">{ac.commitment}</div>
               </div>
             </div>
 
             <div className="absolute -top-6 -left-6 bg-white rounded-xl p-6 shadow-xl border">
               <div className="text-center">
                 <div className="text-2xl font-bold text-brand-blue mb-1">{values.length}</div>
-                <div className="text-sm text-gray-600">Core Values</div>
+                <div className="text-sm text-gray-600">{ac.badge}</div>
               </div>
             </div>
           </div>
@@ -195,10 +199,10 @@ export function AboutValuesEnhanced({ aboutData, siteSettings }: AboutValuesEnha
         <div className="mt-20 bg-white rounded-2xl p-8 lg:p-12 shadow-lg">
           <div className="max-w-4xl mx-auto text-center">
             <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-6">
-              Living Our Values Every Day
+              {ac.livingTitle}
             </h3>
             <p className="text-lg text-gray-600 leading-relaxed">
-              These values aren't just words on a page—they're the foundation of how we operate, 
+              {ac.livingBody}
               make decisions, and serve our clients. Every project we undertake, every relationship 
               we build, and every solution we deliver reflects these core principles that define who we are as {companyName}.
             </p>

@@ -6,6 +6,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { RichText } from '@/components/ui/safe-html';
 import { Target, Eye, Heart, Globe, Users, Award } from 'lucide-react';
 import { AboutUs } from '@/lib/types';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { ABOUT_CONTENT } from '@/lib/content/about-content';
 
 interface AboutMissionEnhancedProps {
   aboutData: AboutUs;
@@ -13,6 +15,8 @@ interface AboutMissionEnhancedProps {
 }
 
 export function AboutMissionEnhanced({ aboutData, siteSettings }: AboutMissionEnhancedProps) {
+  const { locale } = useLanguage();
+  const ac = ABOUT_CONTENT[locale].mission;
   const companyName = siteSettings.company_name || 'JUSOR';
 
   // Default content if not provided
@@ -27,7 +31,7 @@ export function AboutMissionEnhanced({ aboutData, siteSettings }: AboutMissionEn
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center rounded-full bg-brand-blue/10 px-4 py-2 text-sm font-medium text-brand-blue mb-6">
             <Target className="h-4 w-4 mr-2" />
-            Our Purpose
+            {ac.purposeTitle}
           </div>
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
             Mission, Vision & Purpose
@@ -49,7 +53,7 @@ export function AboutMissionEnhanced({ aboutData, siteSettings }: AboutMissionEn
                       <Target className="h-6 w-6 text-brand-orange" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-3">Our Mission</h3>
+                      <h3 className="text-xl font-bold text-gray-900 mb-3">{ac.missionTitle}</h3>
                       <RichText 
                         content={aboutData.mission || defaultMission}
                         className="text-gray-600 leading-relaxed"
@@ -69,7 +73,7 @@ export function AboutMissionEnhanced({ aboutData, siteSettings }: AboutMissionEn
                       <Eye className="h-6 w-6 text-brand-blue" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-3">Our Vision</h3>
+                      <h3 className="text-xl font-bold text-gray-900 mb-3">{ac.visionTitle}</h3>
                       <RichText 
                         content={aboutData.vision || defaultVision}
                         className="text-gray-600 leading-relaxed"
@@ -89,7 +93,7 @@ export function AboutMissionEnhanced({ aboutData, siteSettings }: AboutMissionEn
                       <Heart className="h-6 w-6 text-green-600" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-3">Our Purpose</h3>
+                      <h3 className="text-xl font-bold text-gray-900 mb-3">{ac.purposeTitle}</h3>
                       <RichText 
                         content={aboutData.purpose || defaultPurpose}
                         className="text-gray-600 leading-relaxed"
@@ -134,8 +138,8 @@ export function AboutMissionEnhanced({ aboutData, siteSettings }: AboutMissionEn
               <div className="flex items-center gap-3">
                 <Award className="h-8 w-8 text-brand-orange" />
                 <div>
-                  <div className="font-bold text-gray-900">Certified Translation</div>
-                  <div className="text-xs text-gray-600">Quality Assured</div>
+                  <div className="font-bold text-gray-900">{ac.certifiedTranslation}</div>
+                  <div className="text-xs text-gray-600">{ac.qualityAssured}</div>
                 </div>
               </div>
             </div>
@@ -145,7 +149,7 @@ export function AboutMissionEnhanced({ aboutData, siteSettings }: AboutMissionEn
                 <Users className="h-8 w-8 text-brand-blue" />
                 <div>
                   <div className="font-bold text-gray-900">100+ Experts</div>
-                  <div className="text-xs text-gray-600">Professional Team</div>
+                  <div className="text-xs text-gray-600">{ac.professionalTeam}</div>
                 </div>
               </div>
             </div>

@@ -15,6 +15,8 @@ import {
   Clock,
   Shield
 } from 'lucide-react';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { ABOUT_CONTENT } from '@/lib/content/about-content';
 
 interface AboutStatsProps {
   companyMetrics: any[];
@@ -22,6 +24,8 @@ interface AboutStatsProps {
 }
 
 export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
+  const { locale } = useLanguage();
+  const ac = ABOUT_CONTENT[locale].stats;
   const companyName = siteSettings.company_name || 'JUSOR';
 
   // Filter metrics by category
@@ -53,13 +57,13 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center rounded-full bg-brand-blue/10 px-4 py-2 text-sm font-medium text-brand-blue mb-6">
             <BarChart3 className="h-4 w-4 mr-2" />
-            Our Impact
+            {ac.badge}
           </div>
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-            Numbers That Tell Our Story
+            {ac.heading}
           </h2>
           <p className="text-lg text-gray-600">
-            Measurable results that demonstrate our commitment to excellence and client success
+            {ac.subheading}
           </p>
         </div>
 
@@ -94,7 +98,7 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
         {achievementMetrics.length > 0 && (
           <div className="mb-16">
             <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">
-              Our Achievements
+              {ac.achievementsTitle}
             </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {achievementMetrics.map((achievement, index) => {
@@ -137,7 +141,7 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-6">
-                Quality You Can Trust
+                {ac.qualityTitle}
               </h3>
               <p className="text-gray-600 leading-relaxed mb-8">
                 Our commitment to quality is reflected in every metric we track. From client satisfaction 
@@ -148,7 +152,7 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
                 <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm">
                   <div className="flex items-center gap-3">
                     <CheckCircle className="h-6 w-6 text-green-500" />
-                    <span className="font-medium text-gray-900">Translation Accuracy</span>
+                    <span className="font-medium text-gray-900">{ac.translationAccuracy}</span>
                   </div>
                   <div className="text-2xl font-bold text-brand-orange">99.8%</div>
                 </div>
@@ -156,7 +160,7 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
                 <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm">
                   <div className="flex items-center gap-3">
                     <Clock className="h-6 w-6 text-blue-500" />
-                    <span className="font-medium text-gray-900">On-Time Delivery</span>
+                    <span className="font-medium text-gray-900">{ac.onTimeDelivery}</span>
                   </div>
                   <div className="text-2xl font-bold text-brand-blue">99.5%</div>
                 </div>
@@ -164,7 +168,7 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
                 <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm">
                   <div className="flex items-center gap-3">
                     <Star className="h-6 w-6 text-yellow-500" />
-                    <span className="font-medium text-gray-900">Client Retention</span>
+                    <span className="font-medium text-gray-900">{ac.clientRetention}</span>
                   </div>
                   <div className="text-2xl font-bold text-brand-orange">95%</div>
                 </div>
@@ -178,10 +182,10 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
                     <Award className="h-12 w-12 text-brand-orange" />
                   </div>
                   <h4 className="text-xl font-bold text-gray-900 mb-3">
-                    Certified Translation
+                    {ac.certifiedTranslation}
                   </h4>
                   <p className="text-gray-600">
-                    Quality Management Process
+                    {ac.qualityManagementProcess}
                   </p>
                 </div>
               </div>
@@ -190,14 +194,14 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
               <div className="absolute -top-4 -right-4 bg-white rounded-xl p-4 shadow-xl border">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-brand-blue">A+</div>
-                  <div className="text-xs text-gray-600">Quality Rating</div>
+                  <div className="text-xs text-gray-600">{ac.qualityRating}</div>
                 </div>
               </div>
 
               <div className="absolute -bottom-4 -left-4 bg-white rounded-xl p-4 shadow-xl border">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-brand-orange">5★</div>
-                  <div className="text-xs text-gray-600">Average Review</div>
+                  <div className="text-xs text-gray-600">{ac.averageReview}</div>
                 </div>
               </div>
             </div>
@@ -235,28 +239,28 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
         {/* Industry Recognition */}
         <div className="mt-16 bg-gradient-to-r from-brand-orange/5 to-brand-blue/5 rounded-2xl p-8 lg:p-12 text-center">
           <h3 className="text-2xl font-bold text-gray-900 mb-6">
-            Industry Recognition
+            {ac.recognitionTitle}
           </h3>
           <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-            Our commitment to excellence has been recognized by industry leaders and clients worldwide
+            {ac.recognitionBody}
           </p>
           
           <div className="flex flex-wrap justify-center items-center gap-8 text-sm text-gray-600">
             <div className="flex items-center gap-2">
               <Award className="h-5 w-5 text-brand-orange" />
-              <span>Certified Translation Services</span>
+              <span>{ac.badges[0]}</span>
             </div>
             <div className="flex items-center gap-2">
               <Shield className="h-5 w-5 text-brand-blue" />
-              <span>Confidential &amp; Secure</span>
+              <span>{ac.badges[1]}</span>
             </div>
             <div className="flex items-center gap-2">
               <Star className="h-5 w-5 text-brand-orange" />
-              <span>Professional Translators</span>
+              <span>{ac.badges[2]}</span>
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle className="h-5 w-5 text-brand-blue" />
-              <span>Quality Assured</span>
+              <span>{ac.badges[3]}</span>
             </div>
           </div>
         </div>

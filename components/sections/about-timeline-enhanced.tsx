@@ -6,6 +6,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { RichText } from '@/components/ui/safe-html';
 import { Calendar, MapPin, Users, Award, Globe, Rocket, Building, Target } from 'lucide-react';
 import { AboutUs, AboutTimelinePhase } from '@/lib/types';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { ABOUT_CONTENT } from '@/lib/content/about-content';
 
 interface AboutTimelineEnhancedProps {
   aboutData: AboutUs;
@@ -25,58 +27,18 @@ const iconMap = {
 };
 
 export function AboutTimelineEnhanced({ aboutData, siteSettings }: AboutTimelineEnhancedProps) {
+  const { locale } = useLanguage();
+  const ac = ABOUT_CONTENT[locale].timeline;
   const companyName = siteSettings.company_name || 'JUSOR';
 
-  // Default timeline if none provided
-  const defaultTimeline: AboutTimelinePhase[] = [
-    {
-      year: '2008',
-      title: 'Foundation',
-      description: 'JUSOR was founded with a vision to break down language barriers and connect cultures through professional translation services.',
-      icon: 'Building',
-      sort_order: 1
-    },
-    {
-      year: '2012',
-      title: 'Team Expansion',
-      description: 'Expanded our team to include specialized translators in legal, technical, and medical fields, establishing our reputation for expertise.',
-      icon: 'Users',
-      sort_order: 2
-    },
-    {
-      year: '2015',
-      title: 'Quality Process Milestone',
-      description: 'Formalized our quality management process, reinforcing our commitment to consistent, high-quality translation services.',
-      icon: 'Award',
-      sort_order: 3
-    },
-    {
-      year: '2018',
-      title: 'Global Reach',
-      description: 'Expanded operations to serve clients across multiple continents, establishing partnerships with local experts worldwide.',
-      icon: 'Globe',
-      sort_order: 4
-    },
-    {
-      year: '2020',
-      title: 'Digital Innovation',
-      description: 'Launched advanced digital platforms and AI-assisted tools while maintaining our commitment to human expertise and cultural sensitivity.',
-      icon: 'Rocket',
-      sort_order: 5
-    },
-    {
-      year: '2024',
-      title: 'Future Vision',
-      description: 'Continuing to innovate and expand our services, setting new standards for quality and cultural understanding in the translation industry.',
-      icon: 'Target',
-      sort_order: 6
-    }
-  ];
-
-  // Use provided timeline or defaults, sorted by sort_order
-  const timeline = (aboutData.timeline_phases && aboutData.timeline_phases.length > 0 
-    ? aboutData.timeline_phases 
-    : defaultTimeline)
+  // NOTE: this previously fell back to an invented company history
+  // (a 2008 founding, plus fabricated "Global Reach" / "Digital Innovation"
+  // milestones) whenever the database had no timeline. That contradicted
+  // the real founding date and asserted events that never happened, so the
+  // fallback was removed — the section now hides itself until real
+  // timeline data exists in about_us.timeline_phases.
+  const timeline = (aboutData.timeline_phases || [])
+    .slice()
     .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
 
   const getIcon = (iconName?: string) => {
@@ -86,6 +48,12 @@ export function AboutTimelineEnhanced({ aboutData, siteSettings }: AboutTimeline
     return iconMap[iconName as keyof typeof iconMap];
   };
 
+  // Nothing real to show yet — render nothing rather than an empty or
+  // invented timeline.
+  if (timeline.length === 0) {
+    return null;
+  }
+
   return (
     <section className="bg-white py-20">
       <div className="container">
@@ -93,13 +61,13 @@ export function AboutTimelineEnhanced({ aboutData, siteSettings }: AboutTimeline
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center rounded-full bg-brand-blue/10 px-4 py-2 text-sm font-medium text-brand-blue mb-6">
             <Calendar className="h-4 w-4 mr-2" />
-            Our Journey
+            {ac.journeyTitle}
           </div>
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-            Company Timeline
+            {ac.heading}
           </h2>
           <p className="text-lg text-gray-600">
-            Discover the key milestones that have shaped our growth and success over the years
+            {ac.subheading}
           </p>
         </div>
 
@@ -177,10 +145,10 @@ export function AboutTimelineEnhanced({ aboutData, siteSettings }: AboutTimeline
                       <Calendar className="h-10 w-10 text-brand-blue" />
                     </div>
                     <h3 className="text-xl font-bold text-gray-800 mb-3">
-                      Our Journey
+                      {ac.journeyTitle}
                     </h3>
                     <p className="text-gray-600">
-                      Years of growth, innovation, and excellence
+                      {ac.journeyBody}
                     </p>
                   </div>
                 </div>
@@ -193,14 +161,14 @@ export function AboutTimelineEnhanced({ aboutData, siteSettings }: AboutTimeline
                 <div className="text-2xl font-bold text-brand-orange mb-1">
                   {new Date().getFullYear() - 2008}+
                 </div>
-                <div className="text-sm text-gray-600">Years of Excellence</div>
+                <div className="text-sm text-gray-600">{ac.yearsOfExcellence}</div>
               </div>
             </div>
 
             <div className="absolute -top-6 -left-6 bg-white rounded-xl p-6 shadow-xl border">
               <div className="text-center">
                 <div className="text-2xl font-bold text-brand-blue mb-1">{timeline.length}</div>
-                <div className="text-sm text-gray-600">Key Milestones</div>
+                <div className="text-sm text-gray-600">{ac.keyMilestones}</div>
               </div>
             </div>
           </div>
@@ -210,7 +178,7 @@ export function AboutTimelineEnhanced({ aboutData, siteSettings }: AboutTimeline
         <div className="mt-20 bg-gradient-to-r from-gray-50 to-white rounded-2xl p-8 lg:p-12">
           <div className="max-w-4xl mx-auto text-center">
             <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-6">
-              Looking Ahead
+              {ac.lookingAheadTitle}
             </h3>
             <p className="text-lg text-gray-600 leading-relaxed">
               Our journey continues as we embrace new technologies, expand our global reach, 

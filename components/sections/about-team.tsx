@@ -16,6 +16,8 @@ import {
   ArrowRight,
   MapPin
 } from 'lucide-react';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { ABOUT_CONTENT } from '@/lib/content/about-content';
 
 interface AboutTeamProps {
   teamMembers: any[];
@@ -23,6 +25,8 @@ interface AboutTeamProps {
 }
 
 export function AboutTeam({ teamMembers, siteSettings }: AboutTeamProps) {
+  const { locale } = useLanguage();
+  const ac = ABOUT_CONTENT[locale].team;
   const companyName = siteSettings.company_name || 'JUSOR';
 
   // Show featured team members (limit to 6 for layout)
@@ -38,7 +42,7 @@ export function AboutTeam({ teamMembers, siteSettings }: AboutTeamProps) {
             Our Team
           </div>
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-            Meet the Experts Behind Our Success
+            {ac.heading}
           </h2>
           <p className="text-lg text-gray-600">
             Our diverse team of certified translators and language specialists brings together decades of experience and cultural expertise
@@ -72,7 +76,7 @@ export function AboutTeam({ teamMembers, siteSettings }: AboutTeamProps) {
                               {member.name.split(' ').map((n: string) => n[0]).join('')}
                             </span>
                           </div>
-                          <p className="text-sm font-medium text-gray-600">Team Member</p>
+                          <p className="text-sm font-medium text-gray-600">{ac.teamMember}</p>
                         </div>
                       </div>
                     )}
@@ -168,7 +172,7 @@ export function AboutTeam({ teamMembers, siteSettings }: AboutTeamProps) {
                   <p className="text-gray-600 mb-4">
                     Our certified translators bring years of experience and cultural expertise to every project.
                   </p>
-                  <Badge variant="secondary">Professional Translator</Badge>
+                  <Badge variant="secondary">{ac.professionalTranslator}</Badge>
                 </CardContent>
               </Card>
             ))}
@@ -180,19 +184,19 @@ export function AboutTeam({ teamMembers, siteSettings }: AboutTeamProps) {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-3xl lg:text-4xl font-bold text-brand-orange mb-2">100+</div>
-              <div className="text-gray-600">Professional Translators</div>
+              <div className="text-gray-600">{ac.professionalTranslators}</div>
             </div>
             <div>
               <div className="text-3xl lg:text-4xl font-bold text-brand-blue mb-2">50+</div>
-              <div className="text-gray-600">Language Pairs</div>
+              <div className="text-gray-600">{ac.languagePairs}</div>
             </div>
             <div>
               <div className="text-3xl lg:text-4xl font-bold text-brand-orange mb-2">25+</div>
-              <div className="text-gray-600">Countries Represented</div>
+              <div className="text-gray-600">{ac.countriesRepresented}</div>
             </div>
             <div>
               <div className="text-3xl lg:text-4xl font-bold text-brand-blue mb-2">15+</div>
-              <div className="text-gray-600">Years Average Experience</div>
+              <div className="text-gray-600">{ac.yearsAverageExperience}</div>
             </div>
           </div>
         </div>
@@ -209,7 +213,7 @@ export function AboutTeam({ teamMembers, siteSettings }: AboutTeamProps) {
               nuances of global communication.
             </p>
             <p className="text-gray-600 leading-relaxed mb-8">
-              We foster a collaborative environment where continuous learning is encouraged, quality is paramount, 
+              {ac.cultureBody}
               and every team member is empowered to deliver their best work. Our shared passion for language and 
               cultural understanding drives us to exceed client expectations consistently.
             </p>
@@ -217,15 +221,15 @@ export function AboutTeam({ teamMembers, siteSettings }: AboutTeamProps) {
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <Award className="h-6 w-6 text-brand-orange" />
-                <span className="text-gray-700">All translators are certified professionals</span>
+                <span className="text-gray-700">{ac.bullets[0]}</span>
               </div>
               <div className="flex items-center gap-3">
                 <Globe className="h-6 w-6 text-brand-blue" />
-                <span className="text-gray-700">Native speakers for authentic translations</span>
+                <span className="text-gray-700">{ac.bullets[1]}</span>
               </div>
               <div className="flex items-center gap-3">
                 <Users className="h-6 w-6 text-brand-orange" />
-                <span className="text-gray-700">Collaborative approach to complex projects</span>
+                <span className="text-gray-700">{ac.bullets[2]}</span>
               </div>
             </div>
           </div>
@@ -240,7 +244,7 @@ export function AboutTeam({ teamMembers, siteSettings }: AboutTeamProps) {
                   Global Team
                 </h4>
                 <p className="text-gray-600">
-                  United by excellence, diversity in expertise
+                  {ac.cultureCaption}
                 </p>
               </div>
             </div>
