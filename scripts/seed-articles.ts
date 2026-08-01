@@ -613,7 +613,8 @@ function buildExcerpt(text: string, max = 220): string {
 }
 
 function buildMetaTitle(title: string, isArabic: boolean): string {
-  const suffix = isArabic ? ' | جوسور' : ' | Jusor Certified Translation'
+  // The root layout title template appends the site name, so this must not.
+  const suffix = ''
   // Note: many of these article titles share the same opening words
   // ("Certified Legal Translation for ..."), so the truncation budget must
   // be generous enough to preserve the distinguishing part of the title —

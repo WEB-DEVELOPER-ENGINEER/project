@@ -4,6 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { BlogPost } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { ChevronUp, BookOpen, MessageCircle } from 'lucide-react';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { BLOG_POST_CONTENT } from '@/lib/content/blog-post-content';
+import { localizedPath } from '@/lib/locale';
 
 interface BlogPostContentProps {
   post: BlogPost;
@@ -17,6 +20,8 @@ interface TableOfContentsItem {
 }
 
 export function BlogPostContent({ post, siteSettings = {} }: BlogPostContentProps) {
+  const { locale } = useLanguage();
+  const bc = BLOG_POST_CONTENT[locale];
   const [tableOfContents, setTableOfContents] = useState<TableOfContentsItem[]>([]);
   const [activeHeading, setActiveHeading] = useState<string>('');
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -148,9 +153,9 @@ export function BlogPostContent({ post, siteSettings = {} }: BlogPostContentProp
                 <div className="bg-gray-50 rounded-xl p-6 border">
                   <div className="flex items-center gap-2 mb-4">
                     <BookOpen className="h-5 w-5 text-brand-orange" />
-                    <h3 className="font-semibold text-gray-900">Table of Contents</h3>
+                    <h3 className="font-semibold text-gray-900">{bc.tableOfContents}</h3>
                   </div>
-                  <nav aria-label="Table of contents">
+                  <nav aria-label={bc.tableOfContents}>
                     <ul className="space-y-2">
                       {tableOfContents.map((item) => (
                         <li key={item.id}>
@@ -177,7 +182,7 @@ export function BlogPostContent({ post, siteSettings = {} }: BlogPostContentProp
                 <div className="mt-6 bg-white rounded-xl p-6 border shadow-sm">
                   <h4 className="font-semibold text-gray-900 mb-3">Keep Reading</h4>
                   <p className="text-sm text-gray-600 mb-4">
-                    Enjoying this article? Subscribe to our newsletter for more insights.
+                    {bc.enjoyingArticle}
                   </p>
                   <Button 
                     size="sm" 
@@ -187,7 +192,7 @@ export function BlogPostContent({ post, siteSettings = {} }: BlogPostContentProp
                       element?.scrollIntoView({ behavior: 'smooth' });
                     }}
                   >
-                    Subscribe Now
+                    {bc.subscribeNow}
                   </Button>
                 </div>
               </div>
@@ -214,7 +219,7 @@ export function BlogPostContent({ post, siteSettings = {} }: BlogPostContentProp
               <footer className="mt-12 pt-8 border-t border-gray-200">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div className="flex items-center gap-4">
-                    <span className="text-sm text-gray-600">Share this article:</span>
+                    <span className="text-sm text-gray-600">{bc.shareThisArticle}</span>
                     <div className="flex gap-2">
                       <Button
                         variant="outline"
@@ -254,7 +259,7 @@ export function BlogPostContent({ post, siteSettings = {} }: BlogPostContentProp
 
                   <div className="flex items-center gap-2 text-sm text-gray-500">
                     <MessageCircle className="h-4 w-4" />
-                    <span>Have questions? Contact our team</span>
+                    <span>{bc.haveQuestions}</span>
                   </div>
                 </div>
               </footer>
@@ -269,7 +274,7 @@ export function BlogPostContent({ post, siteSettings = {} }: BlogPostContentProp
           onClick={scrollToTop}
           size="sm"
           className="fixed bottom-8 right-8 z-50 rounded-full w-12 h-12 p-0 bg-brand-orange hover:bg-brand-orange/90 shadow-lg"
-          aria-label="Scroll to top"
+          aria-label={bc.scrollToTop}
         >
           <ChevronUp className="h-5 w-5" />
         </Button>

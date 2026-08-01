@@ -12,6 +12,8 @@ import { format } from 'date-fns';
 import { useLanguage } from '@/components/providers/LanguageProvider';
 import { localizedPath } from '@/lib/locale';
 import { SERVICE_DETAIL_CONTENT, fill } from '@/lib/content/service-detail-content';
+import { BLOG_POST_CONTENT } from '@/lib/content/blog-post-content';
+import { formatDate } from '@/lib/date-locale';
 
 interface RelatedBlogPostsProps {
   posts: BlogPost[];
@@ -22,6 +24,7 @@ interface RelatedBlogPostsProps {
 export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: RelatedBlogPostsProps) {
   const { locale } = useLanguage();
   const sc = SERVICE_DETAIL_CONTENT[locale];
+  const bc = BLOG_POST_CONTENT[locale];
   if (!posts || posts.length === 0) {
     return null;
   }
@@ -34,12 +37,12 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
 
   const getBlogCategory = (title: string): { name: string; color: string } => {
     const categories = [
-      { keywords: ['legal', 'law', 'court'], name: 'Legal', color: 'bg-blue-100 text-blue-800' },
-      { keywords: ['technical', 'technology', 'software'], name: 'Technical', color: 'bg-green-100 text-green-800' },
-      { keywords: ['business', 'corporate', 'company'], name: 'Business', color: 'bg-purple-100 text-purple-800' },
-      { keywords: ['medical', 'health', 'pharmaceutical'], name: 'Medical', color: 'bg-red-100 text-red-800' },
-      { keywords: ['academic', 'education', 'research'], name: 'Academic', color: 'bg-yellow-100 text-yellow-800' },
-      { keywords: ['translation', 'language', 'localization'], name: 'Translation', color: 'bg-orange-100 text-orange-800' },
+      { keywords: ['legal', 'law', 'court'], name: bc.categories.legal, color: 'bg-blue-100 text-blue-800' },
+      { keywords: ['technical', 'technology', 'software'], name: bc.categories.technical, color: 'bg-green-100 text-green-800' },
+      { keywords: ['business', 'corporate', 'company'], name: bc.categories.business, color: 'bg-purple-100 text-purple-800' },
+      { keywords: ['medical', 'health', 'pharmaceutical'], name: bc.categories.medical, color: 'bg-red-100 text-red-800' },
+      { keywords: ['academic', 'education', 'research'], name: bc.categories.academic, color: 'bg-yellow-100 text-yellow-800' },
+      { keywords: ['translation', 'language', 'localization'], name: bc.categories.translation, color: 'bg-orange-100 text-orange-800' },
     ];
 
     const titleLower = title.toLowerCase();
@@ -47,7 +50,7 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
       cat.keywords.some(keyword => titleLower.includes(keyword))
     );
 
-    return category || { name: 'General', color: 'bg-gray-100 text-gray-800' };
+    return category || { name: bc.categories.general, color: 'bg-gray-100 text-gray-800' };
   };
 
   return (
@@ -113,7 +116,7 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
                     {/* Reading Time Badge */}
                     <div className="absolute top-4 right-4">
                       <Badge variant="secondary" className="bg-white/90 text-gray-700">
-                        {readingTime} min
+                        {readingTime} {bc.minRead}
                       </Badge>
                     </div>
                   </div>
@@ -129,7 +132,7 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
                       <div className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
                         <time dateTime={post.published_date}>
-                          {format(publishedDate, 'MMM dd, yyyy')}
+                          {formatDate(publishedDate, 'MMM dd, yyyy', locale)}
                         </time>
                       </div>
                     </div>

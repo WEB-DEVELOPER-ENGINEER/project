@@ -8,6 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Clock, User, ArrowLeft, Share2 } from 'lucide-react';
 import { BlogPost } from '@/lib/types';
 import { format } from 'date-fns';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { BLOG_POST_CONTENT } from '@/lib/content/blog-post-content';
+import { companyName as resolveCompanyName } from '@/lib/company';
+import { localizedPath } from '@/lib/locale';
+import { formatDate } from '@/lib/date-locale';
 
 interface BlogPostHeroProps {
   post: BlogPost;
@@ -15,6 +20,8 @@ interface BlogPostHeroProps {
 }
 
 export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
+  const { locale } = useLanguage();
+  const bc = BLOG_POST_CONTENT[locale];
   const publishedDate = new Date(post.published_date);
   // Prefer the reading time computed at seed time (which accounts for Arabic
   // reading at ~150 wpm vs ~200 wpm for English) over a flat re-estimate here,
@@ -25,12 +32,12 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
 
   const getBlogCategory = (title: string): { name: string; color: string } => {
     const categories = [
-      { keywords: ['legal', 'law', 'court'], name: 'Legal', color: 'bg-blue-100 text-blue-800' },
-      { keywords: ['technical', 'technology', 'software'], name: 'Technical', color: 'bg-green-100 text-green-800' },
-      { keywords: ['business', 'corporate', 'company'], name: 'Business', color: 'bg-purple-100 text-purple-800' },
-      { keywords: ['medical', 'health', 'pharmaceutical'], name: 'Medical', color: 'bg-red-100 text-red-800' },
-      { keywords: ['academic', 'education', 'research'], name: 'Academic', color: 'bg-yellow-100 text-yellow-800' },
-      { keywords: ['translation', 'language', 'localization'], name: 'Translation', color: 'bg-orange-100 text-orange-800' },
+      { keywords: ['legal', 'law', 'court'], name: bc.categories.legal, color: 'bg-blue-100 text-blue-800' },
+      { keywords: ['technical', 'technology', 'software'], name: bc.categories.technical, color: 'bg-green-100 text-green-800' },
+      { keywords: ['business', 'corporate', 'company'], name: bc.categories.business, color: 'bg-purple-100 text-purple-800' },
+      { keywords: ['medical', 'health', 'pharmaceutical'], name: bc.categories.medical, color: 'bg-red-100 text-red-800' },
+      { keywords: ['academic', 'education', 'research'], name: bc.categories.academic, color: 'bg-yellow-100 text-yellow-800' },
+      { keywords: ['translation', 'language', 'localization'], name: bc.categories.translation, color: 'bg-orange-100 text-orange-800' },
     ];
 
     const titleLower = title.toLowerCase();
@@ -38,7 +45,7 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
       cat.keywords.some(keyword => titleLower.includes(keyword))
     );
 
-    return category || { name: 'General', color: 'bg-gray-100 text-gray-800' };
+    return category || { name: bc.categories.general, color: 'bg-gray-100 text-gray-800' };
   };
 
   // Prefer the real linked category from the database over the keyword
@@ -97,9 +104,9 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
               <Link 
                 href="/" 
                 className="hover:text-brand-orange transition-colors"
-                aria-label="Go to homepage"
+                aria-label={bc.goToHomepage}
               >
-                Home
+                {bc.home}
               </Link>
             </li>
             <li className="text-gray-400">/</li>
@@ -107,9 +114,9 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
               <Link 
                 href="/blog" 
                 className="hover:text-brand-orange transition-colors"
-                aria-label="Go to blog"
+                aria-label={bc.goToBlog}
               >
-                Blog
+                {bc.blog}
               </Link>
             </li>
             <li className="text-gray-400">/</li>
@@ -128,7 +135,7 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
               className="group border-gray-300 hover:border-brand-orange hover:text-brand-orange"
             >
               <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-              Back to Blog
+              {bc.backToBlog}
             </Button>
           </Link>
         </div>
@@ -164,12 +171,12 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
                 <time dateTime={post.published_date}>
-                  {format(publishedDate, 'MMMM dd, yyyy')}
+                  {formatDate(publishedDate, 'MMMM dd, yyyy', locale)}
                 </time>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4" />
-                <span>{readingTime} min read</span>
+                <span>{readingTime} {bc.minRead}</span>
               </div>
             </div>
 
@@ -182,7 +189,7 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
                 className="group border-gray-300 hover:border-brand-orange hover:text-brand-orange"
               >
                 <Share2 className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
-                Share Article
+                {bc.shareArticle}
               </Button>
               
               {/* Newsletter CTA */}
@@ -194,7 +201,7 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
                   element?.scrollIntoView({ behavior: 'smooth' });
                 }}
               >
-                Subscribe for More
+                {bc.subscribeForMore}
               </Button>
             </div>
           </div>
@@ -220,10 +227,10 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
                       </span>
                     </div>
                     <h3 className="font-semibold text-gray-700 text-lg">
-                      {siteSettings.company_name || 'JUSOR'} Blog
+                      {resolveCompanyName(siteSettings, locale)} {bc.blog}
                     </h3>
                     <p className="text-gray-500 text-sm mt-2">
-                      Translation & Localization Insights
+                      {bc.insightsCaption}
                     </p>
                   </div>
                 </div>
@@ -235,22 +242,22 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
 
             {/* Article Stats */}
             <div className="mt-6 p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-3">Article Info</h3>
+              <h3 className="font-semibold text-gray-900 mb-3">{bc.articleInfo}</h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Published</span>
-                  <span className="font-medium">{format(publishedDate, 'MMM dd, yyyy')}</span>
+                  <span className="text-gray-600">{bc.published}</span>
+                  <span className="font-medium">{formatDate(publishedDate, 'MMM dd, yyyy', locale)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Reading Time</span>
-                  <span className="font-medium">{readingTime} minutes</span>
+                  <span className="text-gray-600">{bc.readingTime}</span>
+                  <span className="font-medium">{readingTime} {bc.minutes}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Category</span>
+                  <span className="text-gray-600">{bc.category}</span>
                   <span className="font-medium">{category.name}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Author</span>
+                  <span className="text-gray-600">{bc.author}</span>
                   <span className="font-medium">{post.author}</span>
                 </div>
               </div>

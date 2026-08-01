@@ -775,9 +775,13 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
   }
 }
 
-export async function getRelatedBlogPosts(currentSlug: string, limit: number = 3): Promise<BlogPost[]> {
+export async function getRelatedBlogPosts(
+  currentSlug: string,
+  limit: number = 3,
+  locale: string = 'en'
+): Promise<BlogPost[]> {
   const decodedSlug = decodeURIComponent(currentSlug);
-  const cacheKey = getCacheKey('blog:related', { currentSlug: decodedSlug, limit });
+  const cacheKey = getCacheKey('blog:related', { currentSlug: decodedSlug, limit, locale });
   const cached = cacheManager.get<BlogPost[]>(cacheKey);
   if (cached) return cached;
 
@@ -796,12 +800,14 @@ export async function getRelatedBlogPosts(currentSlug: string, limit: number = 3
       FROM blog_posts bp
       LEFT JOIN blog_authors ba ON bp.author_id = ba.id
       LEFT JOIN blog_categories bc ON bp.category_id = bc.id
+      -- Without the locale filter an Arabic article recommended English posts.
       WHERE bp.slug != $1 AND bp.slug != $2 AND bp.is_published = true
+        AND bp.locale = $5
       ORDER BY
         CASE WHEN $4::int IS NOT NULL AND bp.category_id = $4::int THEN 0 ELSE 1 END,
         bp.published_date DESC, bp.created_at DESC
       LIMIT $3
-    `, [currentSlug, decodedSlug, limit, currentCategoryId]);
+    `, [currentSlug, decodedSlug, limit, currentCategoryId, locale]);
 
     const posts = result.rows.map(row => ({
       ...row,

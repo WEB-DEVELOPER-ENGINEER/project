@@ -64,7 +64,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
       .replace('jusor-translation.com', 'jusortrans.com')
       .replace(/\/$/, '');
 
-    const title = seoData?.meta_title || post.meta_title || `${post.title} | ${siteSettings.company_name || 'JUSOR'} Blog`;
+    const title = seoData?.meta_title || post.meta_title || post.title;
     const description = seoData?.meta_description || post.meta_description || 
       post.description || 
       `Read about ${post.title} on the ${siteSettings.company_name || 'JUSOR'} blog.`;
@@ -168,7 +168,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     ]);
 
     // Get related posts
-    const relatedPosts = await getRelatedBlogPosts(post.slug, 3);
+    const relatedPosts = await getRelatedBlogPosts(post.slug, 3, postLocale);
 
     // Real services referenced by this article's related_services slugs
     // (see scripts/seed-articles.ts inferRelatedServices) — matched against

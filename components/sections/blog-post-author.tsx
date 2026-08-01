@@ -7,6 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Mail, Linkedin, Twitter, Globe, Award, Users } from 'lucide-react';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { BLOG_POST_CONTENT } from '@/lib/content/blog-post-content';
+import { localizedPath } from '@/lib/locale';
 
 interface BlogPostAuthorProps {
   author: string;
@@ -16,14 +19,16 @@ interface BlogPostAuthorProps {
 }
 
 export function BlogPostAuthor({ author, authorData: dbAuthorData, companyMetrics = [], siteSettings = {} }: BlogPostAuthorProps) {
+  const { locale } = useLanguage();
+  const bc = BLOG_POST_CONTENT[locale];
   // Use database author data or fallback to default
   const getAuthorData = (authorName: string) => {
     // If we have database author data, use it
     if (dbAuthorData) {
       return {
         name: dbAuthorData.name,
-        title: dbAuthorData.title || 'Translation Expert',
-        bio: dbAuthorData.bio || 'Professional translator and localization specialist.',
+        title: dbAuthorData.title || bc.authorFallbackTitle,
+        bio: dbAuthorData.bio || bc.authorFallbackBio,
         image: dbAuthorData.image_url,
         expertise: dbAuthorData.expertise || [],
         achievements: dbAuthorData.achievements || [],
@@ -35,10 +40,10 @@ export function BlogPostAuthor({ author, authorData: dbAuthorData, companyMetric
     const authorMap: Record<string, any> = {
       'JUSOR Team': {
         name: 'JUSOR Team',
-        title: siteSettings.team_title || 'Translation & Localization Experts',
-        bio: siteSettings.team_bio || 'Our team of certified translators and localization specialists brings decades of combined experience in delivering high-quality language services across multiple industries.',
+        title: siteSettings.team_title || bc.teamTitle,
+        bio: siteSettings.team_bio || bc.teamBio,
         image: siteSettings.team_image || '/team/jusor-team.jpg',
-        expertise: siteSettings.team_expertise || ['Legal Translation', 'Technical Documentation', 'Business Localization', 'Certified Translation'],
+        expertise: siteSettings.team_expertise || bc.expertise,
         achievements: companyMetrics.filter(m => m.category === 'achievements').map(m => m.metric_label) || [
           'Certified Translation Services',
           'Professional Translation Services',
@@ -108,7 +113,7 @@ export function BlogPostAuthor({ author, authorData: dbAuthorData, companyMetric
                 {/* Expertise Tags */}
                 {authorInfo.expertise && (
                   <div className="mb-6">
-                    <h4 className="text-sm font-semibold text-gray-900 mb-3">Areas of Expertise</h4>
+                    <h4 className="text-sm font-semibold text-gray-900 mb-3">{bc.areasOfExpertise}</h4>
                     <div className="flex flex-wrap gap-2">
                       {authorInfo.expertise.map((skill: string, index: number) => (
                         <Badge 
@@ -128,7 +133,7 @@ export function BlogPostAuthor({ author, authorData: dbAuthorData, companyMetric
                   <div className="mb-6">
                     <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
                       <Award className="h-4 w-4 text-brand-orange" />
-                      Key Achievements
+                      {bc.keyAchievements}
                     </h4>
                     <div className="grid sm:grid-cols-2 gap-2">
                       {authorInfo.achievements.map((achievement: string, index: number) => (
@@ -145,7 +150,7 @@ export function BlogPostAuthor({ author, authorData: dbAuthorData, companyMetric
                 <div className="flex flex-wrap items-center gap-4 pt-6 border-t border-gray-200">
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <Users className="h-4 w-4" />
-                    <span>Connect with {authorInfo.name.split(' ')[0]}</span>
+                    <span>{bc.connectWith} {authorInfo.name.split(' ')[0]}</span>
                   </div>
                   
                   <div className="flex gap-2">
@@ -227,10 +232,10 @@ export function BlogPostAuthor({ author, authorData: dbAuthorData, companyMetric
             <div className="mt-8 pt-8 border-t border-gray-200">
               <div className="bg-gradient-to-r from-brand-orange/5 to-brand-blue/5 rounded-xl p-6 text-center">
                 <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                  Need Expert Translation Services?
+                  {bc.needExpertServices}
                 </h4>
                 <p className="text-gray-600 mb-4">
-                  Our team of certified professionals is ready to help with your translation and localization needs.
+                  {bc.needExpertServicesBody}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <Button 
@@ -238,7 +243,7 @@ export function BlogPostAuthor({ author, authorData: dbAuthorData, companyMetric
                     className="bg-brand-orange hover:bg-brand-orange/90"
                   >
                     <Link href="/contact">
-                      Get a Free Quote
+                      {bc.getFreeQuote}
                     </Link>
                   </Button>
                   <Button 
@@ -247,7 +252,7 @@ export function BlogPostAuthor({ author, authorData: dbAuthorData, companyMetric
                     className="border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"
                   >
                     <Link href="/services">
-                      View Our Services
+                      {bc.viewOurServices}
                     </Link>
                   </Button>
                 </div>

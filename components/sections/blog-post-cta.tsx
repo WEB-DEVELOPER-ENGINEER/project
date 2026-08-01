@@ -19,6 +19,9 @@ import {
 } from 'lucide-react';
 import { BlogPost, Service } from '@/lib/types';
 import { trackPhoneClick, trackEmailClick } from '@/lib/analytics-events';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { BLOG_POST_CONTENT } from '@/lib/content/blog-post-content';
+import { localizedPath } from '@/lib/locale';
 
 interface BlogPostCTAProps {
   post: BlogPost;
@@ -29,6 +32,8 @@ interface BlogPostCTAProps {
 }
 
 export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [], siteSettings = {}, relatedServices = [] }: BlogPostCTAProps) {
+  const { locale } = useLanguage();
+  const bc = BLOG_POST_CONTENT[locale];
   // Get benefits from database or use fallbacks
   const getBenefits = () => {
     const benefitsFromDB = companyMetrics.filter(m => m.category === 'benefits');
@@ -43,19 +48,19 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
     return [
       {
         icon: CheckCircle,
-        text: siteSettings.benefit_quality || 'Certified Translation Quality'
+        text: siteSettings.benefit_quality || bc.benefitQuality
       },
       {
         icon: Globe,
-        text: siteSettings.benefit_languages || 'Professional Language Services'
+        text: siteSettings.benefit_languages || bc.benefitLanguages
       },
       {
         icon: Shield,
-        text: siteSettings.benefit_security || 'Confidentiality Guaranteed'
+        text: siteSettings.benefit_security || bc.benefitSecurity
       },
       {
         icon: Clock,
-        text: siteSettings.benefit_speed || 'Fast Turnaround Times'
+        text: siteSettings.benefit_speed || bc.benefitSpeed
       }
     ];
   };
@@ -84,19 +89,19 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
     return [
       {
         value: siteSettings.stat_projects || '500+',
-        label: siteSettings.stat_projects_label || 'Projects Completed'
+        label: siteSettings.stat_projects_label || bc.statProjects
       },
       {
         value: siteSettings.stat_languages || '50+',
-        label: siteSettings.stat_languages_label || 'Language Pairs'
+        label: siteSettings.stat_languages_label || bc.statLanguages
       },
       {
         value: siteSettings.stat_satisfaction || '99.8%',
-        label: siteSettings.stat_satisfaction_label || 'Client Satisfaction'
+        label: siteSettings.stat_satisfaction_label || bc.statSatisfaction
       },
       {
         value: siteSettings.stat_support || '24/7',
-        label: siteSettings.stat_support_label || 'Support Available'
+        label: siteSettings.stat_support_label || bc.statSupport
       }
     ];
   };
@@ -122,13 +127,13 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
               <div className="relative z-10">
                 <div className="text-center mb-8">
                   <Badge className="bg-white/20 text-white border-white/30 mb-4">
-                    Ready to Get Started?
+                    {bc.readyToStart}
                   </Badge>
                   <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-                    Need Professional Translation Services?
+                    {bc.needProfessional}
                   </h2>
                   <p className="text-xl text-white/90 max-w-2xl mx-auto">
-                    Our certified translation experts are ready to help you communicate effectively across languages and cultures.
+                    {bc.needProfessionalBody}
                   </p>
                 </div>
 
@@ -151,7 +156,7 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
                   >
                     <Link href="/contact">
                       <FileText className="h-5 w-5 mr-2" />
-                      Get Free Quote
+                      {bc.getFreeQuote}
                     </Link>
                   </Button>
                   <Button 
@@ -161,7 +166,7 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
                     className="border-white text-white hover:bg-white hover:text-brand-orange"
                   >
                     <Link href="/services">
-                      View All Services
+                      {bc.viewAllServices}
                       <ArrowRight className="h-5 w-5 ml-2" />
                     </Link>
                   </Button>
@@ -176,10 +181,10 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
         <div className="mb-16">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
-              Related Services
+              {bc.relatedServices}
             </h3>
             <p className="text-lg text-gray-600">
-              Explore our services related to the topic of this article.
+              {bc.relatedServicesBody}
             </p>
           </div>
 
@@ -197,7 +202,7 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
                     href={service.href}
                     className="inline-flex items-center text-brand-orange hover:text-brand-orange/80 font-medium text-sm transition-colors"
                   >
-                    Learn More
+                    {bc.learnMore}
                     <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </CardContent>
@@ -216,10 +221,10 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
                 <Phone className="h-8 w-8 text-brand-orange" />
               </div>
               <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                Call Us Directly
+                {bc.callUsDirectly}
               </h4>
               <p className="text-gray-600 mb-4 text-sm">
-                Speak with our translation experts for immediate assistance.
+                {bc.callUsBody}
               </p>
               <Button 
                 asChild
@@ -243,10 +248,10 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
                 <Mail className="h-8 w-8 text-brand-blue" />
               </div>
               <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                Email Us
+                {bc.emailUs}
               </h4>
               <p className="text-gray-600 mb-4 text-sm">
-                Send us your project details for a detailed quote.
+                {bc.emailUsBody}
               </p>
               <Button 
                 asChild
@@ -270,10 +275,10 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
                 <MessageSquare className="h-8 w-8 text-green-600" />
               </div>
               <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                Live Chat
+                {bc.liveChat}
               </h4>
               <p className="text-gray-600 mb-4 text-sm">
-                Chat with our team for instant answers to your questions.
+                {bc.liveChatBody}
               </p>
               <Button 
                 variant="outline"
@@ -283,7 +288,7 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
                   console.log('Open live chat');
                 }}
               >
-                Start Chat
+                {bc.startChat}
               </Button>
             </CardContent>
           </Card>
@@ -293,7 +298,7 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
         <div className="mt-16 text-center">
           <div className="bg-white rounded-2xl p-8 border shadow-sm">
             <h4 className="text-lg font-semibold text-gray-900 mb-6">
-              Trusted by Leading Organizations
+              {bc.trustedBy}
             </h4>
             
             {/* Trust Stats */}

@@ -12,6 +12,7 @@ import { BlogPost } from '@/lib/types';
 import { localizedPath } from '@/lib/locale';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
+import { formatDate } from '@/lib/date-locale';
 
 interface BlogListClientProps {
   posts: BlogPost[];
@@ -126,7 +127,7 @@ export function BlogListClient({ posts }: BlogListClientProps) {
                             </div>
                             <div className="flex items-center gap-1">
                               <Calendar className="h-3 w-3" />
-                              <span>{article.published_date ? format(new Date(article.published_date), 'MMM d, yyyy') : ''}</span>
+                              <span>{article.published_date ? formatDate(article.published_date, 'MMM d, yyyy', locale) : ''}</span>
                             </div>
                             <div className="flex items-center gap-1">
                               <Clock className="h-3 w-3" />
