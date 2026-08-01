@@ -101,7 +101,7 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
                               {post.title.charAt(0)}
                             </span>
                           </div>
-                          <h4 className="font-semibold text-white text-sm">{sc.relatedArticle}</h4>
+                          <div className="font-semibold text-white text-sm">{sc.relatedArticle}</div>
                         </div>
                       </div>
                     )}

@@ -63,6 +63,7 @@ export function BlogListClient({ posts }: BlogListClientProps) {
               <div className="relative">
                 <input
                   type="text"
+                  aria-label={isRtl ? 'ابحث في المقالات' : 'Search articles'}
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
@@ -135,9 +136,9 @@ export function BlogListClient({ posts }: BlogListClientProps) {
                             </div>
                           </div>
 
-                          <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-3 line-clamp-2 group-hover:text-brand-orange transition-colors">
+                          <h2 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-3 line-clamp-2 group-hover:text-brand-orange transition-colors">
                             {article.title}
-                          </h3>
+                          </h2>
                           
                           <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 mb-4">
                             {article.description}
@@ -182,9 +183,9 @@ export function BlogListClient({ posts }: BlogListClientProps) {
             </>
           ) : (
             <div className="text-center py-16">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
                 {isRtl ? 'لم يتم العثور على مقالات مطابقة' : 'No articles found'}
-              </h3>
+              </h2>
               <p className="text-gray-600 dark:text-gray-300">
                 {isRtl ? 'جرب البحث باستخدام كلمات أخرى.' : 'Try searching with different keywords.'}
               </p>

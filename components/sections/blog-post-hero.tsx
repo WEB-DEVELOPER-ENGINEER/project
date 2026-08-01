@@ -226,9 +226,9 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
                         {post.title.charAt(0)}
                       </span>
                     </div>
-                    <h3 className="font-semibold text-gray-700 text-lg">
+                    <div className="font-semibold text-gray-700 text-lg">
                       {resolveCompanyName(siteSettings, locale)} {bc.blog}
-                    </h3>
+                    </div>
                     <p className="text-gray-500 text-sm mt-2">
                       {bc.insightsCaption}
                     </p>
@@ -242,7 +242,7 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
 
             {/* Article Stats */}
             <div className="mt-6 p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-3">{bc.articleInfo}</h3>
+              <h2 className="font-semibold text-gray-900 mb-3">{bc.articleInfo}</h2>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600">{bc.published}</span>

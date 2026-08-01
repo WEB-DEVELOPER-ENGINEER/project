@@ -124,12 +124,12 @@ export function Footer({ footerData, siteSettings = {} }: FooterProps) {
             <h3 className="text-sm font-semibold leading-6 text-white">
               {t('footer.newsletterTitle')}
             </h3>
-            <p className="mt-2 text-sm leading-6 text-gray-300">
+            <p id="newsletter-description" className="mt-2 text-sm leading-6 text-gray-300">
               {t('footer.newsletterDesc')}
             </p>
             {newsletterStatus === 'success' ? (
               <p className="mt-6 text-sm text-brand-orange font-medium" role="status">
-                Thank you for subscribing!
+                {isRtl ? 'شكراً لاشتراكك!' : 'Thank you for subscribing!'}
               </p>
             ) : (
               <form onSubmit={handleNewsletterSubmit} className="mt-6 sm:flex sm:max-w-md" noValidate>
@@ -154,14 +154,14 @@ export function Footer({ footerData, siteSettings = {} }: FooterProps) {
                     disabled={newsletterStatus === 'submitting'}
                     className="flex w-full items-center justify-center rounded-md bg-brand-orange px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-orange/90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
                   >
-                    {newsletterStatus === 'submitting' ? 'Submitting...' : t('footer.subscribeBtn')}
+                    {newsletterStatus === 'submitting' ? (isRtl ? 'جارٍ الإرسال...' : 'Submitting...') : t('footer.subscribeBtn')}
                   </button>
                 </div>
               </form>
             )}
             {newsletterStatus === 'error' && (
               <p className="mt-2 text-sm text-red-400" role="alert">
-                Something went wrong. Please try again.
+                {isRtl ? 'حدث خطأ ما. يرجى المحاولة مرة أخرى.' : 'Something went wrong. Please try again.'}
               </p>
             )}
             <div className="mt-6 flex space-x-6">

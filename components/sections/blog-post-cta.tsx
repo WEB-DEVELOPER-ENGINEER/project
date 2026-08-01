@@ -192,9 +192,9 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
             {services.map((service, index) => (
               <Card key={index} className="group hover:shadow-lg transition-all duration-300 border border-gray-200">
                 <CardContent className="p-6">
-                  <h4 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-brand-orange transition-colors">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-brand-orange transition-colors">
                     {service.title}
-                  </h4>
+                  </h3>
                   <p className="text-gray-600 mb-4 leading-relaxed">
                     {service.description}
                   </p>
@@ -220,9 +220,9 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
               <div className="w-16 h-16 bg-brand-orange/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-brand-orange/20 transition-colors">
                 <Phone className="h-8 w-8 text-brand-orange" />
               </div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 {bc.callUsDirectly}
-              </h4>
+              </h3>
               <p className="text-gray-600 mb-4 text-sm">
                 {bc.callUsBody}
               </p>
@@ -247,9 +247,9 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
               <div className="w-16 h-16 bg-brand-blue/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-brand-blue/20 transition-colors">
                 <Mail className="h-8 w-8 text-brand-blue" />
               </div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 {bc.emailUs}
-              </h4>
+              </h3>
               <p className="text-gray-600 mb-4 text-sm">
                 {bc.emailUsBody}
               </p>
@@ -274,9 +274,9 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-200 transition-colors">
                 <MessageSquare className="h-8 w-8 text-green-600" />
               </div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 {bc.liveChat}
-              </h4>
+              </h3>
               <p className="text-gray-600 mb-4 text-sm">
                 {bc.liveChatBody}
               </p>
@@ -297,9 +297,9 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
         {/* Trust Indicators */}
         <div className="mt-16 text-center">
           <div className="bg-white rounded-2xl p-8 border shadow-sm">
-            <h4 className="text-lg font-semibold text-gray-900 mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">
               {bc.trustedBy}
-            </h4>
+            </h3>
             
             {/* Trust Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">

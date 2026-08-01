@@ -78,9 +78,9 @@ export function BlogSection({ blogs: rawBlogs, siteSettings = {} }: BlogSectionP
                               {blog.title.charAt(0)}
                             </span>
                           </div>
-                          <h4 className="font-semibold text-white text-sm">
+                          <div className="font-semibold text-white text-sm">
                             {isRtl ? 'مقال متألق' : 'Blog Post'}
-                          </h4>
+                          </div>
                         </div>
                       </div>
                     )}

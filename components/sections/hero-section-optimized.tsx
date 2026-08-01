@@ -526,7 +526,7 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
                     <div className="flex items-center justify-center h-full bg-gradient-to-br from-brand-orange to-brand-blue rounded-2xl">
                       <div className="text-center text-white p-8">
                         <FileText className="h-16 w-16 mx-auto mb-4 opacity-80" />
-                        <h3 className="text-2xl font-bold mb-2">{isRtl ? 'ترجمة احترافية' : 'Professional Translation'}</h3>
+                        <div className="text-2xl font-bold mb-2">{isRtl ? 'ترجمة احترافية' : 'Professional Translation'}</div>
                         <p className="text-orange-100">{isRtl ? 'معتمدة • دقيقة • سريعة' : 'Certified • Accurate • Fast'}</p>
                       </div>
                     </div>

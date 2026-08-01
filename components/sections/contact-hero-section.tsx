@@ -215,9 +215,9 @@ export function ContactHeroSection({ contactData, siteSettings = {} }: ContactHe
                   <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-brand-orange to-brand-blue mb-6">
                     <MessageCircle className="h-10 w-10 text-white" aria-hidden="true" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                  <div className="text-2xl font-bold text-gray-900 mb-2">
                     {companyName}
-                  </h3>
+                  </div>
                   <p className="text-gray-600 mb-6">
                     {c.tagline}
                   </p>

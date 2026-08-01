@@ -167,9 +167,9 @@ export function AboutHeroEnhanced({ aboutData, siteSettings, companyMetrics }: A
                       <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
                         <Globe className="h-12 w-12 text-brand-blue" />
                       </div>
-                      <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                      <div className="text-2xl font-bold text-gray-800 mb-2">
                         {ac.imageTitle}
-                      </h3>
+                      </div>
                       <p className="text-gray-600">
                         {ac.imageCaption}
                       </p>
