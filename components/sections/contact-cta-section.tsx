@@ -6,6 +6,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, MessageCircle, Phone, Mail, Clock, CheckCircle, Star } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { trackPhoneClick, trackEmailClick, trackWhatsAppClick } from '@/lib/analytics-events';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { CONTACT_CONTENT } from '@/lib/content/contact-content';
 
 interface ContactCTASectionProps {
   contactData: any;
@@ -13,6 +15,8 @@ interface ContactCTASectionProps {
 }
 
 export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTASectionProps) {
+  const { locale } = useLanguage();
+  const c = CONTACT_CONTENT[locale].cta;
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -27,7 +31,7 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
 
   const handleWhatsAppClick = () => {
     trackWhatsAppClick(contactData.whatsapp_number, 'contact_cta_section');
-    const message = encodeURIComponent('Hello Jusor, I would like to get a quote for my translation project.');
+    const message = encodeURIComponent(c.whatsappMessage);
     window.open(`https://api.whatsapp.com/send?phone=${contactData.whatsapp_number}&text=${message}`, '_blank');
   };
 
@@ -41,21 +45,7 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
     window.location.href = `mailto:${contactData.email}`;
   };
 
-  const benefits = [
-    'Free project consultation',
-    'Certified professional translators',
-    'Quick turnaround times',
-    '24/7 customer support',
-    'Competitive pricing',
-    'Quality guarantee'
-  ];
-
-  const testimonialHighlight = {
-    text: "Jusor Translation provided exceptional service for our legal documents. Professional, accurate, and delivered on time!",
-    author: "Sarah Al-Mahmoud",
-    role: "Legal Consultant",
-    rating: 5
-  };
+  const benefits = c.benefits;
 
   return (
     <section 
@@ -78,16 +68,15 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
                 inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
               }`}
             >
-              Ready to Break Down
-              <span className="block text-brand-orange">Language Barriers?</span>
+              {c.title}
             </h2>
 
-            <p 
+            <p
               className={`text-xl text-blue-100 mb-8 leading-relaxed transition-all duration-700 delay-100 ${
                 inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
               }`}
             >
-              Join hundreds of satisfied clients who trust Jusor Translation for their most important documents and communications.
+              {c.description}
             </p>
 
             {/* Benefits List */}
@@ -116,7 +105,7 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
                 onClick={handleScrollToForm}
                 aria-describedby="get-quote-cta-description"
               >
-                Get Your Free Quote Now
+                {c.primaryAction}
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true" />
               </Button>
               
@@ -128,7 +117,7 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
                 aria-describedby="whatsapp-cta-description"
               >
                 <MessageCircle className="mr-2 h-5 w-5" aria-hidden="true" />
-                Chat on WhatsApp
+                {c.sendMessage}
               </Button>
             </div>
 
@@ -162,10 +151,10 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
             {/* Screen reader descriptions */}
             <div className="sr-only">
               <p id="get-quote-cta-description">
-                Click to scroll to the contact form and get a personalized quote for your translation project
+                {c.srQuote}
               </p>
               <p id="whatsapp-cta-description">
-                Start an instant WhatsApp conversation with our translation experts
+                {c.srWhatsapp}
               </p>
             </div>
           </div>
@@ -176,34 +165,25 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
               inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
           >
-            {/* Featured Testimonial */}
+            {/* Accreditations. This previously displayed a fabricated
+                5-star testimonial from an invented client ("Sarah
+                Al-Mahmoud, Legal Consultant") — removed. Replaced with the
+                company's real, verifiable accreditations. Restore a
+                testimonial here only when a genuine, attributable client
+                quote is available. */}
             <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl mb-6">
               <CardContent className="p-8">
-                {/* Rating Stars */}
-                <div className="flex items-center mb-4">
-                  {[...Array(testimonialHighlight.rating)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" aria-hidden="true" />
+                <h3 className="text-lg font-bold text-gray-900 mb-4">
+                  {c.accreditationsTitle}
+                </h3>
+                <ul className="space-y-3">
+                  {c.accreditations.map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 text-gray-700">
+                      <CheckCircle className="w-5 h-5 text-brand-orange flex-shrink-0 mt-0.5" aria-hidden="true" />
+                      <span>{item}</span>
+                    </li>
                   ))}
-                  <span className="ml-2 text-sm text-gray-600 font-medium">5.0 Rating</span>
-                </div>
-
-                {/* Testimonial Text */}
-                <blockquote className="text-gray-700 mb-6 text-lg leading-relaxed italic">
-                  "{testimonialHighlight.text}"
-                </blockquote>
-
-                {/* Author */}
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-gradient-to-br from-brand-orange to-brand-blue rounded-full flex items-center justify-center mr-4">
-                    <span className="text-white font-bold text-lg">
-                      {testimonialHighlight.author.charAt(0)}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-900">{testimonialHighlight.author}</p>
-                    <p className="text-sm text-gray-600">{testimonialHighlight.role}</p>
-                  </div>
-                </div>
+                </ul>
               </CardContent>
             </Card>
 
@@ -215,7 +195,7 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
                     <Clock className="w-6 h-6 text-green-600" aria-hidden="true" />
                   </div>
                   <p className="font-bold text-2xl text-gray-900 mb-1">2-4 Hours</p>
-                  <p className="text-sm text-gray-600">Average Response Time</p>
+                  <p className="text-sm text-gray-600">{c.responseTime}</p>
                 </CardContent>
               </Card>
 
@@ -225,7 +205,7 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
                     <CheckCircle className="w-6 h-6 text-blue-600" aria-hidden="true" />
                   </div>
                   <p className="font-bold text-2xl text-gray-900 mb-1">500+</p>
-                  <p className="text-sm text-gray-600">Projects Completed</p>
+                  <p className="text-sm text-gray-600">{c.statProjectsLabel}</p>
                 </CardContent>
               </Card>
             </div>

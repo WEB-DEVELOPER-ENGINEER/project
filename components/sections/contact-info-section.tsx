@@ -18,6 +18,8 @@ import {
 } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { trackPhoneClick, trackEmailClick, trackWhatsAppClick } from '@/lib/analytics-events';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { CONTACT_CONTENT } from '@/lib/content/contact-content';
 
 interface ContactInfoSectionProps {
   contactData: any;
@@ -25,6 +27,8 @@ interface ContactInfoSectionProps {
 }
 
 export function ContactInfoSection({ contactData, siteSettings = {} }: ContactInfoSectionProps) {
+  const { locale } = useLanguage();
+  const c = CONTACT_CONTENT[locale].info;
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -57,46 +61,46 @@ export function ContactInfoSection({ contactData, siteSettings = {} }: ContactIn
   const contactMethods = [
     {
       icon: Phone,
-      title: 'Call Us',
-      description: 'Speak directly with our team',
+      title: c.callUsTitle,
+      description: c.callUsDescription,
       value: contactData.phone,
       action: handlePhoneClick,
       color: 'from-green-500 to-green-600',
-      available: '24/7 Support Available'
+      available: c.availableSupport
     },
     {
       icon: Mail,
-      title: 'Email Us',
-      description: 'Send us your project details',
+      title: c.emailUsTitle,
+      description: c.emailUsDescription,
       value: contactData.email,
       action: handleEmailClick,
       color: 'from-blue-500 to-blue-600',
-      available: 'Response within 2-4 hours'
+      available: c.availableResponse
     },
     {
       icon: MessageCircle,
-      title: 'WhatsApp',
-      description: 'Chat with us instantly',
-      value: 'Start Chat',
+      title: c.whatsappTitle,
+      description: c.whatsappDescription,
+      value: c.whatsappAction,
       action: handleWhatsAppClick,
       color: 'from-green-400 to-green-500',
-      available: 'Instant messaging'
+      available: c.availableInstant
     },
     {
       icon: Instagram,
-      title: 'Follow Us',
-      description: 'Stay updated with our work',
+      title: c.followUsTitle,
+      description: c.followUsDescription,
       value: '@Jusor_translation',
       action: handleInstagramClick,
       color: 'from-pink-500 to-purple-600',
-      available: 'Latest updates & portfolio'
+      available: c.availableUpdates
     }
   ];
 
   const officeInfo = [
     {
       icon: MapPin,
-      title: 'Office Location',
+      title: c.officeLocation,
       details: [
         contactData.address,
         `${contactData.city}, ${contactData.country}`
@@ -104,21 +108,23 @@ export function ContactInfoSection({ contactData, siteSettings = {} }: ContactIn
     },
     {
       icon: Clock,
-      title: 'Business Hours',
+      title: c.businessHours,
       details: [
         contactData.business_hours,
-        'Friday & Saturday: Closed',
-        'Emergency services available 24/7'
+        c.weekendClosed,
+        c.emergency247
       ]
     },
     {
       icon: Globe,
-      title: 'Service Areas',
+      title: c.serviceAreas,
       details: [
-        'Dubai, UAE (Primary)',
-        'Middle East & North Africa',
-        'Global remote services',
-        '50+ languages supported'
+        c.areaPrimary,
+        c.areaRegion,
+        c.areaGlobal,
+        // Matches the real "100+ languages" figure from the company profile
+        // (this previously said 50+, contradicting the rest of the site).
+        locale === 'ar' ? 'أكثر من 100 لغة' : '100+ languages supported'
       ]
     }
   ];
@@ -126,18 +132,18 @@ export function ContactInfoSection({ contactData, siteSettings = {} }: ContactIn
   const whyChooseUs = [
     {
       icon: Award,
-      title: 'Certified Professionals',
-      description: 'All our translators are certified and experienced in their respective fields.'
+      title: c.certifiedTitle,
+      description: c.certifiedDescription
     },
     {
       icon: Users,
-      title: 'Expert Team',
-      description: 'Native speakers and subject matter experts for accurate translations.'
+      title: c.expertTeamTitle,
+      description: c.expertTeamDescription
     },
     {
       icon: Headphones,
-      title: '24/7 Support',
-      description: 'Round-the-clock customer support for urgent projects and inquiries.'
+      title: c.supportTitle,
+      description: c.supportDescription
     }
   ];
 
@@ -156,14 +162,14 @@ export function ContactInfoSection({ contactData, siteSettings = {} }: ContactIn
               inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
           >
-            Multiple Ways to Reach Us
+            {c.sectionTitle}
           </h2>
-          <p 
+          <p
             className={`text-xl text-gray-600 max-w-3xl mx-auto transition-all duration-700 delay-100 ${
               inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
           >
-            Choose the communication method that works best for you. We're here to help with all your translation needs.
+            {c.sectionDescription}
           </p>
         </div>
 
@@ -227,7 +233,7 @@ export function ContactInfoSection({ contactData, siteSettings = {} }: ContactIn
               inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
           >
-            <h3 className="text-2xl font-bold text-gray-900 mb-8">Office Information</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-8">{c.officeInformation}</h3>
             <div className="space-y-6">
               {officeInfo.map((info, index) => {
                 const IconComponent = info.icon;
@@ -297,7 +303,7 @@ export function ContactInfoSection({ contactData, siteSettings = {} }: ContactIn
               inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
           >
-            <h3 className="text-2xl font-bold text-gray-900 mb-8">Why Choose Jusor Translation?</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-8">{c.whyChooseTitle}</h3>
             <div className="space-y-6">
               {whyChooseUs.map((item, index) => {
                 const IconComponent = item.icon;
@@ -323,19 +329,19 @@ export function ContactInfoSection({ contactData, siteSettings = {} }: ContactIn
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div>
                   <div className="text-2xl font-bold text-brand-orange mb-1">500+</div>
-                  <div className="text-sm text-gray-600">Projects Completed</div>
+                  <div className="text-sm text-gray-600">{c.statProjects}</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-brand-blue mb-1">50+</div>
-                  <div className="text-sm text-gray-600">Languages Supported</div>
+                  <div className="text-sm text-gray-600">{c.statLanguages}</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-brand-orange mb-1">98%</div>
-                  <div className="text-sm text-gray-600">Client Satisfaction</div>
+                  <div className="text-sm text-gray-600">{c.statSatisfaction}</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-brand-blue mb-1">24/7</div>
-                  <div className="text-sm text-gray-600">Support Available</div>
+                  <div className="text-sm text-gray-600">{c.statSupport}</div>
                 </div>
               </div>
             </div>
@@ -348,9 +354,9 @@ export function ContactInfoSection({ contactData, siteSettings = {} }: ContactIn
             inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
-          <h3 className="text-2xl font-bold mb-4">Need Urgent Translation Services?</h3>
+          <h3 className="text-2xl font-bold mb-4">{c.urgentTitle}</h3>
           <p className="text-red-100 mb-6 max-w-2xl mx-auto">
-            We understand that some projects can't wait. Our emergency translation service is available 24/7 for urgent documents and time-sensitive projects.
+            {c.urgentBody}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
@@ -359,15 +365,15 @@ export function ContactInfoSection({ contactData, siteSettings = {} }: ContactIn
               className="border-white text-white hover:bg-white hover:text-red-600 px-6 py-3 font-semibold"
             >
               <Phone className="mr-2 h-5 w-5" />
-              Call Now: {contactData.phone}
+              {c.callNow}: {contactData.phone}
             </Button>
             <Button
               onClick={handleWhatsAppClick}
               variant="outline"
               className="border-white text-white hover:bg-white hover:text-red-600 px-6 py-3 font-semibold"
             >
-              <MessageCircle className="mr-2 h-5 w-5" />
-              WhatsApp Emergency
+              <MessageCircle className={`h-5 w-5 ${locale === 'ar' ? 'ml-2' : 'mr-2'}`} />
+              {c.whatsappNow}
             </Button>
           </div>
         </div>

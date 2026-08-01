@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Phone, Mail, MapPin, Clock, MessageCircle } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { trackPhoneClick, trackEmailClick, trackWhatsAppClick } from '@/lib/analytics-events';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { localizedPath } from '@/lib/locale';
+import { CONTACT_CONTENT } from '@/lib/content/contact-content';
 
 interface ContactHeroSectionProps {
   contactData: any;
@@ -16,11 +19,13 @@ export function ContactHeroSection({ contactData, siteSettings = {} }: ContactHe
     triggerOnce: true,
     threshold: 0.1,
   });
+  const { locale } = useLanguage();
+  const c = CONTACT_CONTENT[locale].hero;
 
   const companyName = siteSettings.company_name || 'Jusor Translation Services';
-  const heroTitle = contactData.contact_title || 'Get in Touch';
-  const heroSubtitle = contactData.contact_subtitle || 'Ready to break down language barriers? Contact our expert team today.';
-  const heroDescription = contactData.contact_description || 'We provide professional translation and interpretation services across multiple languages. Get your free quote today.';
+  const heroTitle = contactData.contact_title || c.title;
+  const heroSubtitle = contactData.contact_subtitle || c.subtitle;
+  const heroDescription = contactData.contact_description || c.description;
 
   const handleScrollToForm = () => {
     const formSection = document.getElementById('contact-form-section');
@@ -70,16 +75,16 @@ export function ContactHeroSection({ contactData, siteSettings = {} }: ContactHe
         >
           <ol className="flex items-center space-x-2 text-sm text-gray-600">
             <li>
-              <Link 
-                href="/" 
+              <Link
+                href={localizedPath('/', locale)}
                 className="hover:text-brand-orange transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2 rounded"
               >
-                Home
+                {c.breadcrumbHome}
               </Link>
             </li>
             <li className="text-gray-400">/</li>
             <li className="text-gray-900 font-medium" aria-current="page">
-              Contact
+              {c.breadcrumbCurrent}
             </li>
           </ol>
         </nav>
@@ -131,7 +136,7 @@ export function ContactHeroSection({ contactData, siteSettings = {} }: ContactHe
                   <Phone className="w-6 h-6 text-brand-orange" />
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-gray-900 group-hover:text-brand-orange transition-colors duration-300">Call Us</p>
+                  <p className="font-semibold text-gray-900 group-hover:text-brand-orange transition-colors duration-300">{c.callUs}</p>
                   <p className="text-sm text-gray-600">{contactData.phone}</p>
                 </div>
               </button>
@@ -146,7 +151,7 @@ export function ContactHeroSection({ contactData, siteSettings = {} }: ContactHe
                   <Mail className="w-6 h-6 text-brand-blue" />
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-gray-900 group-hover:text-brand-blue transition-colors duration-300">Email Us</p>
+                  <p className="font-semibold text-gray-900 group-hover:text-brand-blue transition-colors duration-300">{c.emailUs}</p>
                   <p className="text-sm text-gray-600">{contactData.email}</p>
                 </div>
               </button>
@@ -164,29 +169,33 @@ export function ContactHeroSection({ contactData, siteSettings = {} }: ContactHe
                 onClick={handleScrollToForm}
                 aria-describedby="get-quote-description"
               >
-                Get Free Quote
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true" />
+                {c.requestQuote}
+                <ArrowRight className={`h-5 w-5 group-hover:translate-x-1 transition-transform duration-300 ${locale === 'ar' ? 'mr-2 rotate-180' : 'ml-2'}`} aria-hidden="true" />
               </Button>
-              
-              <Button 
-                variant="outline" 
+
+              <Button
+                variant="outline"
                 size="lg"
                 className="border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white px-8 py-3 text-lg font-semibold transition-all duration-300"
                 onClick={handleWhatsAppClick}
                 aria-describedby="whatsapp-description"
               >
-                <MessageCircle className="mr-2 h-5 w-5" aria-hidden="true" />
-                WhatsApp Chat
+                <MessageCircle className={`h-5 w-5 ${locale === 'ar' ? 'ml-2' : 'mr-2'}`} aria-hidden="true" />
+                {c.whatsapp}
               </Button>
             </div>
 
             {/* Screen reader descriptions */}
             <div className="sr-only">
               <p id="get-quote-description">
-                Scroll down to fill out our contact form and get a free quote
+                {locale === 'ar'
+                  ? 'مرّر لأسفل لتعبئة نموذج التواصل والحصول على عرض سعر مجاني'
+                  : 'Scroll down to fill out our contact form and get a free quote'}
               </p>
               <p id="whatsapp-description">
-                Start a WhatsApp conversation with our team for instant support
+                {locale === 'ar'
+                  ? 'ابدأ محادثة واتساب مع فريقنا للحصول على دعم فوري'
+                  : 'Start a WhatsApp conversation with our team for instant support'}
               </p>
             </div>
           </div>
@@ -225,11 +234,11 @@ export function ContactHeroSection({ contactData, siteSettings = {} }: ContactHe
                   <div className="flex items-center justify-center space-x-4 pt-4">
                     <div className="flex items-center">
                       <div className="w-2 h-2 bg-green-500 rounded-full mr-2" />
-                      <span className="text-sm text-gray-600">Available Now</span>
+                      <span className="text-sm text-gray-600">{c.availableNow}</span>
                     </div>
                     <div className="flex items-center">
                       <div className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
-                      <span className="text-sm text-gray-600">Expert Team</span>
+                      <span className="text-sm text-gray-600">{c.expertTeam}</span>
                     </div>
                   </div>
                 </div>

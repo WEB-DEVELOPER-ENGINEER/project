@@ -6,6 +6,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { MapPin, Navigation, ExternalLink, Phone, Clock } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { trackPhoneClick } from '@/lib/analytics-events';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { CONTACT_CONTENT } from '@/lib/content/contact-content';
 
 interface ContactMapSectionProps {
   contactData: any;
@@ -13,6 +15,8 @@ interface ContactMapSectionProps {
 }
 
 export function ContactMapSection({ contactData, siteSettings = {} }: ContactMapSectionProps) {
+  const { locale } = useLanguage();
+  const c = CONTACT_CONTENT[locale].map;
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -50,28 +54,12 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
     return mapUrl;
   };
 
-  const landmarks = [
-    {
-      name: 'Dubai International Airport',
-      distance: '15 minutes drive',
-      icon: '✈️'
-    },
-    {
-      name: 'Dubai Metro - Abu Hail Station',
-      distance: '5 minutes walk',
-      icon: '🚇'
-    },
-    {
-      name: 'Deira City Centre',
-      distance: '10 minutes drive',
-      icon: '🏬'
-    },
-    {
-      name: 'Dubai Creek',
-      distance: '8 minutes walk',
-      icon: '🌊'
-    }
-  ];
+  const landmarkIcons = ['✈️', '🚇', '🏬', '🌊'];
+  const landmarks = c.landmarks.map((name, i) => ({
+    name,
+    distance: c.landmarkDistances[i],
+    icon: landmarkIcons[i],
+  }));
 
   return (
     <section 
@@ -88,14 +76,14 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
               inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
           >
-            Visit Our Office
+            {c.sectionTitle}
           </h2>
           <p 
             className={`text-xl text-gray-600 max-w-3xl mx-auto transition-all duration-700 delay-100 ${
               inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
           >
-            Located in the heart of Dubai, our office is easily accessible by public transport and car. Schedule a visit to discuss your translation needs in person.
+            {c.sectionDescription}
           </p>
         </div>
 
@@ -117,7 +105,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
                           <MapPin className="w-10 h-10 text-brand-orange" />
                         </div>
                         <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                          Jusor Translation Office
+                          {c.officeMapLabel}
                         </h3>
                         <p className="text-gray-600 text-sm max-w-xs">
                           {contactData.address}
@@ -128,10 +116,10 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
                         className="bg-brand-orange hover:bg-brand-orange/90 text-white px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                       >
                         <MapPin className="mr-2 h-5 w-5" />
-                        Load Interactive Map
+                        {c.loadMap}
                       </Button>
                       <p className="text-xs text-gray-500 mt-3">
-                        Click to load Google Maps
+                        {c.loadMapHint}
                       </p>
                     </div>
                   ) : (
@@ -158,7 +146,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
                       className="bg-white hover:bg-gray-50 text-gray-900 shadow-lg border border-gray-200"
                     >
                       <Navigation className="w-4 h-4 mr-2" />
-                      Directions
+                      {c.directions}
                     </Button>
                     <Button
                       onClick={() => window.open(contactData.map_url, '_blank')}
@@ -167,7 +155,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
                       className="bg-white hover:bg-gray-50 text-gray-900 shadow-lg border border-gray-200"
                     >
                       <ExternalLink className="w-4 h-4 mr-2" />
-                      Open in Maps
+                      {c.openInMaps}
                     </Button>
                   </div>
                 </div>
@@ -190,8 +178,8 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
                       <MapPin className="w-6 h-6 text-brand-orange" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">Office Address</h3>
-                      <p className="text-sm text-gray-600">Main Location</p>
+                      <h3 className="font-semibold text-gray-900">{c.officeAddress}</h3>
+                      <p className="text-sm text-gray-600">{c.mainLocation}</p>
                     </div>
                   </div>
                   <p className="text-gray-700 mb-4 leading-relaxed">
@@ -214,7 +202,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
               {/* Nearby Landmarks */}
               <Card className="shadow-lg border-0">
                 <CardContent className="p-6">
-                  <h3 className="font-semibold text-gray-900 mb-4">Nearby Landmarks</h3>
+                  <h3 className="font-semibold text-gray-900 mb-4">{c.nearbyLandmarks}</h3>
                   <div className="space-y-3">
                     {landmarks.map((landmark, index) => (
                       <div key={landmark.name} className="flex items-center">
@@ -232,27 +220,27 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
               {/* Transportation */}
               <Card className="shadow-lg border-0 bg-gradient-to-br from-green-50 to-blue-50">
                 <CardContent className="p-6">
-                  <h3 className="font-semibold text-gray-900 mb-4">Getting Here</h3>
+                  <h3 className="font-semibold text-gray-900 mb-4">{c.gettingHere}</h3>
                   <div className="space-y-3 text-sm">
                     <div className="flex items-start">
                       <span className="text-green-600 mr-2">🚗</span>
                       <div>
-                        <p className="font-medium text-gray-900">By Car</p>
-                        <p className="text-gray-600">Free parking available in the building</p>
+                        <p className="font-medium text-gray-900">{c.byCar}</p>
+                        <p className="text-gray-600">{c.byCarDetail}</p>
                       </div>
                     </div>
                     <div className="flex items-start">
                       <span className="text-blue-600 mr-2">🚇</span>
                       <div>
-                        <p className="font-medium text-gray-900">By Metro</p>
-                        <p className="text-gray-600">Abu Hail Station (Green Line) - 5 min walk</p>
+                        <p className="font-medium text-gray-900">{c.byMetro}</p>
+                        <p className="text-gray-600">{c.byMetroDetail}</p>
                       </div>
                     </div>
                     <div className="flex items-start">
                       <span className="text-orange-600 mr-2">🚌</span>
                       <div>
-                        <p className="font-medium text-gray-900">By Bus</p>
-                        <p className="text-gray-600">Multiple bus routes serve the area</p>
+                        <p className="font-medium text-gray-900">{c.byBus}</p>
+                        <p className="text-gray-600">{c.byBusDetail}</p>
                       </div>
                     </div>
                   </div>
@@ -262,7 +250,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
               {/* Visit Appointment */}
               <Card className="shadow-lg border-0 border-brand-orange/20 bg-brand-orange/5">
                 <CardContent className="p-6">
-                  <h3 className="font-semibold text-brand-orange mb-2">Schedule a Visit</h3>
+                  <h3 className="font-semibold text-brand-orange mb-2">{c.scheduleVisit}</h3>
                   <p className="text-sm text-gray-700 mb-4">
                     We recommend scheduling an appointment to ensure our team is available to assist you with your translation needs.
                   </p>
@@ -295,7 +283,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
               <div className="w-16 h-16 bg-brand-orange/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <MapPin className="w-8 h-8 text-brand-orange" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Prime Location</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">{c.primeLocation}</h3>
               <p className="text-gray-600 text-sm">
                 Strategically located in Dubai's business district with easy access to major landmarks and transportation.
               </p>
@@ -304,7 +292,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
               <div className="w-16 h-16 bg-brand-blue/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Clock className="w-8 h-8 text-brand-blue" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Flexible Hours</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">{c.flexibleHours}</h3>
               <p className="text-gray-600 text-sm">
                 Extended business hours and emergency services available to accommodate your schedule and urgent needs.
               </p>
@@ -313,7 +301,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
               <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Phone className="w-8 h-8 text-green-500" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Always Reachable</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">{c.alwaysReachable}</h3>
               <p className="text-gray-600 text-sm">
                 Multiple communication channels ensure you can always reach us when you need translation services.
               </p>
