@@ -1053,18 +1053,24 @@ export async function submitContactForm(data: ContactSubmission): Promise<ApiRes
 
 
 // SEO Metadata Access
-export async function getSEOMetadata(pageType: string, pageId?: number): Promise<SEOMetadata | null> {
-  const cacheKey = getCacheKey('seo:metadata', { pageType, pageId });
+export async function getSEOMetadata(
+  pageType: string,
+  pageId?: number,
+  locale: string = 'en'
+): Promise<SEOMetadata | null> {
+  const cacheKey = getCacheKey('seo:metadata', { pageType, pageId, locale });
   const cached = cacheManager.get<SEOMetadata>(cacheKey);
   if (cached) return cached;
 
   try {
     const result = await executeQuery(`
-      SELECT * FROM seo_metadata 
-      WHERE page_type = $1 AND ($2::integer IS NULL OR page_id = $2)
+      SELECT * FROM seo_metadata
+      WHERE page_type = $1
+        AND ($2::integer IS NULL OR page_id = $2)
+        AND locale = $3
       ORDER BY created_at DESC
       LIMIT 1
-    `, [pageType, pageId]);
+    `, [pageType, pageId, locale]);
 
     const metadata = result.rows[0] || null;
     if (metadata) {

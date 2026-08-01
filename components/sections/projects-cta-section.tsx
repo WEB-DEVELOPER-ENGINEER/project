@@ -4,30 +4,27 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, CheckCircle, MessageSquare, Phone } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { trackPhoneClick, trackEmailClick, trackWhatsAppClick } from '@/lib/analytics-events';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { localizedPath } from '@/lib/locale';
+import { PROJECTS_PAGE_CONTENT } from '@/lib/content/projects-page-content';
 
 interface ProjectsCTASectionProps {
   siteSettings?: Record<string, any>;
 }
 
 export function ProjectsCTASection({ siteSettings = {} }: ProjectsCTASectionProps) {
+  const { locale } = useLanguage();
+  const pp = PROJECTS_PAGE_CONTENT[locale];
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
 
   const companyName = siteSettings.company_name || 'Jusor Translation Services';
-  const ctaTitle = siteSettings.projects_cta_title || 'Ready to Start Your Translation Project?';
-  const ctaDescription = siteSettings.projects_cta_description || 
-    'Join hundreds of satisfied clients who trust us with their most important translation and interpretation needs. Get your free quote today.';
+  const ctaTitle = siteSettings.projects_cta_title || pp.ctaTitle;
+  const ctaDescription = siteSettings.projects_cta_description || pp.ctaDescription;
 
-  const benefits = [
-    'Free project consultation and quote',
-    'Certified professional translators',
-    'Fast turnaround times',
-    'Quality guarantee on all projects',
-    '24/7 customer support',
-    'Competitive pricing'
-  ];
+  const benefits = pp.ctaBenefits;
 
   const handleGetQuote = () => {
     window.location.href = '/contact#contact-form-section';
@@ -103,7 +100,7 @@ export function ProjectsCTASection({ siteSettings = {} }: ProjectsCTASectionProp
               aria-describedby="get-quote-description"
             >
               <MessageSquare className="mr-2 h-5 w-5" aria-hidden="true" />
-              Get Free Quote
+              {pp.getFreeQuote}
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true" />
             </Button>
             
@@ -115,17 +112,17 @@ export function ProjectsCTASection({ siteSettings = {} }: ProjectsCTASectionProp
               aria-describedby="call-us-description"
             >
               <Phone className="mr-2 h-5 w-5" aria-hidden="true" />
-              Call Us Now
+              {pp.callUsNow}
             </Button>
           </div>
 
           {/* Screen reader descriptions */}
           <div className="sr-only">
             <p id="get-quote-description">
-              Contact us through our quote form to discuss your translation project requirements
+              {pp.srGetQuote}
             </p>
             <p id="call-us-description">
-              Call us directly to speak with our translation experts
+              {pp.srCallUs}
             </p>
           </div>
 
@@ -137,7 +134,7 @@ export function ProjectsCTASection({ siteSettings = {} }: ProjectsCTASectionProp
           >
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
               <div>
-                <div className="text-white/80 text-sm font-medium mb-1">Email Us</div>
+                <div className="text-white/80 text-sm font-medium mb-1">{pp.emailUs}</div>
                 <a 
                   href={`mailto:${siteSettings.company_email || 'info@jusortrans.com'}`}
                   onClick={() => trackEmailClick(siteSettings.company_email || 'info@jusortrans.com', 'projects_cta_footer')}
@@ -147,7 +144,7 @@ export function ProjectsCTASection({ siteSettings = {} }: ProjectsCTASectionProp
                 </a>
               </div>
               <div>
-                <div className="text-white/80 text-sm font-medium mb-1">Call Us</div>
+                <div className="text-white/80 text-sm font-medium mb-1">{pp.callUs}</div>
                 <a 
                   href={`tel:${siteSettings.company_phone || '+971503244329'}`}
                   onClick={() => trackPhoneClick(siteSettings.company_phone || '+971503244329', 'projects_cta_footer')}
@@ -165,7 +162,7 @@ export function ProjectsCTASection({ siteSettings = {} }: ProjectsCTASectionProp
                   rel="noopener noreferrer"
                   className="text-white hover:text-brand-orange transition-colors duration-200 font-semibold"
                 >
-                  Quick Chat
+                  {pp.quickChat}
                 </a>
               </div>
             </div>

@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { CheckCircle, Star, Award, Shield } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { Service } from '@/lib/types';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { SERVICE_DETAIL_CONTENT, fill } from '@/lib/content/service-detail-content';
 
 interface ServiceDetailSpecificationsProps {
   service: Service;
@@ -12,6 +14,8 @@ interface ServiceDetailSpecificationsProps {
 }
 
 export function ServiceDetailSpecifications({ service, siteSettings = {} }: ServiceDetailSpecificationsProps) {
+  const { locale } = useLanguage();
+  const sc = SERVICE_DETAIL_CONTENT[locale];
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -58,14 +62,14 @@ export function ServiceDetailSpecifications({ service, siteSettings = {} }: Serv
               inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
           >
-            Service Specifications
+            {sc.specificationsTitle}
           </h2>
           <p 
             className={`text-xl text-gray-600 leading-relaxed transition-all duration-700 delay-100 ${
               inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
           >
-            Detailed specifications and capabilities for our {service.title.toLowerCase()} service.
+            {fill(sc.specificationsSubtitle, service.title)}
           </p>
         </div>
 
@@ -126,7 +130,7 @@ export function ServiceDetailSpecifications({ service, siteSettings = {} }: Serv
                       <Star className="h-6 w-6 text-white" aria-hidden="true" />
                     </div>
                     <h3 className="text-xl font-bold text-gray-900">
-                      Languages Supported
+                      {sc.languagesSupported}
                     </h3>
                   </div>
                   
@@ -236,7 +240,7 @@ export function ServiceDetailSpecifications({ service, siteSettings = {} }: Serv
             <Card className="border-0 shadow-xl bg-gradient-to-br from-gray-50 to-white">
               <CardContent className="p-12">
                 <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-                  Service Highlights
+                  {sc.serviceHighlights}
                 </h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

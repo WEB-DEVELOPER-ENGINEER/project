@@ -297,7 +297,7 @@ async function main() {
           categoryId,
           s.categoryGroup,
           ['Arabic', 'English'],
-          `${s.title} | جسور للترجمة`,
+          s.title,
           s.meta_description,
           s.key_benefits.slice(0, 5),
           'احصل على عرض سعر مجاني',

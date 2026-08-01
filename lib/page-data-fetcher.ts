@@ -422,10 +422,10 @@ export async function fetchContactPageData(): Promise<ContactPageData> {
       instagram_url: siteSettings.instagram_url || 'https://www.instagram.com/Jusor_translation',
       whatsapp_number: siteSettings.whatsapp_number || '971503244329',
       whatsapp_message: siteSettings.whatsapp_message || 'Hello Jusor, I would like to inquire about your services.',
-      business_hours: siteSettings.business_hours || 'Sunday - Thursday: 9:00 AM - 6:00 PM',
-      contact_title: siteSettings.contact_title || 'Get in Touch',
-      contact_subtitle: siteSettings.contact_subtitle || 'Ready to break down language barriers? Contact our expert team today.',
-      contact_description: siteSettings.contact_description || 'We provide professional translation and interpretation services across multiple languages. Get your free quote today.',
+      business_hours: siteSettings.business_hours,
+      contact_title: siteSettings.contact_title,
+      contact_subtitle: siteSettings.contact_subtitle,
+      contact_description: siteSettings.contact_description,
     };
 
     return {

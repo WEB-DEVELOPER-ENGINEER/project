@@ -4,6 +4,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Globe, Shield, Clock, Users, Award, Zap, Star, CheckCircle, Target, Lightbulb, Settings, TrendingUp } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { Service } from '@/lib/types';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { SERVICE_DETAIL_CONTENT, fill } from '@/lib/content/service-detail-content';
 
 interface ServiceDetailFeaturesProps {
   service: Service;
@@ -27,6 +29,8 @@ const iconMap: Record<string, any> = {
 };
 
 export function ServiceDetailFeatures({ service, siteSettings = {} }: ServiceDetailFeaturesProps) {
+  const { locale } = useLanguage();
+  const sc = SERVICE_DETAIL_CONTENT[locale];
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -57,14 +61,14 @@ export function ServiceDetailFeatures({ service, siteSettings = {} }: ServiceDet
               inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
           >
-            What Makes Our {service.title} Special
+            {fill(sc.whatMakesSpecial, service.title)}
           </h2>
           <p 
             className={`text-xl text-gray-600 leading-relaxed transition-all duration-700 delay-100 ${
               inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
           >
-            We combine cutting-edge technology with proven methodologies to deliver exceptional results that exceed expectations.
+            {sc.whatMakesSpecialBody}
           </p>
         </div>
 

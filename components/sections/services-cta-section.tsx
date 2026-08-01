@@ -5,6 +5,7 @@ import { ArrowRight, Phone, Mail, MessageCircle } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { trackPhoneClick, trackEmailClick } from '@/lib/analytics-events';
 import { useLanguage } from '@/components/providers/LanguageProvider';
+import { SERVICES_PAGE_CONTENT, fillValue } from '@/lib/content/services-page-content';
 
 interface ServicesCTASectionProps {
   siteSettings?: Record<string, any>;
@@ -15,7 +16,8 @@ export function ServicesCTASection({ siteSettings = {} }: ServicesCTASectionProp
     triggerOnce: true,
     threshold: 0.1,
   });
-  const { isRtl } = useLanguage();
+  const { isRtl, locale } = useLanguage();
+  const sp = SERVICES_PAGE_CONTENT[locale];
 
   const companyName = siteSettings.company_name || 'JUSOR Translation Services';
   const ctaTitle = siteSettings.services_cta_title || (isRtl ? 'هل تحتاج ترجمة معتمدة؟' : 'Need a Certified Translation?');
@@ -85,7 +87,7 @@ export function ServicesCTASection({ siteSettings = {} }: ServicesCTASectionProp
               onClick={handleContactClick}
               aria-describedby="get-started-description"
             >
-              Get Started Today
+              {sp.getStartedToday}
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true" />
             </Button>
             
@@ -101,7 +103,7 @@ export function ServicesCTASection({ siteSettings = {} }: ServicesCTASectionProp
               }}
               aria-describedby="view-services-description"
             >
-              View All Services
+              {sp.viewAllServices}
             </Button>
           </div>
 
@@ -112,7 +114,7 @@ export function ServicesCTASection({ siteSettings = {} }: ServicesCTASectionProp
             }`}
           >
             <p className="text-blue-100 mb-6 text-lg">
-              Or reach out to us directly:
+              {sp.orReachOut}
             </p>
             
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
@@ -120,7 +122,7 @@ export function ServicesCTASection({ siteSettings = {} }: ServicesCTASectionProp
                 <button
                   onClick={handlePhoneClick}
                   className="flex items-center text-white hover:text-blue-100 transition-colors duration-300 group focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-blue rounded-lg px-4 py-2"
-                  aria-label={`Call us at ${companyPhone}`}
+                  aria-label={fillValue(sp.callUsAt, companyPhone)}
                 >
                   <Phone className="h-5 w-5 mr-3 group-hover:scale-110 transition-transform duration-300" aria-hidden="true" />
                   <span className="font-semibold">{companyPhone}</span>
@@ -131,7 +133,7 @@ export function ServicesCTASection({ siteSettings = {} }: ServicesCTASectionProp
                 <button
                   onClick={handleEmailClick}
                   className="flex items-center text-white hover:text-blue-100 transition-colors duration-300 group focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-blue rounded-lg px-4 py-2"
-                  aria-label={`Email us at ${companyEmail}`}
+                  aria-label={fillValue(sp.emailUsAt, companyEmail)}
                 >
                   <Mail className="h-5 w-5 mr-3 group-hover:scale-110 transition-transform duration-300" aria-hidden="true" />
                   <span className="font-semibold">{companyEmail}</span>
@@ -141,10 +143,10 @@ export function ServicesCTASection({ siteSettings = {} }: ServicesCTASectionProp
               <button
                 onClick={handleContactClick}
                 className="flex items-center text-white hover:text-blue-100 transition-colors duration-300 group focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-blue rounded-lg px-4 py-2"
-                aria-label="Send us a message through our contact form"
+                aria-label={sp.srSendMessage}
               >
                 <MessageCircle className="h-5 w-5 mr-3 group-hover:scale-110 transition-transform duration-300" aria-hidden="true" />
-                <span className="font-semibold">Send Message</span>
+                <span className="font-semibold">{sp.sendMessage}</span>
               </button>
             </div>
           </div>
@@ -161,7 +163,7 @@ export function ServicesCTASection({ siteSettings = {} }: ServicesCTASectionProp
                   24/7
                 </div>
                 <div className="text-blue-100 font-medium">
-                  Support Available
+                  {sp.supportAvailable}
                 </div>
               </div>
               <div className="text-center">
@@ -169,7 +171,7 @@ export function ServicesCTASection({ siteSettings = {} }: ServicesCTASectionProp
                   99%
                 </div>
                 <div className="text-blue-100 font-medium">
-                  Client Satisfaction
+                  {sp.clientSatisfaction}
                 </div>
               </div>
               <div className="text-center">
@@ -177,7 +179,7 @@ export function ServicesCTASection({ siteSettings = {} }: ServicesCTASectionProp
                   500+
                 </div>
                 <div className="text-blue-100 font-medium">
-                  Projects Delivered
+                  {sp.projectsDelivered}
                 </div>
               </div>
             </div>
@@ -186,10 +188,10 @@ export function ServicesCTASection({ siteSettings = {} }: ServicesCTASectionProp
           {/* Screen reader descriptions */}
           <div className="sr-only">
             <p id="get-started-description">
-              Contact us to begin your project and receive a free consultation
+              {sp.srGetStarted}
             </p>
             <p id="view-services-description">
-              Scroll up to view our complete range of professional services
+              {sp.srViewServices}
             </p>
           </div>
         </div>

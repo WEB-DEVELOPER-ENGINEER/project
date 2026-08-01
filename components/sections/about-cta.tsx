@@ -19,6 +19,7 @@ import {
 import { trackPhoneClick, trackEmailClick } from '@/lib/analytics-events';
 import { useLanguage } from '@/components/providers/LanguageProvider';
 import { ABOUT_CONTENT } from '@/lib/content/about-content';
+import { companyName as resolveCompanyName } from '@/lib/company';
 
 interface AboutCTAProps {
   siteSettings: Record<string, any>;
@@ -27,7 +28,7 @@ interface AboutCTAProps {
 export function AboutCTA({ siteSettings }: AboutCTAProps) {
   const { locale } = useLanguage();
   const ac = ABOUT_CONTENT[locale].cta;
-  const companyName = siteSettings.company_name || 'JUSOR';
+  const companyName = resolveCompanyName(siteSettings, locale);
 
   return (
     <section className="bg-gradient-to-br from-brand-orange via-brand-orange/90 to-brand-blue text-white py-20 relative overflow-hidden">
@@ -42,11 +43,10 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
         {/* Main CTA Section */}
         <div className="text-center max-w-4xl mx-auto mb-16">
           <h2 className="text-3xl lg:text-5xl font-bold mb-6">
-            Ready to Break Down Language Barriers?
+            {ac.heading}
           </h2>
           <p className="text-xl lg:text-2xl text-white/90 mb-8 leading-relaxed">
-            Join hundreds of satisfied clients who trust {companyName} for their translation and localization needs. 
-            Let's discuss how we can help you reach new markets and connect with global audiences.
+            {ac.body.replace(/\{company\}/g, companyName)}
           </p>
 
           {/* Primary CTAs */}
@@ -58,7 +58,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
             >
               <Link href="/contact">
                 <FileText className="h-6 w-6 mr-2" />
-                Get Free Quote
+                {ac.getFreeQuote}
                 <ArrowRight className="h-6 w-6 ml-2" />
               </Link>
             </Button>
@@ -71,7 +71,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
             >
               <Link href="/services">
                 <Globe className="h-6 w-6 mr-2" />
-                Explore Services
+                {ac.exploreServices}
               </Link>
             </Button>
           </div>
@@ -84,11 +84,11 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
             </div>
             <div className="flex items-center gap-2">
               <Star className="h-5 w-5" />
-              <span>99.8% Satisfaction Rate</span>
+              <span>{ac.satisfactionRate}</span>
             </div>
             <div className="flex items-center gap-2">
               <Users className="h-5 w-5" />
-              <span>500+ Happy Clients</span>
+              <span>{ac.happyClients}</span>
             </div>
           </div>
         </div>
@@ -102,10 +102,10 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
                 <Phone className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-3">
-                Call Us Today
+                {ac.callUsToday}
               </h3>
               <p className="text-white/80 mb-6">
-                Speak directly with our translation experts for immediate assistance and personalized solutions.
+                {ac.callUsBody}
               </p>
               <Button 
                 variant="outline"
@@ -113,10 +113,10 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
                 asChild
               >
                 <a 
-                  href={`tel:${siteSettings.phone || '+1-555-0123'}`}
-                  onClick={() => trackPhoneClick(siteSettings.phone || '+1-555-0123', 'about_cta_section')}
+                  href={`tel:${siteSettings.company_phone || '+971 50 324 4329'}`}
+                  onClick={() => trackPhoneClick(siteSettings.company_phone || '+971 50 324 4329', 'about_cta_section')}
                 >
-                  {siteSettings.phone || '+1 (555) 012-3456'}
+                  {siteSettings.company_phone || '+971 50 324 4329'}
                 </a>
               </Button>
             </CardContent>
@@ -129,10 +129,10 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
                 <Mail className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-3">
-                Email Us
+                {ac.emailUs}
               </h3>
               <p className="text-white/80 mb-6">
-                Send us your project details and requirements for a detailed quote and timeline.
+                {ac.emailUsBody}
               </p>
               <Button 
                 variant="outline"
@@ -140,10 +140,10 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
                 asChild
               >
                 <a 
-                  href={`mailto:${siteSettings.email || 'info@jusortrans.com'}`}
-                  onClick={() => trackEmailClick(siteSettings.email || 'info@jusortrans.com', 'about_cta_section')}
+                  href={`mailto:${siteSettings.company_email || 'info@jusortrans.com'}`}
+                  onClick={() => trackEmailClick(siteSettings.company_email || 'info@jusortrans.com', 'about_cta_section')}
                 >
-                  {siteSettings.email || 'info@jusortrans.com'}
+                  {siteSettings.company_email || 'info@jusortrans.com'}
                 </a>
               </Button>
             </CardContent>
@@ -156,10 +156,10 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
                 <Calendar className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-3">
-                Schedule a Meeting
+                {ac.scheduleMeeting}
               </h3>
               <p className="text-white/80 mb-6">
-                Book a consultation to discuss your specific translation needs and project requirements.
+                {ac.scheduleMeetingBody}
               </p>
               <Button 
                 variant="outline"
@@ -167,7 +167,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
                 asChild
               >
                 <Link href="/contact">
-                  Book Consultation
+                  {ac.bookConsultation}
                 </Link>
               </Button>
             </CardContent>
@@ -184,7 +184,6 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
               </h3>
               <p className="text-white/80 mb-6">
                 {ac.learnMoreBody}
-                from legal and technical documents to marketing materials and software localization.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button 
@@ -193,7 +192,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
                   asChild
                 >
                   <Link href="/services">
-                    View All Services
+                    {ac.viewAllServices}
                   </Link>
                 </Button>
                 <Button 
@@ -202,7 +201,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
                   asChild
                 >
                   <Link href="/projects">
-                    See Our Work
+                    {ac.seeOurWork}
                   </Link>
                 </Button>
               </div>
@@ -213,7 +212,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
         {/* Final Message */}
         <div className="text-center mt-16 pt-8 border-t border-white/20">
           <p className="text-white/80 text-lg">
-            Ready to expand your global reach? Let's start the conversation today.
+            {ac.closingLine}
           </p>
         </div>
       </div>

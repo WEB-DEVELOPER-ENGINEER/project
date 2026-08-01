@@ -4,6 +4,9 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, CheckCircle, FolderOpen } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { Project } from '@/lib/types';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { localizedPath } from '@/lib/locale';
+import { PROJECTS_PAGE_CONTENT } from '@/lib/content/projects-page-content';
 
 interface ProjectsHeroSectionProps {
   projects: Project[];
@@ -12,23 +15,19 @@ interface ProjectsHeroSectionProps {
 }
 
 export function ProjectsHeroSection({ projects, totalProjects, siteSettings = {} }: ProjectsHeroSectionProps) {
+  const { locale } = useLanguage();
+  const pp = PROJECTS_PAGE_CONTENT[locale];
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
 
   const companyName = siteSettings.company_name || 'Jusor Translation Services';
-  const heroTitle = siteSettings.projects_hero_title || 'Our Portfolio of Excellence';
-  const heroDescription = siteSettings.projects_hero_description || 
-    'Discover our successful translation and interpretation projects that have helped businesses break language barriers and expand globally.';
+  const heroTitle = siteSettings.projects_hero_title || pp.heroTitle;
+  const heroDescription = siteSettings.projects_hero_description || pp.heroDescription;
 
   // Key highlights for projects
-  const highlights = [
-    'Diverse industry expertise',
-    'Certified quality translations',
-    'Timely project delivery',
-    'Client satisfaction guaranteed'
-  ];
+  const highlights = pp.heroHighlights;
 
   const handleScrollToProjects = () => {
     const projectsSection = document.getElementById('projects-grid-section');
@@ -69,14 +68,14 @@ export function ProjectsHeroSection({ projects, totalProjects, siteSettings = {}
                 <a 
                   href="/" 
                   className="hover:text-brand-orange transition-colors duration-200"
-                  aria-label="Go to homepage"
+                  aria-label={pp.goToHomepage}
                 >
-                  Home
+                  {pp.home}
                 </a>
               </li>
               <li className="text-gray-400">/</li>
               <li className="text-brand-orange font-medium" aria-current="page">
-                Projects
+                {pp.projects}
               </li>
             </ol>
           </nav>
@@ -88,7 +87,7 @@ export function ProjectsHeroSection({ projects, totalProjects, siteSettings = {}
             }`}
           >
             <FolderOpen className="mr-2 h-4 w-4" aria-hidden="true" />
-            Our Portfolio
+            {pp.eyebrow}
           </div>
 
           {/* Main heading */}
@@ -142,7 +141,7 @@ export function ProjectsHeroSection({ projects, totalProjects, siteSettings = {}
               onClick={handleScrollToProjects}
               aria-describedby="explore-projects-description"
             >
-              Explore Our Projects
+              {pp.exploreProjects}
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true" />
             </Button>
             
@@ -153,17 +152,17 @@ export function ProjectsHeroSection({ projects, totalProjects, siteSettings = {}
               onClick={handleContactClick}
               aria-describedby="start-project-description"
             >
-              Start Your Project
+              {pp.startYourProject}
             </Button>
           </div>
 
           {/* Screen reader descriptions */}
           <div className="sr-only">
             <p id="explore-projects-description">
-              Scroll down to view our portfolio of successful translation and interpretation projects
+              {pp.srScrollDown}
             </p>
             <p id="start-project-description">
-              Contact us to discuss your translation project requirements
+              {pp.srContact}
             </p>
           </div>
 
@@ -180,7 +179,7 @@ export function ProjectsHeroSection({ projects, totalProjects, siteSettings = {}
                     {totalProjects}+
                   </div>
                   <div className="text-gray-600 font-medium">
-                    Completed Projects
+                    {pp.completedProjects}
                   </div>
                 </div>
                 <div className="text-center">
@@ -188,7 +187,7 @@ export function ProjectsHeroSection({ projects, totalProjects, siteSettings = {}
                     50+
                   </div>
                   <div className="text-gray-600 font-medium">
-                    Languages Covered
+                    {pp.languagesCovered}
                   </div>
                 </div>
                 <div className="text-center">
@@ -196,7 +195,7 @@ export function ProjectsHeroSection({ projects, totalProjects, siteSettings = {}
                     99%
                   </div>
                   <div className="text-gray-600 font-medium">
-                    Client Satisfaction
+                    {pp.clientSatisfaction}
                   </div>
                 </div>
               </div>

@@ -726,6 +726,15 @@ export async function initializeDatabase() {
         UNIQUE(page_type, page_id)
       );
 
+      -- seo_metadata predates locale routing: rows created before this column
+      -- existed are English, so backfill 'en' and re-key the uniqueness
+      -- constraint on (page_type, page_id, locale) so an Arabic row can
+      -- coexist with its English counterpart.
+      ALTER TABLE seo_metadata ADD COLUMN IF NOT EXISTS locale VARCHAR(5) NOT NULL DEFAULT 'en';
+      ALTER TABLE seo_metadata DROP CONSTRAINT IF EXISTS seo_metadata_page_type_page_id_key;
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_seo_metadata_unique
+        ON seo_metadata(page_type, COALESCE(page_id, -1), locale);
+
       -- Create indexes for seo_metadata
       CREATE INDEX IF NOT EXISTS idx_seo_metadata_page ON seo_metadata(page_type, page_id);
 

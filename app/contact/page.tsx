@@ -10,18 +10,22 @@ import { JsonLd } from '@/components/seo/json-ld';
 import { fetchContactPageData } from '@/lib/page-data-service';
 import { getSEOMetadata, getCompanyMetrics } from '@/lib/data-access';
 import { getLocale } from '@/lib/locale-server';
+import { siteUrl } from '@/lib/company';
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const locale = getLocale();
     const [seoData, { siteSettings, contactData }] = await Promise.all([
-      getSEOMetadata('contact').catch(() => null),
+      getSEOMetadata('contact', undefined, locale).catch(() => null),
       fetchContactPageData()
     ]);
 
-    const title = seoData?.meta_title || 'Contact Us | Get in Touch with Our Expert Team';
-    const description = seoData?.meta_description || 
-      'Contact Jusor Translation Services for professional translation, interpretation, and language solutions. Get a free quote today. Available 24/7 in Dubai, UAE.';
+    const title = seoData?.meta_title || (locale === 'ar'
+      ? 'تواصل معنا | فريق جسور الكلمات للترجمة المعتمدة'
+      : 'Contact Us | Get in Touch with Our Expert Team');
+    const description = seoData?.meta_description || (locale === 'ar'
+      ? 'تواصل مع جسور الكلمات لخدمات الترجمة التحريرية والفورية المعتمدة في دبي. احصل على عرض سعر مجاني اليوم.'
+      : 'Contact Jusor Translation Services for professional translation, interpretation, and language solutions. Get a free quote today. Available 24/7 in Dubai, UAE.');
 
     return {
       title,
@@ -45,7 +49,7 @@ export async function generateMetadata(): Promise<Metadata> {
       openGraph: {
         title: seoData?.og_title || title,
         description: seoData?.og_description || description,
-        url: `${process.env.NEXT_PUBLIC_SITE_URL}/contact`,
+        url: `${siteUrl(siteSettings)}/contact`,
         type: 'website',
         locale: siteSettings.site_locale || 'en_US',
         siteName: siteSettings.company_name || 'Jusor Translation Services',
@@ -65,11 +69,11 @@ export async function generateMetadata(): Promise<Metadata> {
         site: '@jusortranslation',
       },
       alternates: {
-        canonical: seoData?.canonical_url || `${process.env.NEXT_PUBLIC_SITE_URL}${locale === 'ar' ? '/ar' : ''}/contact`,
+        canonical: seoData?.canonical_url || `${siteUrl(siteSettings)}${locale === 'ar' ? '/ar' : ''}/contact`,
         languages: {
-          en: `${process.env.NEXT_PUBLIC_SITE_URL}/contact`,
-          ar: `${process.env.NEXT_PUBLIC_SITE_URL}/ar/contact`,
-          'x-default': `${process.env.NEXT_PUBLIC_SITE_URL}/contact`,
+          en: `${siteUrl(siteSettings)}/contact`,
+          ar: `${siteUrl(siteSettings)}/ar/contact`,
+          'x-default': `${siteUrl(siteSettings)}/contact`,
         },
       },
       other: {
@@ -114,12 +118,12 @@ export default async function ContactPage() {
       '@context': 'https://schema.org',
       '@type': 'ContactPage',
       name: 'Contact Us',
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/contact`,
+      url: `${siteUrl(siteSettings)}/contact`,
       mainEntity: {
         '@type': 'Organization',
         name: siteSettings.company_name || 'Jusor Translation Services',
-        url: process.env.NEXT_PUBLIC_SITE_URL,
-        logo: `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`,
+        url: siteUrl(siteSettings),
+        logo: `${siteUrl(siteSettings)}/logo.png`,
         contactPoint: {
           '@type': 'ContactPoint',
           telephone: contactData.phone || '+971 50 324 4329',
@@ -138,9 +142,9 @@ export default async function ContactPage() {
           contactData.instagram_url || 'https://www.instagram.com/Jusor_translation',
           'https://www.linkedin.com/company/jusor-translation',
           'https://www.facebook.com/jusortranslation',
-          `${process.env.NEXT_PUBLIC_SITE_URL}/services`,
-          `${process.env.NEXT_PUBLIC_SITE_URL}/about`,
-          `${process.env.NEXT_PUBLIC_SITE_URL}/blog`
+          `${siteUrl(siteSettings)}/services`,
+          `${siteUrl(siteSettings)}/about`,
+          `${siteUrl(siteSettings)}/blog`
         ],
       },
     };
@@ -153,13 +157,13 @@ export default async function ContactPage() {
           '@type': 'ListItem',
           position: 1,
           name: 'Home',
-          item: process.env.NEXT_PUBLIC_SITE_URL,
+          item: siteUrl(siteSettings),
         },
         {
           '@type': 'ListItem',
           position: 2,
           name: 'Contact',
-          item: `${process.env.NEXT_PUBLIC_SITE_URL}/contact`,
+          item: `${siteUrl(siteSettings)}/contact`,
         },
       ],
     };
@@ -168,11 +172,11 @@ export default async function ContactPage() {
     const localBusinessSchema = {
       '@context': 'https://schema.org',
       '@type': 'LocalBusiness',
-      '@id': `${process.env.NEXT_PUBLIC_SITE_URL}/#localbusiness`,
+      '@id': `${siteUrl(siteSettings)}/#localbusiness`,
       name: siteSettings.company_name || 'Jusor Translation Services',
       alternateName: 'Jusor Translation',
       description: 'Professional translation and interpretation services in Dubai, UAE. Certified translators for legal, medical, technical, and business documents.',
-      url: process.env.NEXT_PUBLIC_SITE_URL,
+      url: siteUrl(siteSettings),
       telephone: contactData.phone || '+971 50 324 4329',
       email: contactData.email || 'info@jusortrans.com',
       priceRange: '$$',

@@ -22,6 +22,19 @@ export interface AboutContent {
     certifiedTranslation: string;
     professionalTeam: string;
     qualityAssured: string;
+    globalImpact: string;
+    globalImpactCaption: string;
+    ourStory: string;
+  };
+  hero: {
+    imageTitle: string;
+    imageCaption: string;
+    playVideo: string;
+    clientsServed: string;
+    languagesSupported: string;
+    yearsOfExperience: string;
+    yearsOfExcellence: string;
+    globalReach: string;
   };
   values: {
     badge: string;
@@ -31,6 +44,9 @@ export interface AboutContent {
     principlesCaption: string;
     livingTitle: string;
     livingBody: string;
+    coreValuesTitle: string;
+    /** Fallback value cards used when the DB has no core_values rows. */
+    items: { title: string; description: string; icon: string }[];
   };
   team: {
     badge: string;
@@ -44,7 +60,11 @@ export interface AboutContent {
     yearsAverageExperience: string;
     cultureTitle: string;
     cultureBody: string;
+    cultureIntro: string; // "{company}" interpolated
     cultureCaption: string;
+    expertTeamMember: string;
+    expertTeamMemberBody: string;
+    globalTeam: string;
     bullets: string[];
   };
   stats: {
@@ -63,10 +83,31 @@ export interface AboutContent {
     qualityManagementProcess: string;
     recognitionTitle: string;
     recognitionBody: string;
+    whatWeGuarantee: string;
+    projectsCompleted: string;
+    languagePairs: string;
+    clientSatisfaction: string;
+    supportAvailable: string;
     badges: string[];
   };
   cta: {
     freeConsultation: string;
+    heading: string;
+    body: string; // "{company}" interpolated
+    getFreeQuote: string;
+    exploreServices: string;
+    callUsToday: string;
+    callUsBody: string;
+    emailUs: string;
+    emailUsBody: string;
+    scheduleMeeting: string;
+    scheduleMeetingBody: string;
+    bookConsultation: string;
+    viewAllServices: string;
+    seeOurWork: string;
+    closingLine: string;
+    satisfactionRate: string;
+    happyClients: string;
     learnMoreTitle: string;
     learnMoreBody: string;
   };
@@ -80,6 +121,7 @@ export interface AboutContent {
     journeyBody: string;
     lookingAheadTitle: string;
     lookingAheadBody: string;
+    lookingAheadDetail: string;
   };
 }
 
@@ -95,6 +137,19 @@ export const ABOUT_CONTENT: Record<Locale, AboutContent> = {
       certifiedTranslation: 'Certified Translation',
       professionalTeam: 'Professional Team',
       qualityAssured: 'Quality Assured',
+      globalImpact: 'Global Impact',
+      globalImpactCaption: 'Connecting cultures through professional translation',
+      ourStory: 'Our Story',
+    },
+    hero: {
+      imageTitle: 'Certified Translation, Done Properly',
+      imageCaption: 'Bridging languages for clients across the UAE',
+      playVideo: 'Play company introduction video',
+      clientsServed: 'Clients Served',
+      languagesSupported: 'Languages Supported',
+      yearsOfExperience: 'Years of Experience',
+      yearsOfExcellence: 'Years of Excellence',
+      globalReach: 'Global Reach',
     },
     values: {
       badge: 'Core Values',
@@ -106,6 +161,45 @@ export const ABOUT_CONTENT: Record<Locale, AboutContent> = {
       livingTitle: 'Living Our Values Every Day',
       livingBody:
         "These values aren't just words on a page — they're the foundation of how we operate, how we treat every document entrusted to us, and how we work with our clients.",
+      coreValuesTitle: 'Our Core Values',
+      items: [
+        {
+          title: 'Quality Excellence',
+          description:
+            'We hold every translation to the same standard: accurate, consistent, and appropriate for its audience and purpose.',
+          icon: 'Award',
+        },
+        {
+          title: 'Cultural Sensitivity',
+          description:
+            'Translation is more than swapping words. We carry meaning, context and cultural nuance across languages.',
+          icon: 'Globe',
+        },
+        {
+          title: 'Client Partnership',
+          description:
+            'We work as a long-term partner, not a one-off vendor — learning your terminology and your requirements.',
+          icon: 'Handshake',
+        },
+        {
+          title: 'Innovation',
+          description:
+            'We adopt tools that improve consistency and turnaround, while keeping human expertise at the centre.',
+          icon: 'Lightbulb',
+        },
+        {
+          title: 'Integrity',
+          description:
+            'We are transparent about scope, price and timing, and we handle every document in confidence.',
+          icon: 'Shield',
+        },
+        {
+          title: 'Team Excellence',
+          description:
+            'Our work rests on the expertise and care of qualified translators and reviewers.',
+          icon: 'Users',
+        },
+      ],
     },
     team: {
       badge: 'Our Team',
@@ -119,9 +213,14 @@ export const ABOUT_CONTENT: Record<Locale, AboutContent> = {
       countriesRepresented: 'Countries Represented',
       yearsAverageExperience: 'Years Average Experience',
       cultureTitle: 'Our Culture',
+      cultureIntro: 'At {company}, every document is handled by a translator qualified in its subject area — legal, medical, technical or financial — not by a generalist.',
       cultureBody:
         'We foster a collaborative environment where continuous learning is encouraged and quality is paramount — every translation is reviewed before it reaches the client.',
       cultureCaption: 'United by excellence, diversity in expertise',
+      expertTeamMember: 'Expert Team Member',
+      expertTeamMemberBody:
+        'Our certified translators bring years of experience and subject-matter expertise to every project.',
+      globalTeam: 'Global Team',
       bullets: [
         'All translators are certified professionals',
         'Native speakers for authentic translations',
@@ -147,6 +246,11 @@ export const ABOUT_CONTENT: Record<Locale, AboutContent> = {
       recognitionTitle: 'Industry Recognition',
       recognitionBody:
         'Our commitment to excellence has been recognised by industry bodies and clients across the UAE',
+      whatWeGuarantee: 'What We Guarantee',
+      projectsCompleted: 'Projects Completed',
+      languagePairs: 'Language Pairs',
+      clientSatisfaction: 'Client Satisfaction',
+      supportAvailable: 'Support Available',
       badges: [
         'Certified Translation Services',
         'Confidential & Secure',
@@ -156,6 +260,23 @@ export const ABOUT_CONTENT: Record<Locale, AboutContent> = {
     },
     cta: {
       freeConsultation: 'Free Consultation',
+      heading: 'Ready to Break Down Language Barriers?',
+      body:
+        'Talk to {company} about your documents — we will tell you what is needed, what it costs, and when you will have it.',
+      getFreeQuote: 'Get Free Quote',
+      exploreServices: 'Explore Services',
+      callUsToday: 'Call Us Today',
+      callUsBody: 'Speak directly with our team for immediate assistance.',
+      emailUs: 'Email Us',
+      emailUsBody: 'Send us your documents and requirements for a detailed quote and timeline.',
+      scheduleMeeting: 'Schedule a Meeting',
+      scheduleMeetingBody: 'Book a consultation to discuss your translation requirements in detail.',
+      bookConsultation: 'Book Consultation',
+      viewAllServices: 'View All Services',
+      seeOurWork: 'See Our Work',
+      closingLine: 'Ready to get started? Send us your documents today.',
+      satisfactionRate: '99.8% Satisfaction Rate',
+      happyClients: '500+ Happy Clients',
       learnMoreTitle: 'Learn More About Our Services',
       learnMoreBody:
         'Explore our comprehensive range of certified translation, interpretation, and localization services.',
@@ -172,6 +293,8 @@ export const ABOUT_CONTENT: Record<Locale, AboutContent> = {
       lookingAheadTitle: 'Looking Ahead',
       lookingAheadBody:
         'Our journey continues as we deepen our specialist expertise and maintain the standards our clients rely on.',
+      lookingAheadDetail:
+        'Each milestone reflects not just growth, but our commitment to helping clients communicate accurately across languages.',
     },
   },
 
@@ -186,6 +309,19 @@ export const ABOUT_CONTENT: Record<Locale, AboutContent> = {
       certifiedTranslation: 'ترجمة معتمدة',
       professionalTeam: 'فريق محترف',
       qualityAssured: 'جودة مضمونة',
+      globalImpact: 'أثر عالمي',
+      globalImpactCaption: 'نصل بين الثقافات عبر ترجمة احترافية',
+      ourStory: 'قصتنا',
+    },
+    hero: {
+      imageTitle: 'ترجمة معتمدة، تُنجز كما ينبغي',
+      imageCaption: 'نصل بين اللغات لعملائنا في دولة الإمارات',
+      playVideo: 'تشغيل فيديو التعريف بالشركة',
+      clientsServed: 'عميل',
+      languagesSupported: 'لغة مدعومة',
+      yearsOfExperience: 'سنة خبرة',
+      yearsOfExcellence: 'سنة من التميّز',
+      globalReach: 'حضور عالمي',
     },
     values: {
       badge: 'قيمنا الأساسية',
@@ -196,6 +332,45 @@ export const ABOUT_CONTENT: Record<Locale, AboutContent> = {
       livingTitle: 'نعيش قيمنا كل يوم',
       livingBody:
         'هذه القيم ليست مجرد كلمات على الورق — بل هي أساس طريقة عملنا، وكيفية تعاملنا مع كل مستند يُعهد إلينا به، وكيفية تعاوننا مع عملائنا.',
+      coreValuesTitle: 'قيمنا الأساسية',
+      items: [
+        {
+          title: 'التميّز في الجودة',
+          description:
+            'نلتزم في كل ترجمة بالمعيار نفسه: الدقة والاتساق والملاءمة للجمهور والغرض المقصود.',
+          icon: 'Award',
+        },
+        {
+          title: 'الحساسية الثقافية',
+          description:
+            'الترجمة أكثر من استبدال الكلمات؛ فنحن ننقل المعنى والسياق والفروق الثقافية بين اللغات.',
+          icon: 'Globe',
+        },
+        {
+          title: 'الشراكة مع العميل',
+          description:
+            'نعمل كشريك طويل الأمد لا كمورّد لمرة واحدة، فنتعرّف على مصطلحاتك ومتطلباتك.',
+          icon: 'Handshake',
+        },
+        {
+          title: 'الابتكار',
+          description:
+            'نعتمد أدوات تحسّن الاتساق وسرعة الإنجاز، مع إبقاء الخبرة البشرية في صميم العمل.',
+          icon: 'Lightbulb',
+        },
+        {
+          title: 'النزاهة',
+          description:
+            'نوضّح نطاق العمل والسعر والمدة بشفافية، ونتعامل مع كل مستند بسرية تامة.',
+          icon: 'Shield',
+        },
+        {
+          title: 'تميّز الفريق',
+          description:
+            'يقوم عملنا على خبرة وعناية مترجمين ومراجعين مؤهلين.',
+          icon: 'Users',
+        },
+      ],
     },
     team: {
       badge: 'فريقنا',
@@ -208,9 +383,14 @@ export const ABOUT_CONTENT: Record<Locale, AboutContent> = {
       countriesRepresented: 'دولة ممثّلة',
       yearsAverageExperience: 'متوسط سنوات الخبرة',
       cultureTitle: 'ثقافتنا',
+      cultureIntro: 'في {company}، يتولّى كل مستند مترجمٌ مؤهل في مجاله — القانوني أو الطبي أو التقني أو المالي — لا مترجم عام.',
       cultureBody:
         'نحرص على بيئة عمل تعاونية نشجّع فيها التعلّم المستمر ونضع الجودة في المقام الأول — تخضع كل ترجمة للمراجعة قبل تسليمها للعميل.',
       cultureCaption: 'يجمعنا التميّز، ويثرينا تنوّع الخبرات',
+      expertTeamMember: 'عضو فريق متخصص',
+      expertTeamMemberBody:
+        'يجمع مترجمونا المعتمدون بين سنوات الخبرة والتخصص الدقيق في كل مشروع.',
+      globalTeam: 'فريق متعدد الخبرات',
       bullets: [
         'جميع مترجمينا محترفون معتمدون',
         'متحدثون أصليون لترجمات أصيلة',
@@ -241,9 +421,31 @@ export const ABOUT_CONTENT: Record<Locale, AboutContent> = {
         'مترجمون محترفون',
         'جودة مضمونة',
       ],
+      whatWeGuarantee: 'ما نضمنه لك',
+      projectsCompleted: 'مشروع منجز',
+      languagePairs: 'زوج لغوي',
+      clientSatisfaction: 'رضا العملاء',
+      supportAvailable: 'دعم متاح',
     },
     cta: {
       freeConsultation: 'استشارة مجانية',
+      heading: 'هل أنت مستعد لتجاوز حاجز اللغة؟',
+      body:
+        'تحدّث إلى {company} بشأن مستنداتك — سنوضّح لك المطلوب والتكلفة وموعد التسليم.',
+      getFreeQuote: 'احصل على عرض سعر مجاني',
+      exploreServices: 'استكشف خدماتنا',
+      callUsToday: 'اتصل بنا اليوم',
+      callUsBody: 'تحدّث مباشرة مع فريقنا للحصول على مساعدة فورية.',
+      emailUs: 'راسلنا عبر البريد',
+      emailUsBody: 'أرسل لنا مستنداتك ومتطلباتك لتحصل على عرض سعر مفصّل وجدول زمني.',
+      scheduleMeeting: 'حدّد موعد اجتماع',
+      scheduleMeetingBody: 'احجز استشارة لمناقشة متطلبات الترجمة لديك بالتفصيل.',
+      bookConsultation: 'احجز استشارة',
+      viewAllServices: 'عرض جميع الخدمات',
+      seeOurWork: 'اطّلع على أعمالنا',
+      closingLine: 'مستعد للبدء؟ أرسل لنا مستنداتك اليوم.',
+      satisfactionRate: 'نسبة رضا 99.8%',
+      happyClients: '+500 عميل',
       learnMoreTitle: 'اعرف المزيد عن خدماتنا',
       learnMoreBody:
         'استكشف مجموعتنا الشاملة من خدمات الترجمة المعتمدة والترجمة الفورية والتوطين.',
@@ -259,6 +461,8 @@ export const ABOUT_CONTENT: Record<Locale, AboutContent> = {
       lookingAheadTitle: 'نتطلّع إلى الأمام',
       lookingAheadBody:
         'تستمر مسيرتنا في تعميق خبراتنا التخصصية والحفاظ على المعايير التي يعتمد عليها عملاؤنا.',
+      lookingAheadDetail:
+        'كل محطة لا تعكس النمو فحسب، بل تعكس التزامنا بمساعدة عملائنا على التواصل بدقة عبر اللغات.',
     },
   },
 };

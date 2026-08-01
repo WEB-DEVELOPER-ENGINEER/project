@@ -5,11 +5,12 @@ import { fetchStaticPageData } from '@/lib/page-data-fetcher';
 import { getLocale } from '@/lib/locale-server';
 import { localizedPath } from '@/lib/locale';
 import { PRIVACY_CONTENT, PRIVACY_LAST_UPDATED } from '@/lib/content/privacy-content';
+import { companyName as resolveCompanyName, companyAddress } from '@/lib/company';
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = getLocale();
   const { siteSettings } = await fetchStaticPageData('privacy');
-  const companyName = siteSettings.company_name || 'JUSOR Translation Services';
+  const companyName = resolveCompanyName(siteSettings, locale);
   const baseUrl = (siteSettings.site_url || 'https://jusortrans.com').replace(/\/$/, '');
 
   const title = locale === 'ar' ? 'سياسة الخصوصية' : 'Privacy Policy';
@@ -43,11 +44,9 @@ export default async function PrivacyPage() {
   const { siteSettings, navigationData, footerData } = await fetchStaticPageData('privacy');
   const content = PRIVACY_CONTENT[locale];
 
-  const companyName = siteSettings.company_name || (locale === 'ar' ? 'جسور الكلمات للترجمة' : 'JUSOR Translation Services');
+  const companyName = resolveCompanyName(siteSettings, locale);
   const contactEmail = siteSettings.company_email || siteSettings.contact_email || 'info@jusortrans.com';
-  const contactAddress = siteSettings.company_address || (locale === 'ar'
-    ? 'مركز أبو سيف للأعمال - مبنى الكاظم - بلوك A - طابق الميزانين - مكتب 40B، أبو هيل، دبي، الإمارات العربية المتحدة'
-    : 'Abu Saif Business Center - Al-Kazim Building - Block A - M Floor - Office 40B, Abu Hail, Dubai, United Arab Emirates');
+  const contactAddress = companyAddress(siteSettings, locale);
 
   const formattedDate = new Date(PRIVACY_LAST_UPDATED).toLocaleDateString(
     locale === 'ar' ? 'ar-AE' : 'en-GB',

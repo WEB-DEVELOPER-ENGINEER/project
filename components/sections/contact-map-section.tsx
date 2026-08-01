@@ -17,6 +17,7 @@ interface ContactMapSectionProps {
 export function ContactMapSection({ contactData, siteSettings = {} }: ContactMapSectionProps) {
   const { locale } = useLanguage();
   const c = CONTACT_CONTENT[locale].map;
+  const cm = CONTACT_CONTENT[locale].common;
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -42,7 +43,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
     // Convert Google Maps share URL to embed URL
     if (mapUrl.includes('maps.app.goo.gl') || mapUrl.includes('goo.gl')) {
       // For shortened URLs, we'll use a generic embed with the address
-      const address = encodeURIComponent(contactData.address);
+      const address = encodeURIComponent((locale === 'ar' ? cm.address : contactData.address || cm.address));
       const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
       if (apiKey && apiKey !== 'demo') {
         return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${address}&zoom=16`;
@@ -108,7 +109,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
                           {c.officeMapLabel}
                         </h3>
                         <p className="text-gray-600 text-sm max-w-xs">
-                          {contactData.address}
+                          {(locale === 'ar' ? cm.address : contactData.address || cm.address)}
                         </p>
                       </div>
                       <Button
@@ -183,18 +184,18 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
                     </div>
                   </div>
                   <p className="text-gray-700 mb-4 leading-relaxed">
-                    {contactData.address}
+                    {(locale === 'ar' ? cm.address : contactData.address || cm.address)}
                   </p>
                   <div className="flex items-center text-sm text-gray-600 mb-4">
                     <Clock className="w-4 h-4 mr-2" />
-                    {contactData.business_hours}
+                    {(locale === 'ar' ? cm.businessHours : contactData.business_hours || cm.businessHours)}
                   </div>
                   <Button
                     onClick={handlePhoneClick}
                     className="w-full bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold"
                   >
                     <Phone className="mr-2 h-4 w-4" />
-                    Call Before Visiting
+                    {c.callBeforeVisiting}
                   </Button>
                 </CardContent>
               </Card>
@@ -252,7 +253,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
                 <CardContent className="p-6">
                   <h3 className="font-semibold text-brand-orange mb-2">{c.scheduleVisit}</h3>
                   <p className="text-sm text-gray-700 mb-4">
-                    We recommend scheduling an appointment to ensure our team is available to assist you with your translation needs.
+                    {c.scheduleVisitDescription}
                   </p>
                   <Button
                     onClick={() => {
@@ -264,7 +265,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
                     variant="outline"
                     className="w-full border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-white"
                   >
-                    Schedule Appointment
+                    {c.scheduleAppointment}
                   </Button>
                 </CardContent>
               </Card>
@@ -285,7 +286,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">{c.primeLocation}</h3>
               <p className="text-gray-600 text-sm">
-                Strategically located in Dubai's business district with easy access to major landmarks and transportation.
+                {c.primeLocationDetail}
               </p>
             </div>
             <div>
@@ -294,7 +295,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">{c.flexibleHours}</h3>
               <p className="text-gray-600 text-sm">
-                Extended business hours and emergency services available to accommodate your schedule and urgent needs.
+                {c.flexibleHoursDetail}
               </p>
             </div>
             <div>
@@ -303,7 +304,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">{c.alwaysReachable}</h3>
               <p className="text-gray-600 text-sm">
-                Multiple communication channels ensure you can always reach us when you need translation services.
+                {c.alwaysReachableDetail}
               </p>
             </div>
           </div>

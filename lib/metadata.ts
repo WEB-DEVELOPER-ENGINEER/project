@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { getSiteSettings } from './data-access';
+import { getLocale } from './locale-server';
+import { companyName } from './company';
 
 export async function generateMetadata(
   pageTitle?: string,
@@ -7,6 +9,11 @@ export async function generateMetadata(
   pageKeywords?: string[]
 ): Promise<Metadata> {
   const settings = await getSiteSettings();
+  const locale = getLocale();
+  // The site name is appended to every page title, so reading settings.company_name
+  // directly (English-only in the DB) put 'JUSOR Translation Services' in the
+  // <title> of every /ar page.
+  const siteName = companyName(settings, locale);
   
   // Enforce correct production domain
   if (settings.site_url) {
@@ -22,24 +29,36 @@ export async function generateMetadata(
     settings.twitter_image = settings.twitter_image.replace('jusor-translation.com', 'jusortrans.com');
   }
   
-  const title = pageTitle 
-    ? settings.meta_title_template?.replace('%s', pageTitle) || `${pageTitle} | ${settings.company_name}`
-    : settings.meta_default_title || settings.company_name;
+  // These site_settings values are English-only, so on /ar they have to be
+  // ignored in favour of the locale-aware siteName rather than used as a
+  // fallback — otherwise every Arabic page title ends in an English suffix.
+  const titleTemplate = locale === 'ar'
+    ? settings.meta_title_template_ar || `%s | ${siteName}`
+    : settings.meta_title_template || `%s | ${siteName}`;
+  const defaultTitle = locale === 'ar'
+    ? settings.meta_default_title_ar || siteName
+    : settings.meta_default_title || siteName;
+
+  const title = pageTitle
+    ? titleTemplate.replace('%s', pageTitle)
+    : defaultTitle;
     
-  const description = pageDescription || settings.meta_description || settings.company_description;
+  const description = pageDescription || (locale === 'ar'
+    ? settings.meta_description_ar || settings.company_description_ar
+    : settings.meta_description || settings.company_description);
   const keywords = pageKeywords || settings.meta_keywords || [];
   
   return {
     metadataBase: new URL(settings.site_url),
     title: {
       default: title,
-      template: settings.meta_title_template || '%s | ' + settings.company_name
+      template: titleTemplate
     },
     description,
     keywords,
-    authors: [{ name: settings.meta_author || settings.company_name }],
-    creator: settings.meta_creator || settings.company_name,
-    publisher: settings.meta_publisher || settings.company_name,
+    authors: [{ name: (locale === 'ar' ? settings.meta_author_ar : settings.meta_author) || siteName }],
+    creator: (locale === 'ar' ? settings.meta_creator_ar : settings.meta_creator) || siteName,
+    publisher: (locale === 'ar' ? settings.meta_publisher_ar : settings.meta_publisher) || siteName,
     formatDetection: {
       email: false,
       address: false,
@@ -64,12 +83,12 @@ export async function generateMetadata(
       url: settings.site_url,
       title: settings.og_title || title,
       description: settings.og_description || description,
-      siteName: settings.company_name,
+      siteName,
       images: [{
         url: settings.og_image || '/jusor.png',
         width: 1200,
         height: 630,
-        alt: settings.og_image_alt || `${settings.company_name} Logo`,
+        alt: settings.og_image_alt || `${siteName} Logo`,
       }],
     },
     twitter: {

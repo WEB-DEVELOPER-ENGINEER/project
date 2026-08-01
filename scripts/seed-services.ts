@@ -289,7 +289,7 @@ async function main() {
           categoryId,
           s.categorySlug,
           ['Arabic', 'English'],
-          `${s.title} | JUSOR Translation Services`,
+          s.title,
           s.meta_description,
           s.key_benefits.slice(0, 5),
           'Get a Free Quote',

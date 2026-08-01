@@ -5,6 +5,8 @@ import { ArrowRight, Phone, Mail, MessageCircle, CheckCircle } from 'lucide-reac
 import { useInView } from 'react-intersection-observer';
 import { Service } from '@/lib/types';
 import { trackPhoneClick, trackEmailClick } from '@/lib/analytics-events';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { SERVICE_DETAIL_CONTENT, fill } from '@/lib/content/service-detail-content';
 
 interface ServiceDetailCTAProps {
   service: Service;
@@ -12,6 +14,8 @@ interface ServiceDetailCTAProps {
 }
 
 export function ServiceDetailCTA({ service, siteSettings = {} }: ServiceDetailCTAProps) {
+  const { locale } = useLanguage();
+  const sc = SERVICE_DETAIL_CONTENT[locale];
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -42,12 +46,7 @@ export function ServiceDetailCTA({ service, siteSettings = {} }: ServiceDetailCT
   // Use dynamic benefits from database with safe array handling
   const benefits = Array.isArray(service.key_benefits) 
     ? service.key_benefits.slice(0, 4) // Limit to 4 for CTA section
-    : (service.key_benefits ? [service.key_benefits] : [
-        'Free initial consultation',
-        'Custom solution design', 
-        'Transparent pricing',
-        'Dedicated project manager'
-      ]);
+    : (service.key_benefits ? [service.key_benefits] : sc.defaultBenefits);
 
   return (
     <section 
@@ -74,10 +73,10 @@ export function ServiceDetailCTA({ service, siteSettings = {} }: ServiceDetailCT
                   id="service-cta-heading"
                   className="text-3xl font-bold tracking-tight text-white sm:text-4xl mb-6"
                 >
-                  {service.cta_primary_text || `Ready to Start Your ${service.title} Project?`}
+                  {service.cta_primary_text || sc.readyToStart}
                 </h2>
                 <p className="text-xl text-blue-100 leading-relaxed mb-8">
-                  {service.short_description || `Join hundreds of satisfied clients who have transformed their business with our expert ${service.title.toLowerCase()} services.`}
+                  {service.short_description || fill(sc.readyToStartBody, service.title)}
                 </p>
               </div>
 
@@ -121,7 +120,7 @@ export function ServiceDetailCTA({ service, siteSettings = {} }: ServiceDetailCT
                   }}
                   aria-describedby="start-project-description"
                 >
-                  {service.cta_primary_text || 'Start Your Project'}
+                  {service.cta_primary_text || sc.startYourProject}
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true" />
                 </Button>
                 
@@ -138,7 +137,7 @@ export function ServiceDetailCTA({ service, siteSettings = {} }: ServiceDetailCT
                   }}
                   aria-describedby="view-all-services-description"
                 >
-                  {service.cta_secondary_text || 'View All Services'}
+                  {service.cta_secondary_text || sc.viewAllServices}
                 </Button>
               </div>
 
@@ -149,7 +148,7 @@ export function ServiceDetailCTA({ service, siteSettings = {} }: ServiceDetailCT
                 }`}
               >
                 <p className="text-blue-100 mb-4 text-lg">
-                  Or contact us directly:
+                  {sc.orContactDirectly}
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -180,10 +179,10 @@ export function ServiceDetailCTA({ service, siteSettings = {} }: ServiceDetailCT
               {/* Screen reader descriptions */}
               <div className="sr-only">
                 <p id="start-project-description">
-                  Contact us to start your {service.title} project with a free consultation
+                  {fill(sc.srContact, service.title)}
                 </p>
                 <p id="view-all-services-description">
-                  View all our professional services and solutions
+                  {sc.srViewAll}
                 </p>
               </div>
             </div>
@@ -197,7 +196,7 @@ export function ServiceDetailCTA({ service, siteSettings = {} }: ServiceDetailCT
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
                 <div className="text-center">
                   <h3 className="text-2xl font-bold text-white mb-6">
-                    Get Started Today
+                    {sc.getStartedToday}
                   </h3>
                   <div className="space-y-4 text-blue-100">
                     {service.service_highlights && Object.entries(service.service_highlights).slice(0, 4).map(([key, value], index, array) => (
@@ -208,20 +207,20 @@ export function ServiceDetailCTA({ service, siteSettings = {} }: ServiceDetailCT
                     )) || (
                       <>
                         <div className="flex items-center justify-between py-3 border-b border-white/20">
-                          <span>Response Time</span>
-                          <span className="text-white font-semibold">Within 24 hours</span>
+                          <span>{sc.responseTime}</span>
+                          <span className="text-white font-semibold">{sc.within24Hours}</span>
                         </div>
                         <div className="flex items-center justify-between py-3 border-b border-white/20">
-                          <span>Free Consultation</span>
-                          <span className="text-white font-semibold">30 minutes</span>
+                          <span>{sc.freeConsultation}</span>
+                          <span className="text-white font-semibold">{sc.thirtyMinutes}</span>
                         </div>
                         <div className="flex items-center justify-between py-3 border-b border-white/20">
-                          <span>Project Start</span>
-                          <span className="text-white font-semibold">Within 1 week</span>
+                          <span>{sc.projectStart}</span>
+                          <span className="text-white font-semibold">{sc.within1Week}</span>
                         </div>
                         <div className="flex items-center justify-between py-3">
-                          <span>Support</span>
-                          <span className="text-white font-semibold">24/7 available</span>
+                          <span>{sc.support}</span>
+                          <span className="text-white font-semibold">{sc.available247}</span>
                         </div>
                       </>
                     )}

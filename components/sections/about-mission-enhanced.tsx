@@ -34,10 +34,10 @@ export function AboutMissionEnhanced({ aboutData, siteSettings }: AboutMissionEn
             {ac.purposeTitle}
           </div>
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-            Mission, Vision & Purpose
+            {ac.heading}
           </h2>
           <p className="text-lg text-gray-600">
-            Discover what drives us to deliver exceptional translation and localization services
+            {ac.subheading}
           </p>
         </div>
 
@@ -123,10 +123,10 @@ export function AboutMissionEnhanced({ aboutData, siteSettings }: AboutMissionEn
                       <Globe className="h-10 w-10 text-brand-blue" />
                     </div>
                     <h3 className="text-xl font-bold text-gray-800 mb-3">
-                      Global Impact
+                      {ac.globalImpact}
                     </h3>
                     <p className="text-gray-600">
-                      Connecting cultures through professional translation services
+                      {ac.globalImpactCaption}
                     </p>
                   </div>
                 </div>
@@ -161,7 +161,7 @@ export function AboutMissionEnhanced({ aboutData, siteSettings }: AboutMissionEn
           <div className="bg-gradient-to-r from-gray-50 to-white rounded-2xl p-8 lg:p-12">
             <div className="max-w-4xl mx-auto text-center">
               <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-6">
-                Our Story
+                {ac.ourStory}
               </h3>
               <div className="prose prose-lg prose-gray max-w-none">
                 {aboutData.story && (

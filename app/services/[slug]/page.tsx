@@ -15,6 +15,7 @@ import { getServiceBySlug, getServices, getSEOMetadata, getBlogPosts, getService
 import { fetchLayoutData } from '@/lib/page-data-fetcher';
 import { getLocale } from '@/lib/locale-server';
 import { localizedPath } from '@/lib/locale';
+import { siteUrl } from '@/lib/company';
 
 interface ServicePageProps {
   params: {
@@ -52,11 +53,11 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
     const { siteSettings } = await fetchLayoutData();
 
     // Clean site settings URL
-    const cleanedBaseUrl = (siteSettings.site_url || process.env.NEXT_PUBLIC_SITE_URL || 'https://jusortrans.com')
+    const cleanedBaseUrl = (siteSettings.site_url || siteUrl(siteSettings))
       .replace('jusor-translation.com', 'jusortrans.com')
       .replace(/\/$/, '');
 
-    const title = seoData?.meta_title || service.meta_title || `${service.title} | JUSOR Translation Services`;
+    const title = seoData?.meta_title || service.meta_title || service.title;
     const description = seoData?.meta_description || service.meta_description ||
       service.content.replace(/<[^>]*>/g, '').substring(0, 160) ||
       `Learn about our ${service.title} service and how it can benefit your business.`;

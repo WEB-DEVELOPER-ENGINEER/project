@@ -7,6 +7,9 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Calendar, Eye, ExternalLink } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { Project } from '@/lib/types';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { localizedPath } from '@/lib/locale';
+import { PROJECTS_PAGE_CONTENT } from '@/lib/content/projects-page-content';
 
 interface ProjectsGridSectionProps {
   projects: Project[];
@@ -14,6 +17,8 @@ interface ProjectsGridSectionProps {
 }
 
 export function ProjectsGridSection({ projects, siteSettings = {} }: ProjectsGridSectionProps) {
+  const { locale } = useLanguage();
+  const pp = PROJECTS_PAGE_CONTENT[locale];
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -26,13 +31,13 @@ export function ProjectsGridSection({ projects, siteSettings = {} }: ProjectsGri
         <div className="container">
           <div className="text-center py-16">
             <div className="text-6xl mb-4">📁</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">No Projects Available</h2>
-            <p className="text-gray-600 mb-8">We're currently updating our portfolio. Please check back soon!</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">{pp.noProjects}</h2>
+            <p className="text-gray-600 mb-8">{pp.noProjectsBody}</p>
             <Button 
               onClick={() => window.location.href = '/contact#contact-form-section'}
               className="bg-brand-orange hover:bg-brand-orange/90"
             >
-              Contact Us for Custom Projects
+              {pp.contactForCustom}
             </Button>
           </div>
         </div>
@@ -40,9 +45,8 @@ export function ProjectsGridSection({ projects, siteSettings = {} }: ProjectsGri
     );
   }
 
-  const sectionTitle = siteSettings.projects_grid_title || 'Featured Projects';
-  const sectionDescription = siteSettings.projects_grid_description || 
-    'Explore our diverse portfolio of successful translation and interpretation projects across various industries and languages.';
+  const sectionTitle = siteSettings.projects_grid_title || pp.gridTitle;
+  const sectionDescription = siteSettings.projects_grid_description || pp.gridDescription;
 
   const formatDate = (dateString: string) => {
     try {
@@ -189,7 +193,7 @@ export function ProjectsGridSection({ projects, siteSettings = {} }: ProjectsGri
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
             >
-              View All Projects
+              {pp.viewAllProjects}
               <ExternalLink className="ml-2 h-4 w-4" aria-hidden="true" />
             </Button>
           </div>
@@ -203,18 +207,17 @@ export function ProjectsGridSection({ projects, siteSettings = {} }: ProjectsGri
         >
           <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-8 max-w-2xl mx-auto">
             <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              Ready to Start Your Project?
+              {pp.readyToStart}
             </h3>
             <p className="text-gray-600 mb-6">
-              Join our satisfied clients and let us help you break language barriers 
-              with our professional translation and interpretation services.
+              {pp.readyToStartBody}
             </p>
             <Button 
               size="lg"
               className="bg-brand-blue hover:bg-brand-blue/90 text-white px-8 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
               onClick={() => window.location.href = '/contact#contact-form-section'}
             >
-              Get Free Quote
+              {pp.getFreeQuote}
             </Button>
           </div>
         </div>

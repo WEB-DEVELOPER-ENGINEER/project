@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, CheckCircle, Star, Users, Clock, Award } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { Service } from '@/lib/types';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { localizedPath } from '@/lib/locale';
+import { SERVICE_DETAIL_CONTENT, fill } from '@/lib/content/service-detail-content';
 
 interface ServiceDetailHeroProps {
   service: Service;
@@ -21,6 +24,8 @@ const serviceIcons: Record<string, any> = {
 };
 
 export function ServiceDetailHero({ service, siteSettings = {} }: ServiceDetailHeroProps) {
+  const { locale } = useLanguage();
+  const sc = SERVICE_DETAIL_CONTENT[locale];
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -82,19 +87,19 @@ export function ServiceDetailHero({ service, siteSettings = {} }: ServiceDetailH
           <ol className="flex items-center space-x-2 text-sm text-gray-600">
             <li>
               <Link 
-                href="/" 
+                href={localizedPath('/', locale)}
                 className="hover:text-brand-orange transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2 rounded"
               >
-                Home
+                {sc.home}
               </Link>
             </li>
             <li className="text-gray-400">/</li>
             <li>
               <Link 
-                href="/services" 
+                href={localizedPath('/services', locale)}
                 className="hover:text-brand-orange transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2 rounded"
               >
-                Services
+                {sc.services}
               </Link>
             </li>
             <li className="text-gray-400">/</li>
@@ -114,11 +119,11 @@ export function ServiceDetailHero({ service, siteSettings = {} }: ServiceDetailH
               }`}
             >
               <Link 
-                href="/services"
+                href={localizedPath('/services', locale)}
                 className="inline-flex items-center text-brand-blue hover:text-brand-orange transition-colors duration-300 font-medium group focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2 rounded"
               >
                 <ArrowRight className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform duration-300" aria-hidden="true" />
-                Back to Services
+                {sc.backToServices}
               </Link>
             </div>
 
@@ -166,7 +171,7 @@ export function ServiceDetailHero({ service, siteSettings = {} }: ServiceDetailH
                       inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                     }`}
                     dangerouslySetInnerHTML={{ 
-                      __html: service.short_description || service.content || 'Professional service tailored to your needs.' 
+                      __html: service.short_description || service.content || sc.heroFallbackDescription
                     }}
                   />
 
@@ -210,7 +215,7 @@ export function ServiceDetailHero({ service, siteSettings = {} }: ServiceDetailH
                         }
                       }}
                     >
-                      {service.cta_primary_text || 'Get Started Today'}
+                      {service.cta_primary_text || sc.getStartedToday}
                       <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true" />
                     </Button>
                     <Button 
@@ -228,7 +233,7 @@ export function ServiceDetailHero({ service, siteSettings = {} }: ServiceDetailH
                         }
                       }}
                     >
-                      {service.cta_secondary_text || 'Learn More'}
+                      {service.cta_secondary_text || sc.learnMore}
                     </Button>
                   </div>
                 </div>
@@ -242,7 +247,7 @@ export function ServiceDetailHero({ service, siteSettings = {} }: ServiceDetailH
                       }`}
                     >
                       <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-                        Why Choose Us?
+                        {sc.whyChooseUs}
                       </h2>
                       <div className="grid grid-cols-2 gap-6">
                         {stats.map((stat, index) => (
@@ -277,19 +282,19 @@ export function ServiceDetailHero({ service, siteSettings = {} }: ServiceDetailH
                     <ServiceIcon className="h-12 w-12 text-white" aria-hidden="true" />
                   </div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                    Professional {service.title}
+                    {fill(sc.professionalService, service.title)}
                   </h2>
                   <p className="text-gray-600 mb-6">
-                    Expert solutions tailored to your business needs with proven results and dedicated support.
+                    {sc.expertSolutionsBody}
                   </p>
                   <div className="flex items-center justify-center space-x-4 text-sm text-gray-500">
                     <div className="flex items-center">
                       <div className="w-2 h-2 bg-green-500 rounded-full mr-2" />
-                      Available Now
+                      {sc.availableNow}
                     </div>
                     <div className="flex items-center">
                       <div className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
-                      Expert Team
+                      {sc.expertTeam}
                     </div>
                   </div>
                 </div>

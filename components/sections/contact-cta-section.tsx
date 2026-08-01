@@ -216,7 +216,7 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
                 href="/services"
                 className="inline-flex items-center text-white hover:text-brand-orange transition-colors duration-300 font-medium focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-blue rounded"
               >
-                Explore All Our Services
+                {c.exploreAllServices}
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
@@ -231,10 +231,10 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
         >
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
             <h3 className="text-2xl font-bold text-white mb-4">
-              Still Have Questions?
+              {c.stillQuestions}
             </h3>
             <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
-              Our translation experts are standing by to help you with any questions about your project requirements, pricing, or timeline.
+              {c.stillQuestionsBody}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
@@ -243,7 +243,7 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
                 className="border-white text-white hover:bg-white hover:text-brand-blue px-6 py-3 font-semibold bg-transparent"
               >
                 <Phone className="mr-2 h-5 w-5" aria-hidden="true" />
-                Call Us Now
+                {c.callUsNow}
               </Button>
               <Button
                 onClick={() => {
@@ -254,7 +254,7 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
                 }}
                 className="bg-brand-orange hover:bg-brand-orange/90 text-white px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                Send Us a Message
+                {c.sendUsMessage}
               </Button>
             </div>
           </div>

@@ -8,6 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { RichText } from '@/components/ui/safe-html';
 import { ArrowRight, Play, Award, Globe, Users } from 'lucide-react';
 import { AboutUs } from '@/lib/types';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { ABOUT_CONTENT } from '@/lib/content/about-content';
+import { companyName as resolveCompanyName } from '@/lib/company';
 
 interface AboutHeroEnhancedProps {
   aboutData: AboutUs;
@@ -16,13 +19,15 @@ interface AboutHeroEnhancedProps {
 }
 
 export function AboutHeroEnhanced({ aboutData, siteSettings, companyMetrics }: AboutHeroEnhancedProps) {
-  const companyName = siteSettings.company_name || 'JUSOR';
+  const { locale } = useLanguage();
+  const ac = ABOUT_CONTENT[locale].hero;
+  const companyName = resolveCompanyName(siteSettings, locale);
 
   // Get dynamic stats from company metrics or use defaults
   const stats = companyMetrics?.slice(0, 3) || [
-    { metric_value: '500+', metric_label: 'Clients Served' },
-    { metric_value: '100+', metric_label: 'Languages Supported' },
-    { metric_value: '15+', metric_label: 'Years of Experience' }
+    { metric_value: '500+', metric_label: ac.clientsServed },
+    { metric_value: '100+', metric_label: ac.languagesSupported },
+    { metric_value: '15+', metric_label: ac.yearsOfExperience }
   ];
 
   // "Years of Excellence" badge — pulled from the real years-of-experience
@@ -49,7 +54,7 @@ export function AboutHeroEnhanced({ aboutData, siteSettings, companyMetrics }: A
             {/* Badge */}
             <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orange">
               <Award className="h-4 w-4 mr-2" />
-              {yearsBadge} Years of Excellence
+              {yearsBadge} {ac.yearsOfExcellence}
             </div>
 
             {/* Main Heading */}
@@ -128,7 +133,7 @@ export function AboutHeroEnhanced({ aboutData, siteSettings, companyMetrics }: A
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Globe className="h-4 w-4 text-brand-orange" />
-                <span>Global Reach</span>
+                <span>{ac.globalReach}</span>
               </div>
             </div>
           </div>
@@ -163,10 +168,10 @@ export function AboutHeroEnhanced({ aboutData, siteSettings, companyMetrics }: A
                         <Globe className="h-12 w-12 text-brand-blue" />
                       </div>
                       <h3 className="text-2xl font-bold text-gray-800 mb-2">
-                        Global Translation Excellence
+                        {ac.imageTitle}
                       </h3>
                       <p className="text-gray-600">
-                        Connecting cultures through language
+                        {ac.imageCaption}
                       </p>
                     </div>
                   </div>
@@ -181,7 +186,7 @@ export function AboutHeroEnhanced({ aboutData, siteSettings, companyMetrics }: A
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-gray-900">{yearsBadge}</div>
-                    <div className="text-sm text-gray-600">Years of Excellence</div>
+                    <div className="text-sm text-gray-600">{ac.yearsOfExcellence}</div>
                   </div>
                 </div>
               </div>
@@ -194,7 +199,7 @@ export function AboutHeroEnhanced({ aboutData, siteSettings, companyMetrics }: A
                     // Implement video modal or redirect
                     window.open(aboutData.hero_video_url, '_blank');
                   }}
-                  aria-label="Play company introduction video"
+                  aria-label={ac.playVideo}
                 >
                   <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                     <Play className="h-8 w-8 text-brand-blue ml-1" />

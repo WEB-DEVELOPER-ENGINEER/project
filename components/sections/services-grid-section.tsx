@@ -11,6 +11,7 @@ import { ServiceFilter } from './service-filter';
 import { useLanguage } from '@/components/providers/LanguageProvider';
 import { localizedPath } from '@/lib/locale';
 import { translateCategoryName } from '@/lib/i18n/translations';
+import { SERVICES_PAGE_CONTENT, fillValue } from '@/lib/content/services-page-content';
 
 interface ServicesGridSectionProps {
   services: Service[];
@@ -56,6 +57,7 @@ export function ServicesGridSection({
 }: ServicesGridSectionProps) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const { locale } = useLanguage();
+  const sp = SERVICES_PAGE_CONTENT[locale];
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -180,7 +182,7 @@ export function ServicesGridSection({
                     className="inline-flex items-center text-brand-orange hover:text-brand-blue font-semibold transition-colors duration-300 group/link"
                     aria-label={`Learn more about ${service.title}`}
                   >
-                    Learn More
+                    {sp.learnMore}
                     <ArrowRight className="ml-2 h-4 w-4 group-hover/link:translate-x-1 transition-transform duration-300" aria-hidden="true" />
                   </Link>
                 </CardContent>
@@ -200,16 +202,16 @@ export function ServicesGridSection({
                 <FileText className="h-full w-full" />
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                No services found
+                {sp.noServicesFound}
               </h3>
               <p className="text-gray-500 mb-4">
-                No services match the selected category. Try selecting a different category or view all services.
+                {sp.noServicesBody}
               </p>
               <Button 
                 variant="outline"
                 onClick={() => setActiveCategory(null)}
               >
-                View All Services
+                {sp.viewAllServices}
               </Button>
             </div>
           </div>
@@ -223,11 +225,10 @@ export function ServicesGridSection({
         >
           <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-8 max-w-2xl mx-auto">
             <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              Need a Custom Solution?
+              {sp.needCustomSolution}
             </h3>
             <p className="text-gray-600 mb-6">
-              Don&apos;t see exactly what you&apos;re looking for? We specialize in creating tailored solutions 
-              that perfectly match your unique business requirements.
+              {sp.needCustomSolutionBody}
             </p>
             <Button 
               size="lg"
@@ -236,7 +237,7 @@ export function ServicesGridSection({
                 window.location.href = '/contact';
               }}
             >
-              Discuss Your Needs
+              {sp.discussYourNeeds}
             </Button>
           </div>
         </div>

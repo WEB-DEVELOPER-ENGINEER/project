@@ -13,6 +13,7 @@ import { getSEOMetadata } from '@/lib/data-access';
 import { fetchHomepageData } from '@/lib/page-data-fetcher';
 import { JsonLd } from '@/components/seo/json-ld';
 import { getLocale } from '@/lib/locale-server';
+import { siteUrl } from '@/lib/company';
 
 // Avoid build-time prerendering; render dynamically at request time
 export const dynamic = 'force-dynamic';
@@ -21,10 +22,10 @@ export const revalidate = 0;
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const locale = getLocale();
-    const seoData = await getSEOMetadata('homepage');
+    const seoData = await getSEOMetadata('homepage', undefined, locale);
     const { siteSettings } = await fetchHomepageData(locale);
     const settings = siteSettings;
-    const baseUrl = (settings.site_url || process.env.NEXT_PUBLIC_SITE_URL || 'https://jusortrans.com').replace('jusor-translation.com', 'jusortrans.com').replace(/\/$/, '');
+    const baseUrl = (settings.site_url || siteUrl(siteSettings)).replace('jusor-translation.com', 'jusortrans.com').replace(/\/$/, '');
 
     if (settings.site_url) {
       settings.site_url = settings.site_url.replace('jusor-translation.com', 'jusortrans.com');
@@ -36,12 +37,16 @@ export async function generateMetadata(): Promise<Metadata> {
       settings.twitter_image = settings.twitter_image.replace('jusor-translation.com', 'jusortrans.com');
     }
 
-    const rawUrl = seoData?.canonical_url || settings.site_url || process.env.NEXT_PUBLIC_SITE_URL || 'https://jusortrans.com';
+    const rawUrl = seoData?.canonical_url || settings.site_url || siteUrl(siteSettings);
     const canonicalUrl = rawUrl.replace('jusor-translation.com', 'jusortrans.com');
 
     return {
-      title: seoData?.meta_title || settings.site_title || 'Professional Translation Services',
-      description: seoData?.meta_description || settings.site_description || 'Expert translation services for legal, technical, and business documents.',
+      title: seoData?.meta_title || (locale === 'ar'
+        ? settings.site_title_ar || 'خدمات ترجمة معتمدة في دبي | جسور الكلمات'
+        : settings.site_title || 'Professional Translation Services'),
+      description: seoData?.meta_description || (locale === 'ar'
+        ? settings.site_description_ar || 'ترجمة معتمدة للمستندات القانونية والتقنية والتجارية في دبي، الإمارات العربية المتحدة.'
+        : settings.site_description || 'Expert translation services for legal, technical, and business documents.'),
       keywords: settings.site_keywords || [
         'translation services',
         'certified translation',

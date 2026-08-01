@@ -10,6 +10,10 @@
 import type { Locale } from '@/lib/locale';
 
 export interface ContactContent {
+  common: {
+    businessHours: string;
+    address: string;
+  };
   hero: {
     breadcrumbHome: string;
     breadcrumbCurrent: string;
@@ -22,6 +26,7 @@ export interface ContactContent {
     availableNow: string;
     expertTeam: string;
     requestQuote: string;
+    tagline: string;
   };
   info: {
     sectionTitle: string;
@@ -59,6 +64,9 @@ export interface ContactContent {
     areaRegion: string;
     areaGlobal: string;
     getDirections: string;
+    ourServices: string;
+    aboutUs: string;
+    blogResources: string;
     statProjects: string;
     statLanguages: string;
     statSatisfaction: string;
@@ -87,6 +95,8 @@ export interface ContactContent {
     alwaysReachable: string;
     alwaysReachableDetail: string;
     scheduleVisit: string;
+    callBeforeVisiting: string;
+    scheduleAppointment: string;
     scheduleVisitDescription: string;
     getDirections: string;
     /** Nearby landmarks, paired with `landmarkDistances` by index. */
@@ -113,11 +123,21 @@ export interface ContactContent {
     statProjectsLabel: string;
     srQuote: string;
     srWhatsapp: string;
+    exploreAllServices: string;
+    stillQuestions: string;
+    stillQuestionsBody: string;
+    callUsNow: string;
+    sendUsMessage: string;
   };
 }
 
 export const CONTACT_CONTENT: Record<Locale, ContactContent> = {
   en: {
+    common: {
+      businessHours: 'Sunday – Thursday: 9:00 AM – 6:00 PM',
+      address:
+        'Abu Saif Business Center - Al-Kazim Building - Block A - M Floor - Office 40B, Abu Hail, Dubai, United Arab Emirates',
+    },
     hero: {
       breadcrumbHome: 'Home',
       breadcrumbCurrent: 'Contact',
@@ -131,6 +151,8 @@ export const CONTACT_CONTENT: Record<Locale, ContactContent> = {
       availableNow: 'Available Now',
       expertTeam: 'Expert Team',
       requestQuote: 'Request a Free Quote',
+      tagline: 'Certified Translation & Interpretation Services',
+
     },
     info: {
       sectionTitle: 'How to Reach Us',
@@ -172,6 +194,9 @@ export const CONTACT_CONTENT: Record<Locale, ContactContent> = {
       areaRegion: 'Middle East & North Africa',
       areaGlobal: 'Global remote services',
       getDirections: 'Get Directions',
+      ourServices: 'Our Services',
+      aboutUs: 'About Us',
+      blogResources: 'Blog & Resources',
       statProjects: 'Projects Completed',
       statLanguages: 'Languages Supported',
       statSatisfaction: 'Client Satisfaction',
@@ -201,6 +226,8 @@ export const CONTACT_CONTENT: Record<Locale, ContactContent> = {
       alwaysReachable: 'Always Reachable',
       alwaysReachableDetail: 'Reach us by phone, email, or WhatsApp',
       scheduleVisit: 'Schedule a Visit',
+      callBeforeVisiting: 'Call Before Visiting',
+      scheduleAppointment: 'Schedule Appointment',
       scheduleVisitDescription:
         'Prefer to hand over your documents in person? Get in touch and we will arrange a time.',
       getDirections: 'Get Directions',
@@ -250,10 +277,21 @@ export const CONTACT_CONTENT: Record<Locale, ContactContent> = {
       statProjectsLabel: 'Projects Completed',
       srQuote: 'Scroll to the contact form to get a personalised quote for your translation project',
       srWhatsapp: 'Start an instant WhatsApp conversation with our translation team',
+      exploreAllServices: 'Explore All Our Services',
+      stillQuestions: 'Still Have Questions?',
+      stillQuestionsBody:
+        'Ask us anything about scope, pricing or turnaround — we will get back to you the same working day.',
+      callUsNow: 'Call Us Now',
+      sendUsMessage: 'Send Us a Message',
     },
   },
 
   ar: {
+    common: {
+      businessHours: 'الأحد – الخميس: 9:00 صباحاً – 6:00 مساءً',
+      address:
+        'مركز أبو سيف للأعمال - بناية الكاظم - بلوك A - الطابق الميزانين - مكتب 40B، أبو هيل، دبي، الإمارات العربية المتحدة',
+    },
     hero: {
       breadcrumbHome: 'الرئيسية',
       breadcrumbCurrent: 'تواصل معنا',
@@ -267,6 +305,8 @@ export const CONTACT_CONTENT: Record<Locale, ContactContent> = {
       availableNow: 'متاحون الآن',
       expertTeam: 'فريق متخصص',
       requestQuote: 'اطلب عرض سعر مجاني',
+      tagline: 'خدمات ترجمة تحريرية وفورية معتمدة',
+
     },
     info: {
       sectionTitle: 'كيف تصل إلينا',
@@ -308,6 +348,9 @@ export const CONTACT_CONTENT: Record<Locale, ContactContent> = {
       areaRegion: 'الشرق الأوسط وشمال إفريقيا',
       areaGlobal: 'خدمات عن بُعد حول العالم',
       getDirections: 'احصل على الاتجاهات',
+      ourServices: 'خدماتنا',
+      aboutUs: 'من نحن',
+      blogResources: 'المدونة والمصادر',
       statProjects: 'مشروع منجز',
       statLanguages: 'لغة مدعومة',
       statSatisfaction: 'رضا العملاء',
@@ -337,6 +380,8 @@ export const CONTACT_CONTENT: Record<Locale, ContactContent> = {
       alwaysReachable: 'دائماً بالقرب منك',
       alwaysReachableDetail: 'تواصل معنا هاتفياً أو بالبريد الإلكتروني أو عبر واتساب',
       scheduleVisit: 'حدّد موعد زيارة',
+      callBeforeVisiting: 'اتصل قبل الزيارة',
+      scheduleAppointment: 'حدّد موعداً',
       scheduleVisitDescription:
         'هل تفضّل تسليم مستنداتك شخصياً؟ تواصل معنا وسنحدد الوقت المناسب.',
       getDirections: 'احصل على الاتجاهات',
@@ -386,6 +431,12 @@ export const CONTACT_CONTENT: Record<Locale, ContactContent> = {
       statProjectsLabel: 'مشروع منجز',
       srQuote: 'انتقل إلى نموذج التواصل للحصول على عرض سعر مخصّص لمشروع الترجمة الخاص بك',
       srWhatsapp: 'ابدأ محادثة واتساب فورية مع فريق الترجمة لدينا',
+      exploreAllServices: 'استكشف جميع خدماتنا',
+      stillQuestions: 'هل لديك أسئلة أخرى؟',
+      stillQuestionsBody:
+        'اسألنا عن نطاق العمل أو السعر أو مدة الإنجاز — وسنعود إليك في يوم العمل نفسه.',
+      callUsNow: 'اتصل بنا الآن',
+      sendUsMessage: 'أرسل لنا رسالة',
     },
   },
 };

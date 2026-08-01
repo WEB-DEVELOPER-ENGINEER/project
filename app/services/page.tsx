@@ -11,16 +11,21 @@ import { fetchServicesPageData } from '@/lib/page-data-service';
 import { getSEOMetadata } from '@/lib/data-access';
 import { getLocale } from '@/lib/locale-server';
 import { localizedPath } from '@/lib/locale';
+import { siteUrl } from '@/lib/company';
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const locale = getLocale();
-    const seoData = await getSEOMetadata('services');
+    const seoData = await getSEOMetadata('services', undefined, locale);
     const { siteSettings } = await fetchServicesPageData(locale);
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://jusortrans.com';
+    const baseUrl = siteUrl(siteSettings);
 
-    const defaultTitle = 'Certified Translation Services in Dubai, UAE | JUSOR';
-    const defaultDescription = 'Explore JUSOR\'s certified translation, legal translation, and interpretation services in Dubai, UAE — accurate, court-accepted, and government-approved translations for individuals and businesses.';
+    const defaultTitle = locale === 'ar'
+      ? 'خدمات ترجمة معتمدة في دبي، الإمارات'
+      : 'Certified Translation Services in Dubai, UAE';
+    const defaultDescription = locale === 'ar'
+      ? 'استكشف خدمات جسور الكلمات للترجمة المعتمدة والترجمة القانونية والترجمة الفورية في دبي — ترجمات دقيقة مقبولة لدى المحاكم والجهات الحكومية للأفراد والشركات.'
+      : 'Explore JUSOR\'s certified translation, legal translation, and interpretation services in Dubai, UAE — accurate, court-accepted, and government-approved translations for individuals and businesses.';
 
     return {
       title: seoData?.meta_title || defaultTitle,
@@ -36,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
       openGraph: {
         title: seoData?.og_title || seoData?.meta_title || defaultTitle,
         description: seoData?.og_description || seoData?.meta_description || defaultDescription,
-        url: seoData?.canonical_url || `${process.env.NEXT_PUBLIC_SITE_URL}/services`,
+        url: seoData?.canonical_url || `${siteUrl(siteSettings)}/services`,
         type: 'website',
         locale: siteSettings.site_locale || 'en_US',
         siteName: siteSettings.company_name || 'JUSOR Translation Services',
@@ -86,7 +91,7 @@ export default async function ServicesPage() {
   const locale = getLocale();
   const { services, categories, siteSettings, footerData, navigationData, features } = await fetchServicesPageData(locale);
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://jusortrans.com';
+  const baseUrl = siteUrl(siteSettings);
 
   // Generate structured data for services
   const servicesSchema = {
@@ -105,7 +110,7 @@ export default async function ServicesPage() {
       provider: {
         '@type': 'Organization',
         name: siteSettings.company_name || 'JUSOR Translation Services',
-        url: process.env.NEXT_PUBLIC_SITE_URL,
+        url: siteUrl(siteSettings),
       },
     })),
   };
@@ -114,8 +119,8 @@ export default async function ServicesPage() {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: siteSettings.company_name || 'JUSOR Translation Services',
-    url: process.env.NEXT_PUBLIC_SITE_URL,
-    logo: `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`,
+    url: siteUrl(siteSettings),
+    logo: `${siteUrl(siteSettings)}/logo.png`,
     description: siteSettings.site_description || 'Certified translation, legal translation, and interpretation services in Dubai, UAE',
     address: siteSettings.company_address ? {
       '@type': 'PostalAddress',

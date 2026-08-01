@@ -7,6 +7,7 @@ import { useInView } from 'react-intersection-observer';
 import { Service } from '@/lib/types';
 import { useLanguage } from '@/components/providers/LanguageProvider';
 import { localizedPath } from '@/lib/locale';
+import { SERVICE_DETAIL_CONTENT, fill } from '@/lib/content/service-detail-content';
 
 interface RelatedServicesSectionProps {
   services: Service[];
@@ -39,6 +40,7 @@ const getServiceIcon = (iconName?: string) => {
 
 export function RelatedServicesSection({ services, currentService, siteSettings = {} }: RelatedServicesSectionProps) {
   const { locale } = useLanguage();
+  const sc = SERVICE_DETAIL_CONTENT[locale];
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -63,14 +65,14 @@ export function RelatedServicesSection({ services, currentService, siteSettings 
               inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
           >
-            Related Services
+            {sc.relatedServices}
           </h2>
           <p 
             className={`text-xl text-gray-600 leading-relaxed transition-all duration-700 delay-100 ${
               inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
           >
-            Explore our other professional services that complement {currentService.title.toLowerCase()} and can help accelerate your business growth.
+            {fill(sc.relatedServicesBody, currentService.title)}
           </p>
         </div>
 
@@ -120,9 +122,9 @@ export function RelatedServicesSection({ services, currentService, siteSettings 
                   <Link 
                     href={localizedPath(`/services/${service.translation_group || service.slug}`, locale)}
                     className="inline-flex items-center text-brand-orange hover:text-brand-blue font-semibold transition-colors duration-300 group/link"
-                    aria-label={`Learn more about ${service.title}`}
+                    aria-label={`${sc.learnMore} — ${service.title}`}
                   >
-                    Learn More
+                    {sc.learnMore}
                     <ArrowRight className="ml-2 h-4 w-4 group-hover/link:translate-x-1 transition-transform duration-300" aria-hidden="true" />
                   </Link>
                 </CardContent>
@@ -142,17 +144,17 @@ export function RelatedServicesSection({ services, currentService, siteSettings 
         >
           <div className="bg-white rounded-2xl shadow-lg p-8 max-w-2xl mx-auto">
             <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              Need Multiple Services?
+              {sc.needMultiple}
             </h3>
             <p className="text-gray-600 mb-6">
-              We offer comprehensive service packages that combine multiple solutions for maximum efficiency and cost savings.
+              {sc.needMultipleBody}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
-                href="/services"
+                href={localizedPath('/services', locale)}
                 className="inline-flex items-center justify-center bg-brand-orange hover:bg-brand-orange/90 text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2"
               >
-                View All Services
+                {sc.viewAllServices}
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true" />
               </Link>
               <button 
@@ -161,7 +163,7 @@ export function RelatedServicesSection({ services, currentService, siteSettings 
                   window.location.href = '/contact';
                 }}
               >
-                Contact Us
+                {sc.contactUs}
               </button>
             </div>
           </div>

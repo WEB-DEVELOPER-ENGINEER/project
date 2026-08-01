@@ -88,7 +88,7 @@ export default async function RootLayout({
           </noscript>
         )}
         <a href="#main-content" className="skip-link">
-          Skip to main content
+          {locale === 'ar' ? 'تخطَّ إلى المحتوى الرئيسي' : 'Skip to main content'}
         </a>
         <ErrorBoundary>
           <LanguageProvider initialLocale={locale}>

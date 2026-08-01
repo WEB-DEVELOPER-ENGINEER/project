@@ -20,6 +20,7 @@ import { useInView } from 'react-intersection-observer';
 import { trackPhoneClick, trackEmailClick, trackWhatsAppClick } from '@/lib/analytics-events';
 import { useLanguage } from '@/components/providers/LanguageProvider';
 import { CONTACT_CONTENT } from '@/lib/content/contact-content';
+import { localizedPath } from '@/lib/locale';
 
 interface ContactInfoSectionProps {
   contactData: any;
@@ -29,6 +30,7 @@ interface ContactInfoSectionProps {
 export function ContactInfoSection({ contactData, siteSettings = {} }: ContactInfoSectionProps) {
   const { locale } = useLanguage();
   const c = CONTACT_CONTENT[locale].info;
+  const cm = CONTACT_CONTENT[locale].common;
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -102,15 +104,15 @@ export function ContactInfoSection({ contactData, siteSettings = {} }: ContactIn
       icon: MapPin,
       title: c.officeLocation,
       details: [
-        contactData.address,
+        (locale === 'ar' ? cm.address : contactData.address || cm.address),
         `${contactData.city}, ${contactData.country}`
       ]
     },
     {
       icon: Clock,
-      title: c.businessHours,
+      title: cm.businessHours,
       details: [
-        contactData.business_hours,
+        (locale === 'ar' ? cm.businessHours : contactData.business_hours || cm.businessHours),
         c.weekendClosed,
         c.emergency247
       ]
@@ -265,7 +267,7 @@ export function ContactInfoSection({ contactData, siteSettings = {} }: ContactIn
                 className="bg-brand-blue hover:bg-brand-blue/90 text-white px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 <MapPin className="mr-2 h-5 w-5" />
-                Get Directions
+                {c.getDirections}
               </Button>
             </div>
 
@@ -273,24 +275,24 @@ export function ContactInfoSection({ contactData, siteSettings = {} }: ContactIn
             <div className="mt-6 text-center space-y-3">
               <div className="flex flex-wrap justify-center gap-4 text-sm">
                 <Link 
-                  href="/services"
+                  href={localizedPath('/services', locale)}
                   className="inline-flex items-center text-white hover:text-brand-orange transition-colors duration-300 font-medium focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-blue rounded px-3 py-1"
                 >
-                  Our Services
+                  {c.ourServices}
                   <ArrowRight className="ml-1 h-3 w-3" aria-hidden="true" />
                 </Link>
                 <Link 
-                  href="/about"
+                  href={localizedPath('/about', locale)}
                   className="inline-flex items-center text-white hover:text-brand-orange transition-colors duration-300 font-medium focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-blue rounded px-3 py-1"
                 >
-                  About Us
+                  {c.aboutUs}
                   <ArrowRight className="ml-1 h-3 w-3" aria-hidden="true" />
                 </Link>
                 <Link 
-                  href="/blog"
+                  href={localizedPath('/blog', locale)}
                   className="inline-flex items-center text-white hover:text-brand-orange transition-colors duration-300 font-medium focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-blue rounded px-3 py-1"
                 >
-                  Blog & Resources
+                  {c.blogResources}
                   <ArrowRight className="ml-1 h-3 w-3" aria-hidden="true" />
                 </Link>
               </div>

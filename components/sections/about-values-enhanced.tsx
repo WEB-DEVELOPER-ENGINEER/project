@@ -8,6 +8,7 @@ import { Heart, Target, Users, Globe, Award, Shield, Lightbulb, Handshake } from
 import { AboutUs, AboutValue } from '@/lib/types';
 import { useLanguage } from '@/components/providers/LanguageProvider';
 import { ABOUT_CONTENT } from '@/lib/content/about-content';
+import { companyName as resolveCompanyName } from '@/lib/company';
 
 interface AboutValuesEnhancedProps {
   aboutData: AboutUs;
@@ -38,53 +39,14 @@ const colorMap = {
 export function AboutValuesEnhanced({ aboutData, siteSettings }: AboutValuesEnhancedProps) {
   const { locale } = useLanguage();
   const ac = ABOUT_CONTENT[locale].values;
-  const companyName = siteSettings.company_name || 'JUSOR';
+  const companyName = resolveCompanyName(siteSettings, locale);
 
   // Default values if none provided
-  const defaultValues: AboutValue[] = [
-    {
-      title: 'Quality Excellence',
-      description: 'We maintain the highest standards in every translation, ensuring accuracy, consistency, and cultural appropriateness in all our work.',
-      icon: 'Award',
-      color: 'orange',
-      sort_order: 1
-    },
-    {
-      title: 'Cultural Sensitivity',
-      description: 'We understand that translation is more than converting words—it\'s about conveying meaning, context, and cultural nuances.',
-      icon: 'Globe',
-      color: 'blue',
-      sort_order: 2
-    },
-    {
-      title: 'Client Partnership',
-      description: 'We build lasting relationships with our clients, working as trusted partners to help them achieve their global communication goals.',
-      icon: 'Handshake',
-      color: 'green',
-      sort_order: 3
-    },
-    {
-      title: 'Innovation',
-      description: 'We embrace new technologies and methodologies to improve our services while maintaining the human touch that makes translation meaningful.',
-      icon: 'Lightbulb',
-      color: 'purple',
-      sort_order: 4
-    },
-    {
-      title: 'Integrity',
-      description: 'We operate with complete transparency, honesty, and ethical standards in all our business practices and client relationships.',
-      icon: 'Shield',
-      color: 'blue',
-      sort_order: 5
-    },
-    {
-      title: 'Team Excellence',
-      description: 'Our success is built on the expertise, dedication, and collaborative spirit of our professional translation team.',
-      icon: 'Users',
-      color: 'orange',
-      sort_order: 6
-    }
-  ];
+  const defaultValues: AboutValue[] = ac.items.map((v, i) => ({
+    ...v,
+    color: (['orange', 'blue', 'green', 'purple', 'red'] as const)[i % 5],
+    sort_order: i + 1,
+  }));
 
   // Use provided values or defaults, sorted by sort_order
   const values = (aboutData.values && aboutData.values.length > 0 ? aboutData.values : defaultValues)
@@ -111,7 +73,7 @@ export function AboutValuesEnhanced({ aboutData, siteSettings }: AboutValuesEnha
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orange mb-6">
             <Heart className="h-4 w-4 mr-2" />
-            Our Values
+            {ac.badge}
           </div>
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
             {ac.heading}
@@ -168,7 +130,7 @@ export function AboutValuesEnhanced({ aboutData, siteSettings }: AboutValuesEnha
                       <Heart className="h-10 w-10 text-brand-orange" />
                     </div>
                     <h3 className="text-xl font-bold text-gray-800 mb-3">
-                      Our Core Values
+                      {ac.coreValuesTitle}
                     </h3>
                     <p className="text-gray-600">
                       {ac.principlesCaption}
@@ -203,8 +165,6 @@ export function AboutValuesEnhanced({ aboutData, siteSettings }: AboutValuesEnha
             </h3>
             <p className="text-lg text-gray-600 leading-relaxed">
               {ac.livingBody}
-              make decisions, and serve our clients. Every project we undertake, every relationship 
-              we build, and every solution we deliver reflects these core principles that define who we are as {companyName}.
             </p>
           </div>
         </div>

@@ -5,13 +5,14 @@ import { fetchBlogPageData } from '@/lib/page-data-fetcher';
 import { getBlogPosts } from '@/lib/data-access';
 import { BlogListClient } from '@/components/blog/BlogListClient';
 import { getLocale } from '@/lib/locale-server';
+import { siteUrl } from '@/lib/company';
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = getLocale();
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://jusortrans.com';
+  const baseUrl = siteUrl();
   const title = locale === 'ar'
     ? 'مدونة الترجمة | خدمات جسور للترجمة'
-    : 'Translation Industry Blog | JUSOR Translation Services';
+    : 'Translation Industry Blog';
   const description = locale === 'ar'
     ? 'مقالات ترجمة معتمدة ورؤى متخصصة للقطاعات التجارية والقانونية والطيران والمالية في دبي.'
     : 'Certified translation articles and expert insights in English and Arabic for commercial, legal, aerospace, and financial sectors in Dubai.';

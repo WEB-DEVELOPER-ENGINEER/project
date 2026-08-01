@@ -13,6 +13,7 @@ import { ProjectDetailResults } from '@/components/sections/project-detail-resul
 import { ProjectDetailTimeline } from '@/components/sections/project-detail-timeline';
 import { RelatedProjectsSection } from '@/components/sections/related-projects-section';
 import { ProjectDetailCTA } from '@/components/sections/project-detail-cta';
+import { siteUrl } from '@/lib/company';
 
 interface ProjectPageProps {
   params: {
@@ -53,7 +54,7 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
       openGraph: {
         title: seoData?.og_title || title,
         description: seoData?.og_description || description,
-        url: `${process.env.NEXT_PUBLIC_SITE_URL}/projects/${params.slug}`,
+        url: `${siteUrl(siteSettings)}/projects/${params.slug}`,
         type: 'article',
         locale: siteSettings.site_locale || 'en_US',
         siteName: siteSettings.company_name || 'Jusor Translation Services',
@@ -78,7 +79,7 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
         site: '@jusortranslation',
       },
       alternates: {
-        canonical: seoData?.canonical_url || `${process.env.NEXT_PUBLIC_SITE_URL}/projects/${params.slug}`,
+        canonical: seoData?.canonical_url || `${siteUrl(siteSettings)}/projects/${params.slug}`,
       },
       robots: {
         index: true,
@@ -122,13 +123,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       '@type': 'CreativeWork',
       name: project.title,
       description: project.description,
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/projects/${project.slug}`,
+      url: `${siteUrl(siteSettings)}/projects/${project.slug}`,
       dateCreated: project.created_at,
       dateModified: project.updated_at,
       creator: {
         '@type': 'Organization',
         name: siteSettings.company_name || 'Jusor Translation Services',
-        url: process.env.NEXT_PUBLIC_SITE_URL,
+        url: siteUrl(siteSettings),
       },
       ...(project.images?.[0] && {
         image: {
@@ -147,19 +148,19 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           '@type': 'ListItem',
           position: 1,
           name: 'Home',
-          item: process.env.NEXT_PUBLIC_SITE_URL,
+          item: siteUrl(siteSettings),
         },
         {
           '@type': 'ListItem',
           position: 2,
           name: 'Projects',
-          item: `${process.env.NEXT_PUBLIC_SITE_URL}/projects`,
+          item: `${siteUrl(siteSettings)}/projects`,
         },
         {
           '@type': 'ListItem',
           position: 3,
           name: project.title,
-          item: `${process.env.NEXT_PUBLIC_SITE_URL}/projects/${project.slug}`,
+          item: `${siteUrl(siteSettings)}/projects/${project.slug}`,
         },
       ],
     };

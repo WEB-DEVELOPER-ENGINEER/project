@@ -77,6 +77,15 @@ const SETTINGS: Array<{ key: string; value: string; type: SettingType; descripti
   { key: 'meta_author', value: 'JUSOR Translation Services', type: 'text', description: '' },
   { key: 'meta_creator', value: 'JUSOR Translation Services', type: 'text', description: '' },
   { key: 'meta_publisher', value: 'JUSOR Translation Services', type: 'text', description: '' },
+
+  // Arabic counterparts. lib/company.ts and lib/metadata.ts read these on /ar;
+  // without them every Arabic page title ends in an English site name.
+  { key: 'company_name_ar', value: 'جسور الكلمات لخدمات الترجمة', type: 'text', description: 'Arabic trading name' },
+  { key: 'company_address_ar', value: 'مركز أبو سيف للأعمال - بناية الكاظم - بلوك A - الطابق الميزانين - مكتب 40B، أبو هيل، دبي، الإمارات العربية المتحدة', type: 'text', description: 'Arabic office address' },
+  { key: 'company_description_ar', value: 'خدمات ترجمة معتمدة وترجمة قانونية وترجمة فورية في دبي، الإمارات العربية المتحدة.', type: 'text', description: 'Arabic short company description' },
+  { key: 'meta_default_title_ar', value: 'جسور الكلمات لخدمات الترجمة المعتمدة', type: 'text', description: '' },
+  { key: 'meta_title_template_ar', value: '%s | جسور الكلمات للترجمة', type: 'text', description: '' },
+  { key: 'meta_description_ar', value: 'خدمات ترجمة معتمدة وترجمة قانونية وترجمة فورية في دبي، الإمارات العربية المتحدة.', type: 'text', description: '' },
   { key: 'og_image', value: '/jusor.png', type: 'text', description: '' },
   { key: 'og_image_alt', value: 'JUSOR Translation Services Logo', type: 'text', description: '' },
   { key: 'site_locale', value: 'en_US', type: 'text', description: '' },

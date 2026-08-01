@@ -181,9 +181,7 @@ export function AboutTimelineEnhanced({ aboutData, siteSettings }: AboutTimeline
               {ac.lookingAheadTitle}
             </h3>
             <p className="text-lg text-gray-600 leading-relaxed">
-              Our journey continues as we embrace new technologies, expand our global reach, 
-              and maintain our commitment to excellence. Each milestone represents not just our growth, 
-              but our dedication to helping clients communicate effectively across cultures and languages.
+              {ac.lookingAheadBody} {ac.lookingAheadDetail}
             </p>
           </div>
         </div>

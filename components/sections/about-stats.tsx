@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '@/components/providers/LanguageProvider';
 import { ABOUT_CONTENT } from '@/lib/content/about-content';
+import { companyName as resolveCompanyName } from '@/lib/company';
 
 interface AboutStatsProps {
   companyMetrics: any[];
@@ -26,7 +27,7 @@ interface AboutStatsProps {
 export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
   const { locale } = useLanguage();
   const ac = ABOUT_CONTENT[locale].stats;
-  const companyName = siteSettings.company_name || 'JUSOR';
+  const companyName = resolveCompanyName(siteSettings, locale);
 
   // Filter metrics by category
   const statsMetrics = companyMetrics.filter(m => m.category === 'stats');
@@ -35,10 +36,10 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
 
   // Default stats if no metrics available
   const defaultStats = [
-    { metric_value: '500+', metric_label: 'Projects Completed', icon: Target, color: 'text-brand-orange' },
-    { metric_value: '50+', metric_label: 'Language Pairs', icon: Globe, color: 'text-brand-blue' },
-    { metric_value: '99.8%', metric_label: 'Client Satisfaction', icon: Star, color: 'text-brand-orange' },
-    { metric_value: '24/7', metric_label: 'Support Available', icon: Clock, color: 'text-brand-blue' }
+    { metric_value: '500+', metric_label: ac.projectsCompleted, icon: Target, color: 'text-brand-orange' },
+    { metric_value: '50+', metric_label: ac.languagePairs, icon: Globe, color: 'text-brand-blue' },
+    { metric_value: '99.8%', metric_label: ac.clientSatisfaction, icon: Star, color: 'text-brand-orange' },
+    { metric_value: '24/7', metric_label: ac.supportAvailable, icon: Clock, color: 'text-brand-blue' }
   ];
 
   const displayStats = statsMetrics.length > 0 ? statsMetrics : defaultStats;
@@ -144,8 +145,7 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
                 {ac.qualityTitle}
               </h3>
               <p className="text-gray-600 leading-relaxed mb-8">
-                Our commitment to quality is reflected in every metric we track. From client satisfaction 
-                to project completion rates, we maintain the highest standards in the industry.
+                {ac.qualityBody}
               </p>
               
               <div className="space-y-6">
@@ -212,7 +212,7 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
         {benefitMetrics.length > 0 && (
           <div className="text-center">
             <h3 className="text-2xl font-bold text-gray-900 mb-8">
-              What We Guarantee
+              {ac.whatWeGuarantee}
             </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {benefitMetrics.map((benefit, index) => {

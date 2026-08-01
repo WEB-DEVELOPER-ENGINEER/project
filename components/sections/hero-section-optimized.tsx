@@ -526,8 +526,8 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
                     <div className="flex items-center justify-center h-full bg-gradient-to-br from-brand-orange to-brand-blue rounded-2xl">
                       <div className="text-center text-white p-8">
                         <FileText className="h-16 w-16 mx-auto mb-4 opacity-80" />
-                        <h3 className="text-2xl font-bold mb-2">Professional Translation</h3>
-                        <p className="text-orange-100">Certified • Accurate • Fast</p>
+                        <h3 className="text-2xl font-bold mb-2">{isRtl ? 'ترجمة احترافية' : 'Professional Translation'}</h3>
+                        <p className="text-orange-100">{isRtl ? 'معتمدة • دقيقة • سريعة' : 'Certified • Accurate • Fast'}</p>
                       </div>
                     </div>
                   )}
@@ -646,8 +646,8 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
                         <Shield className="h-5 w-5 text-green-600" />
                       </div>
                       <div>
-                        <div className="font-semibold text-sm">Certified Translation</div>
-                        <div className="text-xs text-gray-600">Quality Assured</div>
+                        <div className="font-semibold text-sm">{isRtl ? 'ترجمة معتمدة' : 'Certified Translation'}</div>
+                        <div className="text-xs text-gray-600">{isRtl ? 'جودة مضمونة' : 'Quality Assured'}</div>
                       </div>
                     </div>
                   </CardContent>
@@ -662,8 +662,8 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
                         <Clock className="h-5 w-5 text-blue-600" />
                       </div>
                       <div>
-                        <div className="font-semibold text-sm">Fast Delivery</div>
-                        <div className="text-xs text-gray-600">Same Day Available</div>
+                        <div className="font-semibold text-sm">{isRtl ? 'تسليم سريع' : 'Fast Delivery'}</div>
+                        <div className="text-xs text-gray-600">{isRtl ? 'خدمة في نفس اليوم' : 'Same Day Available'}</div>
                       </div>
                     </div>
                   </CardContent>

@@ -134,7 +134,7 @@ export function Footer({ footerData, siteSettings = {} }: FooterProps) {
             ) : (
               <form onSubmit={handleNewsletterSubmit} className="mt-6 sm:flex sm:max-w-md" noValidate>
                 <label htmlFor="email-address" className="sr-only">
-                  Email address
+                  {isRtl ? 'البريد الإلكتروني' : 'Email address'}
                 </label>
                 <input
                   type="email"

@@ -5,6 +5,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ChevronDown, ChevronUp, HelpCircle } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { Service } from '@/lib/types';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { SERVICE_DETAIL_CONTENT, fill } from '@/lib/content/service-detail-content';
 
 interface ServiceDetailFAQProps {
   service: Service;
@@ -12,6 +14,8 @@ interface ServiceDetailFAQProps {
 }
 
 export function ServiceDetailFAQ({ service, siteSettings = {} }: ServiceDetailFAQProps) {
+  const { locale } = useLanguage();
+  const sc = SERVICE_DETAIL_CONTENT[locale];
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -52,14 +56,14 @@ export function ServiceDetailFAQ({ service, siteSettings = {} }: ServiceDetailFA
               inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
           >
-            Frequently Asked Questions
+            {sc.faqTitle}
           </h2>
           <p 
             className={`text-xl text-gray-600 leading-relaxed transition-all duration-700 delay-100 ${
               inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
           >
-            Get answers to common questions about our {service.title.toLowerCase()} service.
+            {fill(sc.faqSubtitle, service.title)}
           </p>
         </div>
 
@@ -130,10 +134,10 @@ export function ServiceDetailFAQ({ service, siteSettings = {} }: ServiceDetailFA
           <Card className="border-0 shadow-xl bg-gradient-to-br from-brand-orange/5 to-brand-blue/5">
             <CardContent className="p-12">
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Still Have Questions?
+                {sc.stillQuestions}
               </h3>
               <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-                Our team of experts is here to help you understand how our {service.title.toLowerCase()} service can benefit your business.
+                {fill(sc.stillQuestionsBody, service.title)}
               </p>
               <button 
                 className="bg-brand-orange hover:bg-brand-orange/90 text-white px-8 py-4 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2"
@@ -144,7 +148,7 @@ export function ServiceDetailFAQ({ service, siteSettings = {} }: ServiceDetailFA
                     window.location.href = '/contact';
                   }
                 }}
-                aria-label={`Contact us about ${service.title} service`}
+                aria-label={fill(sc.contactAboutService, service.title)}
               >
                 {service.cta_primary_text || 'Contact Our Experts'}
                 <ChevronDown className="ml-2 h-5 w-5 inline group-hover:translate-y-1 transition-transform duration-300" aria-hidden="true" />

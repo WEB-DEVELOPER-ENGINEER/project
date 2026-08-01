@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { getLocale } from '@/lib/locale-server';
 import { Navigation } from '@/components/layout/navigation';
 import { Footer } from '@/components/layout/footer';
 import { ProjectsHeroSection } from '@/components/sections/projects-hero-section';
@@ -7,17 +8,22 @@ import { ProjectsCTASection } from '@/components/sections/projects-cta-section';
 import { JsonLd } from '@/components/seo/json-ld';
 import { fetchProjectsPageData } from '@/lib/page-data-service';
 import { getSEOMetadata } from '@/lib/data-access';
+import { siteUrl } from '@/lib/company';
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
+    const locale = getLocale();
     const [seoData, { siteSettings }] = await Promise.all([
-      getSEOMetadata('projects').catch(() => null),
+      getSEOMetadata('projects', undefined, locale).catch(() => null),
       fetchProjectsPageData()
     ]);
 
-    const title = seoData?.meta_title || 'Our Projects | Professional Translation Portfolio';
-    const description = seoData?.meta_description || 
-      'Explore our portfolio of successful translation and interpretation projects. See how Jusor Translation Services has helped businesses break language barriers across industries.';
+    const title = seoData?.meta_title || (locale === 'ar'
+      ? 'أعمالنا | نماذج من مشاريع الترجمة الاحترافية'
+      : 'Our Projects | Professional Translation Portfolio');
+    const description = seoData?.meta_description || (locale === 'ar'
+      ? 'اطّلع على نماذج من مشاريع الترجمة التحريرية والفورية التي نفّذتها جسور الكلمات لعملائها في مختلف القطاعات.'
+      : 'Explore our portfolio of successful translation and interpretation projects. See how Jusor Translation Services has helped businesses break language barriers across industries.');
 
     return {
       title,
@@ -41,7 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
       openGraph: {
         title: seoData?.og_title || title,
         description: seoData?.og_description || description,
-        url: `${process.env.NEXT_PUBLIC_SITE_URL}/projects`,
+        url: `${siteUrl(siteSettings)}/projects`,
         type: 'website',
         locale: siteSettings.site_locale || 'en_US',
         siteName: siteSettings.company_name || 'Jusor Translation Services',
@@ -61,7 +67,7 @@ export async function generateMetadata(): Promise<Metadata> {
         site: '@jusortranslation',
       },
       alternates: {
-        canonical: seoData?.canonical_url || `${process.env.NEXT_PUBLIC_SITE_URL}/projects`,
+        canonical: seoData?.canonical_url || `${siteUrl(siteSettings)}/projects`,
       },
       robots: {
         index: true,
@@ -94,19 +100,19 @@ export default async function ProjectsPage() {
       '@type': 'ItemList',
       name: 'Translation Projects Portfolio',
       description: 'Portfolio of professional translation and interpretation projects',
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/projects`,
+      url: `${siteUrl(siteSettings)}/projects`,
       numberOfItems: projects.length,
       itemListElement: projects.map((project, index) => ({
         '@type': 'CreativeWork',
         position: index + 1,
         name: project.title,
         description: project.description,
-        url: `${process.env.NEXT_PUBLIC_SITE_URL}/projects/${project.slug}`,
+        url: `${siteUrl(siteSettings)}/projects/${project.slug}`,
         dateCreated: project.created_at,
         creator: {
           '@type': 'Organization',
           name: siteSettings.company_name || 'Jusor Translation Services',
-          url: process.env.NEXT_PUBLIC_SITE_URL,
+          url: siteUrl(siteSettings),
         },
         ...(project.images?.[0] && {
           image: {
@@ -126,13 +132,13 @@ export default async function ProjectsPage() {
           '@type': 'ListItem',
           position: 1,
           name: 'Home',
-          item: process.env.NEXT_PUBLIC_SITE_URL,
+          item: siteUrl(siteSettings),
         },
         {
           '@type': 'ListItem',
           position: 2,
           name: 'Projects',
-          item: `${process.env.NEXT_PUBLIC_SITE_URL}/projects`,
+          item: `${siteUrl(siteSettings)}/projects`,
         },
       ],
     };
@@ -140,10 +146,10 @@ export default async function ProjectsPage() {
     const organizationSchema = {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      '@id': `${process.env.NEXT_PUBLIC_SITE_URL}/#organization`,
+      '@id': `${siteUrl(siteSettings)}/#organization`,
       name: siteSettings.company_name || 'Jusor Translation Services',
-      url: process.env.NEXT_PUBLIC_SITE_URL,
-      logo: `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`,
+      url: siteUrl(siteSettings),
+      logo: `${siteUrl(siteSettings)}/logo.png`,
       description: 'Professional translation and interpretation services with a proven track record of successful projects',
       address: siteSettings.company_address ? {
         '@type': 'PostalAddress',

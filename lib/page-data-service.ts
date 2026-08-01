@@ -109,10 +109,10 @@ class ContactPageDataService extends BasePageDataService<ContactPageData> {
         instagram_url: baseData.siteSettings?.instagram_url || 'https://www.instagram.com/Jusor_translation',
         whatsapp_number: baseData.siteSettings?.whatsapp_number || '971503244329',
         whatsapp_message: baseData.siteSettings?.whatsapp_message || 'Hello Jusor, I would like to inquire about your services.',
-        business_hours: baseData.siteSettings?.business_hours || 'Sunday - Thursday: 9:00 AM - 6:00 PM',
-        contact_title: baseData.siteSettings?.contact_title || 'Get in Touch',
-        contact_subtitle: baseData.siteSettings?.contact_subtitle || 'Ready to break down language barriers? Contact our expert team today.',
-        contact_description: baseData.siteSettings?.contact_description || 'We provide professional translation and interpretation services across multiple languages. Get your free quote today.',
+        business_hours: baseData.siteSettings?.business_hours,
+        contact_title: baseData.siteSettings?.contact_title,
+        contact_subtitle: baseData.siteSettings?.contact_subtitle,
+        contact_description: baseData.siteSettings?.contact_description,
       };
 
       return {
@@ -140,10 +140,10 @@ class ContactPageDataService extends BasePageDataService<ContactPageData> {
           instagram_url: 'https://www.instagram.com/Jusor_translation',
           whatsapp_number: '971503244329',
           whatsapp_message: 'Hello Jusor, I would like to inquire about your services.',
-          business_hours: 'Sunday - Thursday: 9:00 AM - 6:00 PM',
-          contact_title: 'Get in Touch',
-          contact_subtitle: 'Ready to break down language barriers? Contact our expert team today.',
-          contact_description: 'We provide professional translation and interpretation services across multiple languages. Get your free quote today.',
+          business_hours: undefined,
+          contact_title: undefined,
+          contact_subtitle: undefined,
+          contact_description: undefined,
         }
       } as ContactPageData;
     }

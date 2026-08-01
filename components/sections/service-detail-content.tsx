@@ -4,6 +4,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { CheckCircle, ArrowRight } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { Service } from '@/lib/types';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { SERVICE_DETAIL_CONTENT, fill } from '@/lib/content/service-detail-content';
 
 interface ServiceDetailContentProps {
   service: Service;
@@ -11,6 +13,8 @@ interface ServiceDetailContentProps {
 }
 
 export function ServiceDetailContent({ service, siteSettings = {} }: ServiceDetailContentProps) {
+  const { locale } = useLanguage();
+  const sc = SERVICE_DETAIL_CONTENT[locale];
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -56,7 +60,7 @@ export function ServiceDetailContent({ service, siteSettings = {} }: ServiceDeta
             >
               <div 
                 dangerouslySetInnerHTML={{ 
-                  __html: service.overview || service.content || 'Service details coming soon.' 
+                  __html: service.overview || service.content || sc.overviewFallback 
                 }}
                 className="text-gray-600 leading-relaxed"
               />
@@ -70,7 +74,7 @@ export function ServiceDetailContent({ service, siteSettings = {} }: ServiceDeta
                 }`}
               >
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                  Why Choose Our {service.title}?
+                  {fill(sc.whyChoose, service.title)}
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {benefits.map((benefit, index) => (
@@ -99,7 +103,7 @@ export function ServiceDetailContent({ service, siteSettings = {} }: ServiceDeta
                 }`}
               >
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                  Our Approach
+                  {sc.ourApproach}
                 </h3>
                 <div className="space-y-4">
                   {processSteps.map((step, index) => (
@@ -131,42 +135,42 @@ export function ServiceDetailContent({ service, siteSettings = {} }: ServiceDeta
             >
               <CardContent className="p-8">
                 <h3 className="text-xl font-bold text-gray-900 mb-6">
-                  Service Highlights
+                  {sc.serviceHighlights}
                 </h3>
                 <div className="space-y-4">
                   {highlights.delivery_time && (
                     <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
-                      <span className="text-gray-600 font-medium">Delivery Time</span>
+                      <span className="text-gray-600 font-medium">{sc.deliveryTime}</span>
                       <span className="text-gray-900 font-semibold">{highlights.delivery_time}</span>
                     </div>
                   )}
                   {highlights.team_size && (
                     <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
-                      <span className="text-gray-600 font-medium">Team Size</span>
+                      <span className="text-gray-600 font-medium">{sc.teamSize}</span>
                       <span className="text-gray-900 font-semibold">{highlights.team_size}</span>
                     </div>
                   )}
                   {highlights.support && (
                     <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
-                      <span className="text-gray-600 font-medium">Support</span>
+                      <span className="text-gray-600 font-medium">{sc.support}</span>
                       <span className="text-gray-900 font-semibold">{highlights.support}</span>
                     </div>
                   )}
                   {highlights.guarantee && (
                     <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
-                      <span className="text-gray-600 font-medium">Guarantee</span>
+                      <span className="text-gray-600 font-medium">{sc.guarantee}</span>
                       <span className="text-gray-900 font-semibold">{highlights.guarantee}</span>
                     </div>
                   )}
                   {highlights.certification && (
                     <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
-                      <span className="text-gray-600 font-medium">Certification</span>
+                      <span className="text-gray-600 font-medium">{sc.certification}</span>
                       <span className="text-gray-900 font-semibold">{highlights.certification}</span>
                     </div>
                   )}
                   {highlights.turnaround && (
                     <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
-                      <span className="text-gray-600 font-medium">Turnaround</span>
+                      <span className="text-gray-600 font-medium">{sc.turnaround}</span>
                       <span className="text-gray-900 font-semibold">{highlights.turnaround}</span>
                     </div>
                   )}
@@ -182,10 +186,10 @@ export function ServiceDetailContent({ service, siteSettings = {} }: ServiceDeta
             >
               <CardContent className="p-8 text-center">
                 <h3 className="text-xl font-bold text-gray-900 mb-4">
-                  Ready to Get Started?
+                  {sc.readyToStart}
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  Let's discuss your {service.title.toLowerCase()} needs and create a solution that works for you.
+                  {fill(sc.readyToStartBody, service.title)}
                 </p>
                 <button 
                   className="w-full bg-brand-orange hover:bg-brand-orange/90 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2"
@@ -196,7 +200,7 @@ export function ServiceDetailContent({ service, siteSettings = {} }: ServiceDeta
                       window.location.href = '/contact';
                     }
                   }}
-                  aria-label={`Contact us about ${service.title} service`}
+                  aria-label={fill(sc.contactAboutService, service.title)}
                 >
                   {service.cta_primary_text || 'Contact Us Today'}
                   <ArrowRight className="ml-2 h-5 w-5 inline group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true" />

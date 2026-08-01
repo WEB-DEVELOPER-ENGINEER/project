@@ -11,6 +11,8 @@ import { CheckCircle, AlertCircle, Send, Loader2, Upload, FileText } from 'lucid
 import { useInView } from 'react-intersection-observer';
 import { useToast } from '@/hooks/use-toast';
 import { trackPhoneClick, trackWhatsAppClick } from '@/lib/analytics-events';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { CONTACT_FORM_CONTENT } from '@/lib/content/contact-form-content';
 
 interface ContactFormSectionProps {
   contactData: any;
@@ -42,6 +44,8 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
     threshold: 0.1,
   });
 
+  const { locale } = useLanguage();
+  const f = CONTACT_FORM_CONTENT[locale];
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -63,66 +67,43 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [errors, setErrors] = useState<FormErrors>({});
 
-  const serviceTypes = [
-    'Document Translation',
-    'Website Translation',
-    'Legal Translation',
-    'Medical Translation',
-    'Technical Translation',
-    'Certified Translation',
-    'Interpretation Services',
-    'Localization Services',
-    'Proofreading & Editing',
-    'Urgent Translation',
-    'Other Services'
-  ];
+  const serviceTypes = f.serviceTypes;
 
-  const languages = [
-    'Arabic', 'English', 'French', 'German', 'Spanish', 'Italian', 'Portuguese',
-    'Russian', 'Chinese (Simplified)', 'Chinese (Traditional)', 'Japanese',
-    'Korean', 'Hindi', 'Urdu', 'Persian/Farsi', 'Turkish', 'Dutch', 'Swedish',
-    'Norwegian', 'Danish', 'Finnish', 'Polish', 'Czech', 'Hungarian', 'Romanian',
-    'Bulgarian', 'Greek', 'Hebrew', 'Thai', 'Vietnamese', 'Indonesian', 'Malay',
-    'Other'
-  ];
+  const languages = f.languages;
 
-  const documentTypes = [
-    'Legal Documents', 'Medical Records', 'Technical Manuals', 'Academic Papers',
-    'Business Documents', 'Marketing Materials', 'Website Content', 'Patents',
-    'Certificates', 'Personal Documents', 'Financial Reports', 'Other'
-  ];
+  const documentTypes = f.documentTypes;
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = f.vNameRequired;
     } else if (formData.name.trim().length < 2) {
-      newErrors.name = 'Name must be at least 2 characters';
+      newErrors.name = f.vNameShort;
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = f.vEmailRequired;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = f.vEmailInvalid;
     }
 
     if (!formData.message.trim()) {
-      newErrors.message = 'Message is required';
+      newErrors.message = f.vMessageRequired;
     } else if (formData.message.trim().length < 10) {
-      newErrors.message = 'Message must be at least 10 characters';
+      newErrors.message = f.vMessageShort;
     }
 
     if (formData.phone && !/^[\+]?[1-9][\d]{0,15}$/.test(formData.phone.replace(/\s/g, ''))) {
-      newErrors.phone = 'Please enter a valid phone number';
+      newErrors.phone = f.vPhoneInvalid;
     }
 
     if (formData.word_count && isNaN(Number(formData.word_count))) {
-      newErrors.word_count = 'Please enter a valid number';
+      newErrors.word_count = f.vNumberInvalid;
     }
 
     if (formData.deadline && new Date(formData.deadline) < new Date()) {
-      newErrors.deadline = 'Deadline must be in the future';
+      newErrors.deadline = f.vDeadlinePast;
     }
 
     setErrors(newErrors);
@@ -147,8 +128,8 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
     
     if (validFiles.length !== files.length) {
       toast({
-        title: "File Upload Warning",
-        description: "Some files were skipped. Only PDF, DOC, DOCX, TXT, JPG, and PNG files under 10MB are allowed.",
+        title: f.tFileTitle,
+        description: f.tFileBody,
         variant: "destructive",
       });
     }
@@ -165,8 +146,8 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
     
     if (!validateForm()) {
       toast({
-        title: "Validation Error",
-        description: "Please fix the errors in the form and try again.",
+        title: f.tValidationTitle,
+        description: f.tValidationBody,
         variant: "destructive",
       });
       return;
@@ -201,8 +182,8 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
       if (result.success) {
         setIsSubmitted(true);
         toast({
-          title: "Message Sent Successfully!",
-          description: "Thank you for contacting us. We'll get back to you within 24 hours.",
+          title: f.tSuccessTitle,
+          description: f.tSuccessBody,
         });
         
         // Reset form
@@ -230,8 +211,8 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
     } catch (error) {
       console.error('Contact form error:', error);
       toast({
-        title: "Error Sending Message",
-        description: "There was a problem sending your message. Please try again or contact us directly.",
+        title: f.tErrorTitle,
+        description: f.tErrorBody,
         variant: "destructive",
       });
     } finally {
@@ -255,17 +236,17 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                     <CheckCircle className="w-8 h-8 text-white" />
                   </div>
                   <h2 id="contact-success-heading" className="text-2xl font-bold text-green-800 mb-2">
-                    Message Sent Successfully!
+                    {f.successTitle}
                   </h2>
                   <p className="text-green-700 mb-6">
-                    Thank you for contacting us. We've received your message and will get back to you within 24 hours.
+                    {f.successBody}
                   </p>
                   <Button 
                     onClick={() => setIsSubmitted(false)}
                     variant="outline"
                     className="border-green-500 text-green-700 hover:bg-green-500 hover:text-white"
                   >
-                    Send Another Message
+                    {f.successAgain}
                   </Button>
                 </div>
               </CardContent>
@@ -293,14 +274,14 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                 inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
               }`}
             >
-              Send Us a Message
+              {f.heading}
             </h2>
             <p 
               className={`text-xl text-gray-600 max-w-2xl mx-auto transition-all duration-700 delay-100 ${
                 inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
               }`}
             >
-              Fill out the form below and we'll get back to you with a personalized quote for your translation needs.
+              {f.subheading}
             </p>
           </div>
 
@@ -313,9 +294,9 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                 }`}
               >
                 <CardHeader>
-                  <CardTitle className="text-2xl text-gray-900">Get Your Free Quote</CardTitle>
+                  <CardTitle className="text-2xl text-gray-900">{f.cardTitle}</CardTitle>
                   <CardDescription>
-                    Tell us about your project and we'll provide you with a detailed quote within 24 hours.
+                    {f.cardDescription}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -324,7 +305,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="name" className="text-sm font-medium text-gray-700">
-                          Full Name <span className="text-red-500">*</span>
+                          {f.fullName} <span className="text-red-500">*</span>
                         </Label>
                         <Input
                           id="name"
@@ -332,7 +313,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                           value={formData.name}
                           onChange={(e) => handleInputChange('name', e.target.value)}
                           className={`mt-1 ${errors.name ? 'border-red-500 focus:ring-red-500' : ''}`}
-                          placeholder="Enter your full name"
+                          placeholder={f.phName}
                           required
                           aria-describedby={errors.name ? 'name-error' : undefined}
                         />
@@ -346,7 +327,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
 
                       <div>
                         <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-                          Email Address <span className="text-red-500">*</span>
+                          {f.email} <span className="text-red-500">*</span>
                         </Label>
                         <Input
                           id="email"
@@ -354,7 +335,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                           value={formData.email}
                           onChange={(e) => handleInputChange('email', e.target.value)}
                           className={`mt-1 ${errors.email ? 'border-red-500 focus:ring-red-500' : ''}`}
-                          placeholder="Enter your email address"
+                          placeholder={f.phEmail}
                           required
                           aria-describedby={errors.email ? 'email-error' : undefined}
                         />
@@ -371,7 +352,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="phone" className="text-sm font-medium text-gray-700">
-                          Phone Number
+                          {f.phone}
                         </Label>
                         <Input
                           id="phone"
@@ -379,7 +360,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                           value={formData.phone}
                           onChange={(e) => handleInputChange('phone', e.target.value)}
                           className={`mt-1 ${errors.phone ? 'border-red-500 focus:ring-red-500' : ''}`}
-                          placeholder="Enter your phone number"
+                          placeholder={f.phPhone}
                           aria-describedby={errors.phone ? 'phone-error' : undefined}
                         />
                         {errors.phone && (
@@ -392,16 +373,16 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
 
                       <div>
                         <Label htmlFor="service_type" className="text-sm font-medium text-gray-700">
-                          Service Type
+                          {f.serviceType}
                         </Label>
                         <Select value={formData.service_type} onValueChange={(value) => handleInputChange('service_type', value)}>
                           <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="Select a service" />
+                            <SelectValue placeholder={f.phService} />
                           </SelectTrigger>
                           <SelectContent>
                             {serviceTypes.map((service) => (
-                              <SelectItem key={service} value={service}>
-                                {service}
+                              <SelectItem key={service.value} value={service.value}>
+                                {service.label}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -413,16 +394,16 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="source_language" className="text-sm font-medium text-gray-700">
-                          From Language
+                          {f.fromLanguage}
                         </Label>
                         <Select value={formData.source_language} onValueChange={(value) => handleInputChange('source_language', value)}>
                           <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="Select source language" />
+                            <SelectValue placeholder={f.phSourceLang} />
                           </SelectTrigger>
                           <SelectContent>
                             {languages.map((language) => (
-                              <SelectItem key={language} value={language}>
-                                {language}
+                              <SelectItem key={language.value} value={language.value}>
+                                {language.label}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -431,16 +412,16 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
 
                       <div>
                         <Label htmlFor="target_language" className="text-sm font-medium text-gray-700">
-                          To Language
+                          {f.toLanguage}
                         </Label>
                         <Select value={formData.target_language} onValueChange={(value) => handleInputChange('target_language', value)}>
                           <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="Select target language" />
+                            <SelectValue placeholder={f.phTargetLang} />
                           </SelectTrigger>
                           <SelectContent>
                             {languages.map((language) => (
-                              <SelectItem key={language} value={language}>
-                                {language}
+                              <SelectItem key={language.value} value={language.value}>
+                                {language.label}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -452,16 +433,16 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="document_type" className="text-sm font-medium text-gray-700">
-                          Document Type
+                          {f.documentType}
                         </Label>
                         <Select value={formData.document_type} onValueChange={(value) => handleInputChange('document_type', value)}>
                           <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="Select document type" />
+                            <SelectValue placeholder={f.phDocType} />
                           </SelectTrigger>
                           <SelectContent>
                             {documentTypes.map((type) => (
-                              <SelectItem key={type} value={type}>
-                                {type}
+                              <SelectItem key={type.value} value={type.value}>
+                                {type.label}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -470,7 +451,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
 
                       <div>
                         <Label htmlFor="word_count" className="text-sm font-medium text-gray-700">
-                          Estimated Word Count
+                          {f.wordCount}
                         </Label>
                         <Input
                           id="word_count"
@@ -478,7 +459,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                           value={formData.word_count}
                           onChange={(e) => handleInputChange('word_count', e.target.value)}
                           className={`mt-1 ${errors.word_count ? 'border-red-500 focus:ring-red-500' : ''}`}
-                          placeholder="e.g., 1000"
+                          placeholder={f.phWordCount}
                           min="1"
                           aria-describedby={errors.word_count ? 'word-count-error' : undefined}
                         />
@@ -495,7 +476,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="deadline" className="text-sm font-medium text-gray-700">
-                          Preferred Deadline
+                          {f.deadline}
                         </Label>
                         <Input
                           id="deadline"
@@ -523,7 +504,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                           className="h-4 w-4 text-brand-orange focus:ring-brand-orange border-gray-300 rounded"
                         />
                         <Label htmlFor="certification_needed" className="ml-2 text-sm font-medium text-gray-700">
-                          Certified translation required
+                          {f.certificationNeeded}
                         </Label>
                       </div>
                     </div>
@@ -531,7 +512,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                     {/* Subject */}
                     <div>
                       <Label htmlFor="subject" className="text-sm font-medium text-gray-700">
-                        Subject
+                        {f.subject}
                       </Label>
                       <Input
                         id="subject"
@@ -539,21 +520,21 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                         value={formData.subject}
                         onChange={(e) => handleInputChange('subject', e.target.value)}
                         className="mt-1"
-                        placeholder="Brief description of your project"
+                        placeholder={f.phSubject}
                       />
                     </div>
 
                     {/* Message */}
                     <div>
                       <Label htmlFor="message" className="text-sm font-medium text-gray-700">
-                        Project Details <span className="text-red-500">*</span>
+                        {f.projectDetails} <span className="text-red-500">*</span>
                       </Label>
                       <Textarea
                         id="message"
                         value={formData.message}
                         onChange={(e) => handleInputChange('message', e.target.value)}
                         className={`mt-1 min-h-[120px] ${errors.message ? 'border-red-500 focus:ring-red-500' : ''}`}
-                        placeholder="Please describe your translation project in detail. Include any special requirements, formatting needs, or specific terminology."
+                        placeholder={f.phMessage}
                         required
                         aria-describedby={errors.message ? 'message-error' : 'message-help'}
                       />
@@ -564,7 +545,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                         </p>
                       ) : (
                         <p id="message-help" className="mt-1 text-xs text-gray-500">
-                          Provide as much detail as possible for an accurate quote
+                          {f.messageHelp}
                         </p>
                       )}
                     </div>
@@ -572,7 +553,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                     {/* File Upload */}
                     <div>
                       <Label className="text-sm font-medium text-gray-700 mb-2 block">
-                        Attach Documents (Optional)
+                        {f.attachments}
                       </Label>
                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-brand-orange transition-colors duration-300">
                         <input
@@ -588,10 +569,10 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                         <label htmlFor="file-upload" className="cursor-pointer">
                           <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                           <p className="text-sm text-gray-600 mb-1">
-                            <span className="font-medium text-brand-orange hover:text-brand-orange/80">Click to upload</span> or drag and drop
+                            <span className="font-medium text-brand-orange hover:text-brand-orange/80">{f.clickToUpload}</span> {f.orDragDrop}
                           </p>
                           <p id="file-upload-help" className="text-xs text-gray-500">
-                            PDF, DOC, DOCX, TXT, JPG, PNG (max 10MB each, up to 5 files)
+                            {f.fileHint}
                           </p>
                         </label>
                       </div>
@@ -610,7 +591,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                                 type="button"
                                 onClick={() => removeFile(index)}
                                 className="text-red-500 hover:text-red-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 rounded"
-                                aria-label={`Remove ${file.name}`}
+                                aria-label={`${f.removeFile} ${file.name}`}
                               >
                                 ×
                               </button>
@@ -623,7 +604,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                     {/* Privacy Notice */}
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                       <p className="text-sm text-blue-800">
-                        <strong>Privacy Notice:</strong> Your information is secure and will only be used to provide you with translation services. We never share your data with third parties.
+                        <strong>{f.privacyLabel}</strong> {f.privacyBody}
                       </p>
                     </div>
 
@@ -637,17 +618,17 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                       {isSubmitting ? (
                         <>
                           <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden="true" />
-                          <span>Sending Message...</span>
+                          <span>{f.submitting}</span>
                         </>
                       ) : (
                         <>
                           <Send className="mr-2 h-5 w-5" aria-hidden="true" />
-                          <span>Get Free Quote</span>
+                          <span>{f.submit}</span>
                         </>
                       )}
                     </Button>
                     <p id="submit-button-help" className="text-xs text-center text-gray-500 mt-2">
-                      We'll respond within 2-4 hours during business hours
+                      {f.submitHelp}
                     </p>
                   </form>
                 </CardContent>
@@ -664,13 +645,13 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                 {/* Response Time */}
                 <Card className="border-brand-orange/20 bg-brand-orange/5">
                   <CardContent className="p-6">
-                    <h3 className="font-semibold text-gray-900 mb-3">Quick Response</h3>
+                    <h3 className="font-semibold text-gray-900 mb-3">{f.quickResponseTitle}</h3>
                     <p className="text-sm text-gray-600 mb-4">
-                      We typically respond to all inquiries within 2-4 hours during business hours.
+                      {f.quickResponseBody}
                     </p>
                     <div className="flex items-center text-sm text-brand-orange font-medium">
                       <CheckCircle className="w-4 h-4 mr-2" />
-                      24-hour quote guarantee
+                      {f.quoteGuarantee}
                     </div>
                   </CardContent>
                 </Card>
@@ -678,27 +659,27 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                 {/* What to Include */}
                 <Card>
                   <CardContent className="p-6">
-                    <h3 className="font-semibold text-gray-900 mb-3">For Accurate Quotes, Include:</h3>
+                    <h3 className="font-semibold text-gray-900 mb-3">{f.includeTitle}</h3>
                     <ul className="space-y-2 text-sm text-gray-600">
                       <li className="flex items-start">
                         <CheckCircle className="w-4 h-4 mr-2 mt-0.5 text-green-500 flex-shrink-0" />
-                        Source and target languages
+                        {f.includeItems[0]}
                       </li>
                       <li className="flex items-start">
                         <CheckCircle className="w-4 h-4 mr-2 mt-0.5 text-green-500 flex-shrink-0" />
-                        Document type and word count
+                        {f.includeItems[1]}
                       </li>
                       <li className="flex items-start">
                         <CheckCircle className="w-4 h-4 mr-2 mt-0.5 text-green-500 flex-shrink-0" />
-                        Deadline requirements
+                        {f.includeItems[2]}
                       </li>
                       <li className="flex items-start">
                         <CheckCircle className="w-4 h-4 mr-2 mt-0.5 text-green-500 flex-shrink-0" />
-                        Certification needs
+                        {f.includeItems[3]}
                       </li>
                       <li className="flex items-start">
                         <CheckCircle className="w-4 h-4 mr-2 mt-0.5 text-green-500 flex-shrink-0" />
-                        Special formatting requirements
+                        {f.includeItems[4]}
                       </li>
                     </ul>
                   </CardContent>
@@ -707,9 +688,9 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                 {/* Emergency Contact */}
                 <Card className="border-red-200 bg-red-50">
                   <CardContent className="p-6">
-                    <h3 className="font-semibold text-red-800 mb-2">Urgent Projects?</h3>
+                    <h3 className="font-semibold text-red-800 mb-2">{f.urgentTitle}</h3>
                     <p className="text-sm text-red-700 mb-3">
-                      For urgent translation needs, contact us directly:
+                      {f.urgentBody}
                     </p>
                     <div className="space-y-2">
                       <a 
@@ -720,13 +701,13 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                         📞 {contactData.phone}
                       </a>
                       <a 
-                        href={`https://api.whatsapp.com/send?phone=${contactData.whatsapp_number}&text=${encodeURIComponent('I have an urgent translation project.')}`}
+                        href={`https://api.whatsapp.com/send?phone=${contactData.whatsapp_number}&text=${encodeURIComponent(f.urgentWhatsappMessage)}`}
                         onClick={() => trackWhatsAppClick(contactData.whatsapp_number, 'contact_form_emergency')}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="block text-sm font-medium text-red-800 hover:text-red-900"
                       >
-                        💬 WhatsApp Chat
+                        💬 {f.urgentWhatsapp}
                       </a>
                     </div>
                   </CardContent>

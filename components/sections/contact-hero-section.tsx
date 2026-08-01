@@ -8,6 +8,7 @@ import { trackPhoneClick, trackEmailClick, trackWhatsAppClick } from '@/lib/anal
 import { useLanguage } from '@/components/providers/LanguageProvider';
 import { localizedPath } from '@/lib/locale';
 import { CONTACT_CONTENT } from '@/lib/content/contact-content';
+import { companyName as resolveCompanyName } from '@/lib/company';
 
 interface ContactHeroSectionProps {
   contactData: any;
@@ -21,8 +22,9 @@ export function ContactHeroSection({ contactData, siteSettings = {} }: ContactHe
   });
   const { locale } = useLanguage();
   const c = CONTACT_CONTENT[locale].hero;
+  const cm = CONTACT_CONTENT[locale].common;
 
-  const companyName = siteSettings.company_name || 'Jusor Translation Services';
+  const companyName = resolveCompanyName(siteSettings, locale);
   const heroTitle = contactData.contact_title || c.title;
   const heroSubtitle = contactData.contact_subtitle || c.subtitle;
   const heroDescription = contactData.contact_description || c.description;
@@ -217,7 +219,7 @@ export function ContactHeroSection({ contactData, siteSettings = {} }: ContactHe
                     {companyName}
                   </h3>
                   <p className="text-gray-600 mb-6">
-                    Professional Translation & Interpretation Services
+                    {c.tagline}
                   </p>
                 </div>
 
@@ -225,11 +227,11 @@ export function ContactHeroSection({ contactData, siteSettings = {} }: ContactHe
                 <div className="space-y-4">
                   <div className="flex items-center text-gray-700">
                     <MapPin className="h-5 w-5 text-brand-orange mr-3 flex-shrink-0" aria-hidden="true" />
-                    <span className="text-sm">{contactData.address}</span>
+                    <span className="text-sm">{(locale === 'ar' ? cm.address : contactData.address || cm.address)}</span>
                   </div>
                   <div className="flex items-center text-gray-700">
                     <Clock className="h-5 w-5 text-brand-blue mr-3 flex-shrink-0" aria-hidden="true" />
-                    <span className="text-sm">{contactData.business_hours}</span>
+                    <span className="text-sm">{(locale === 'ar' ? cm.businessHours : contactData.business_hours || cm.businessHours)}</span>
                   </div>
                   <div className="flex items-center justify-center space-x-4 pt-4">
                     <div className="flex items-center">

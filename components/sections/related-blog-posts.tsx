@@ -9,6 +9,9 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Clock, ArrowRight, User, BookOpen } from 'lucide-react';
 import { BlogPost } from '@/lib/types';
 import { format } from 'date-fns';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { localizedPath } from '@/lib/locale';
+import { SERVICE_DETAIL_CONTENT, fill } from '@/lib/content/service-detail-content';
 
 interface RelatedBlogPostsProps {
   posts: BlogPost[];
@@ -17,6 +20,8 @@ interface RelatedBlogPostsProps {
 }
 
 export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: RelatedBlogPostsProps) {
+  const { locale } = useLanguage();
+  const sc = SERVICE_DETAIL_CONTENT[locale];
   if (!posts || posts.length === 0) {
     return null;
   }
@@ -52,13 +57,13 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orange mb-4">
             <BookOpen className="h-4 w-4 mr-2" />
-            Continue Reading
+            {sc.continueReading}
           </div>
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-4">
-            Related Articles
+            {sc.relatedArticles}
           </h2>
           <p className="text-lg text-gray-600">
-            Explore more insights and expert advice from our translation and localization blog.
+            {sc.relatedArticlesBody}
           </p>
         </div>
 
@@ -93,7 +98,7 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
                               {post.title.charAt(0)}
                             </span>
                           </div>
-                          <h4 className="font-semibold text-white text-sm">Related Article</h4>
+                          <h4 className="font-semibold text-white text-sm">{sc.relatedArticle}</h4>
                         </div>
                       </div>
                     )}
@@ -139,10 +144,10 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
 
                     {/* Read More Link */}
                     <Link 
-                      href={`/blog/${post.slug}`}
+                      href={localizedPath(`/blog/${post.slug}`, locale)}
                       className="inline-flex items-center text-brand-orange hover:text-brand-orange/80 font-medium text-sm transition-colors mt-auto"
                     >
-                      Read Full Article
+                      {sc.readFullArticle}
                       <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </div>
@@ -156,10 +161,10 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
         <div className="text-center">
           <div className="bg-gradient-to-r from-gray-50 to-white rounded-2xl p-8 border shadow-sm">
             <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              Explore Our Complete Blog
+              {sc.exploreBlog}
             </h3>
             <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-              Discover more expert insights, industry trends, and practical tips from our team of translation and localization professionals.
+              {sc.exploreBlogBody}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
@@ -167,9 +172,9 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
                 size="lg"
                 className="bg-brand-orange hover:bg-brand-orange/90"
               >
-                <Link href="/blog">
+                <Link href={localizedPath('/blog', locale)}>
                   <BookOpen className="h-5 w-5 mr-2" />
-                  View All Articles
+                  {sc.viewAllArticles}
                 </Link>
               </Button>
               <Button 
@@ -178,8 +183,8 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
                 asChild
                 className="border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"
               >
-                <Link href="/contact">
-                  Get Expert Consultation
+                <Link href={localizedPath('/contact', locale)}>
+                  {sc.getConsultation}
                 </Link>
               </Button>
             </div>
@@ -191,17 +196,17 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
           <div className="bg-gradient-to-r from-brand-orange/5 to-brand-blue/5 rounded-2xl p-8 lg:p-12 text-center">
             <div className="max-w-2xl mx-auto">
               <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
-                Stay Updated with Translation Insights
+                {sc.newsletterTitle}
               </h3>
               <p className="text-gray-600 mb-8 text-lg">
-                Subscribe to our newsletter and get the latest industry trends, expert tips, and exclusive content delivered to your inbox.
+                {sc.newsletterBody}
               </p>
               
               {/* Newsletter Form */}
               <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
                 <input
                   type="email"
-                  placeholder="Enter your email address"
+                  placeholder={sc.newsletterEmailPlaceholder}
                   className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-orange focus:border-transparent outline-none"
                   required
                   aria-label="Email address for newsletter subscription"
@@ -210,14 +215,14 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
                   type="submit"
                   className="bg-brand-orange hover:bg-brand-orange/90 px-8"
                 >
-                  Subscribe
+                  {sc.subscribe}
                 </Button>
               </form>
               
               <p className="text-xs text-gray-500 mt-4">
-                No spam, unsubscribe at any time. Read our{' '}
-                <Link href="/privacy" className="text-brand-orange hover:underline">
-                  Privacy Policy
+                {sc.newsletterNoSpam}{' '}
+                <Link href={localizedPath('/privacy', locale)} className="text-brand-orange hover:underline">
+                  {sc.privacyPolicy}
                 </Link>
                 .
               </p>
