@@ -79,8 +79,8 @@ export function ServicesGridSection({
 
   const sectionTitle = siteSettings.services_grid_title || (locale === 'ar' ? 'خدماتنا الاحترافية' : 'Our Professional Services');
   const sectionDescription = siteSettings.services_grid_description || (locale === 'ar'
-    ? 'حلول شاملة مصممة لتلبية احتياجات عملك الفريدة ودفع عجلة النمو المستدام.'
-    : 'Comprehensive solutions tailored to meet your unique business needs and drive sustainable growth.');
+    ? 'ترجمة معتمدة للمستندات القانونية والطبية والتقنية والمالية، مقبولة لدى الجهات الرسمية في دولة الإمارات.'
+    : 'Certified translation of legal, medical, technical and financial documents, accepted by UAE government and legal bodies.');
 
   const displayServices = enableFiltering ? filteredServices : services;
 

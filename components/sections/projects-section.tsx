@@ -172,7 +172,7 @@ export function ProjectsSection({ projects: rawProjects, siteSettings = {} }: Pr
               {isRtl ? 'جاهز للبدء في مشروع الترجمة الخاص بك؟' : 'Ready to Start Your Translation Project?'}
             </h3>
             <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
-              {isRtl ? 'انضم إلى مئات العملاء الواثقين في خدماتنا المعتمدة. احصل على عرض سعر مجاني لمشروعك اليوم.' : 'Join hundreds of satisfied clients who trust us for their translation needs. Get a free quote for your project today.'}
+              {isRtl ? 'أرسل لنا مستنداتك وسنعود إليك بنطاق العمل والسعر وموعد التسليم.' : 'Send us your documents and we will come back with scope, price and a delivery date.'}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
