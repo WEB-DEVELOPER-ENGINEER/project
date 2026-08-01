@@ -152,7 +152,7 @@ export function BlogPostContent({ post, siteSettings = {} }: BlogPostContentProp
               <div className="sticky top-24">
                 <div className="bg-gray-50 rounded-xl p-6 border">
                   <div className="flex items-center gap-2 mb-4">
-                    <BookOpen className="h-5 w-5 text-brand-orange" />
+                    <BookOpen className="h-5 w-5 text-brand-orangeText" />
                     <h3 className="font-semibold text-gray-900">{bc.tableOfContents}</h3>
                   </div>
                   <nav aria-label={bc.tableOfContents}>
@@ -186,7 +186,7 @@ export function BlogPostContent({ post, siteSettings = {} }: BlogPostContentProp
                   </p>
                   <Button 
                     size="sm" 
-                    className="w-full bg-brand-orange hover:bg-brand-orange/90"
+                    className="w-full bg-brand-orangeText hover:bg-brand-orangeText/90"
                     onClick={() => {
                       const element = document.getElementById('newsletter-signup');
                       element?.scrollIntoView({ behavior: 'smooth' });
@@ -273,7 +273,7 @@ export function BlogPostContent({ post, siteSettings = {} }: BlogPostContentProp
         <Button
           onClick={scrollToTop}
           size="sm"
-          className="fixed bottom-8 right-8 z-50 rounded-full w-12 h-12 p-0 bg-brand-orange hover:bg-brand-orange/90 shadow-lg"
+          className="fixed bottom-8 right-8 z-50 rounded-full w-12 h-12 p-0 bg-brand-orangeText hover:bg-brand-orangeText/90 shadow-lg"
           aria-label={bc.scrollToTop}
         >
           <ChevronUp className="h-5 w-5" />

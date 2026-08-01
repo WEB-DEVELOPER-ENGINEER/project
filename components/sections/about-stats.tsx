@@ -113,7 +113,7 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
                     <CardContent className="p-6">
                       <div className="flex items-start gap-4">
                         <div className="w-12 h-12 bg-brand-orange/10 rounded-full flex items-center justify-center flex-shrink-0">
-                          <IconComponent className="h-6 w-6 text-brand-orange" />
+                          <IconComponent className="h-6 w-6 text-brand-orangeText" />
                         </div>
                         <div>
                           <h4 className="font-bold text-gray-900 mb-2">
@@ -123,7 +123,7 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
                             {achievement.metric_label}
                           </p>
                           {achievement.metric_description && (
-                            <p className="text-gray-500 text-xs mt-2">
+                            <p className="text-gray-600 text-xs mt-2">
                               {achievement.metric_description}
                             </p>
                           )}
@@ -154,7 +154,7 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
                     <CheckCircle className="h-6 w-6 text-green-500" />
                     <span className="font-medium text-gray-900">{ac.translationAccuracy}</span>
                   </div>
-                  <div className="text-2xl font-bold text-brand-orange">99.8%</div>
+                  <div className="text-2xl font-bold text-brand-orangeText">99.8%</div>
                 </div>
                 
                 <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm">
@@ -170,7 +170,7 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
                     <Star className="h-6 w-6 text-yellow-500" />
                     <span className="font-medium text-gray-900">{ac.clientRetention}</span>
                   </div>
-                  <div className="text-2xl font-bold text-brand-orange">95%</div>
+                  <div className="text-2xl font-bold text-brand-orangeText">95%</div>
                 </div>
               </div>
             </div>
@@ -179,7 +179,7 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
               <div className="aspect-square rounded-2xl bg-gradient-to-br from-brand-orange/10 to-brand-blue/10 p-8 flex items-center justify-center">
                 <div className="text-center">
                   <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                    <Award className="h-12 w-12 text-brand-orange" />
+                    <Award className="h-12 w-12 text-brand-orangeText" />
                   </div>
                   <h4 className="text-xl font-bold text-gray-900 mb-3">
                     {ac.certifiedTranslation}
@@ -200,7 +200,7 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
 
               <div className="absolute -bottom-4 -left-4 bg-white rounded-xl p-4 shadow-xl border">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-brand-orange">5★</div>
+                  <div className="text-2xl font-bold text-brand-orangeText">5★</div>
                   <div className="text-xs text-gray-600">{ac.averageReview}</div>
                 </div>
               </div>
@@ -221,7 +221,7 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
                 return (
                   <div key={index} className="text-center">
                     <div className="w-16 h-16 bg-brand-orange/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <IconComponent className="h-8 w-8 text-brand-orange" />
+                      <IconComponent className="h-8 w-8 text-brand-orangeText" />
                     </div>
                     <h4 className="font-bold text-gray-900 mb-2">
                       {benefit.metric_value}
@@ -247,7 +247,7 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
           
           <div className="flex flex-wrap justify-center items-center gap-8 text-sm text-gray-600">
             <div className="flex items-center gap-2">
-              <Award className="h-5 w-5 text-brand-orange" />
+              <Award className="h-5 w-5 text-brand-orangeText" />
               <span>{ac.badges[0]}</span>
             </div>
             <div className="flex items-center gap-2">
@@ -255,7 +255,7 @@ export function AboutStats({ companyMetrics, siteSettings }: AboutStatsProps) {
               <span>{ac.badges[1]}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Star className="h-5 w-5 text-brand-orange" />
+              <Star className="h-5 w-5 text-brand-orangeText" />
               <span>{ac.badges[2]}</span>
             </div>
             <div className="flex items-center gap-2">

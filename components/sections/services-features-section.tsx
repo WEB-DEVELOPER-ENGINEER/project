@@ -111,7 +111,7 @@ export function ServicesFeaturesSection({ features, siteSettings = {} }: Service
                   <div className="mb-6">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-brand-orange/10 to-brand-blue/10 group-hover:from-brand-orange/20 group-hover:to-brand-blue/20 transition-all duration-300">
                       <IconComponent 
-                        className="h-8 w-8 text-brand-orange group-hover:text-brand-blue transition-colors duration-300" 
+                        className="h-8 w-8 text-brand-orangeText group-hover:text-brand-blue transition-colors duration-300" 
                         aria-hidden="true"
                       />
                     </div>

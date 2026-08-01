@@ -165,7 +165,7 @@ export function ProjectDetailCTA({ project, siteSettings = {} }: ProjectDetailCT
                   <Button 
                     onClick={handleEmailClick}
                     variant="outline"
-                    className="w-full border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-white justify-start"
+                    className="w-full border-brand-orange text-brand-orangeText hover:bg-brand-orangeText hover:text-white justify-start"
                     size="lg"
                   >
                     <Mail className="h-5 w-5 mr-3" />
@@ -189,7 +189,7 @@ export function ProjectDetailCTA({ project, siteSettings = {} }: ProjectDetailCT
                 <div className="space-y-4">
                   <Button 
                     asChild
-                    className="w-full bg-brand-orange hover:bg-brand-orange/90 text-white"
+                    className="w-full bg-brand-orangeText hover:bg-brand-orangeText/90 text-white"
                     size="lg"
                   >
                     <Link href="/contact#contact-form-section">

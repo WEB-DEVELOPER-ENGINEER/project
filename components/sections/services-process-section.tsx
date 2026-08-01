@@ -125,7 +125,7 @@ export function ServicesProcessSection({ siteSettings = {} }: ServicesProcessSec
         >
           <div className="bg-gradient-to-r from-gray-50 via-blue-50 to-gray-50 rounded-2xl p-8 lg:p-12 max-w-4xl mx-auto">
             <div className="flex items-center justify-center mb-6">
-              <CheckCircle className="h-12 w-12 text-brand-orange mr-4" aria-hidden="true" />
+              <CheckCircle className="h-12 w-12 text-brand-orangeText mr-4" aria-hidden="true" />
               <h3 className="text-2xl lg:text-3xl font-bold text-gray-900">
                 {isRtl ? 'هل أنت مستعد للبدء؟' : 'Ready to Get Started?'}
               </h3>
@@ -137,7 +137,7 @@ export function ServicesProcessSection({ siteSettings = {} }: ServicesProcessSec
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
-                className="bg-brand-orange hover:bg-brand-orange/90 text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2"
+                className="bg-brand-orangeText hover:bg-brand-orangeText/90 text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2"
                 onClick={() => {
                   window.location.href = '/contact';
                 }}

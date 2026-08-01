@@ -35,7 +35,7 @@ export function ProjectsGridSection({ projects, siteSettings = {} }: ProjectsGri
             <p className="text-gray-600 mb-8">{pp.noProjectsBody}</p>
             <Button 
               onClick={() => window.location.href = '/contact#contact-form-section'}
-              className="bg-brand-orange hover:bg-brand-orange/90"
+              className="bg-brand-orangeText hover:bg-brand-orangeText/90"
             >
               {pp.contactForCustom}
             </Button>
@@ -162,7 +162,7 @@ export function ProjectsGridSection({ projects, siteSettings = {} }: ProjectsGri
                   {/* CTA Link */}
                   <Link 
                     href={`/projects/${project.slug}`}
-                    className="inline-flex items-center text-brand-orange hover:text-brand-blue font-semibold transition-colors duration-300 group/link"
+                    className="inline-flex items-center text-brand-orangeText hover:text-brand-blue font-semibold transition-colors duration-300 group/link"
                     aria-label={`View details of ${project.title} project`}
                   >
                     View Project

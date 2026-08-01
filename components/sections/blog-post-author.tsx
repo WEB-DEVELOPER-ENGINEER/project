@@ -101,7 +101,7 @@ export function BlogPostAuthor({ author, authorData: dbAuthorData, companyMetric
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">
                     About {authorInfo.name}
                   </h3>
-                  <p className="text-lg text-brand-orange font-medium mb-4">
+                  <p className="text-lg text-brand-orangeText font-medium mb-4">
                     {authorInfo.title}
                   </p>
                 </div>
@@ -119,7 +119,7 @@ export function BlogPostAuthor({ author, authorData: dbAuthorData, companyMetric
                         <Badge 
                           key={index}
                           variant="secondary"
-                          className="bg-brand-orange/10 text-brand-orange hover:bg-brand-orange/20"
+                          className="bg-brand-orange/10 text-brand-orangeText hover:bg-brand-orange/20"
                         >
                           {skill}
                         </Badge>
@@ -132,7 +132,7 @@ export function BlogPostAuthor({ author, authorData: dbAuthorData, companyMetric
                 {authorInfo.achievements && (
                   <div className="mb-6">
                     <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                      <Award className="h-4 w-4 text-brand-orange" />
+                      <Award className="h-4 w-4 text-brand-orangeText" />
                       {bc.keyAchievements}
                     </h4>
                     <div className="grid sm:grid-cols-2 gap-2">
@@ -159,7 +159,7 @@ export function BlogPostAuthor({ author, authorData: dbAuthorData, companyMetric
                         variant="outline"
                         size="sm"
                         asChild
-                        className="border-gray-300 hover:border-brand-orange hover:text-brand-orange"
+                        className="border-gray-300 hover:border-brand-orange hover:text-brand-orangeText"
                       >
                         <a 
                           href={`mailto:${authorInfo.social.email}`}
@@ -211,7 +211,7 @@ export function BlogPostAuthor({ author, authorData: dbAuthorData, companyMetric
                         variant="outline"
                         size="sm"
                         asChild
-                        className="border-gray-300 hover:border-brand-orange hover:text-brand-orange"
+                        className="border-gray-300 hover:border-brand-orange hover:text-brand-orangeText"
                       >
                         <a 
                           href={authorInfo.social.website}
@@ -240,7 +240,7 @@ export function BlogPostAuthor({ author, authorData: dbAuthorData, companyMetric
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <Button 
                     asChild
-                    className="bg-brand-orange hover:bg-brand-orange/90"
+                    className="bg-brand-orangeText hover:bg-brand-orangeText/90"
                   >
                     <Link href="/contact">
                       {bc.getFreeQuote}

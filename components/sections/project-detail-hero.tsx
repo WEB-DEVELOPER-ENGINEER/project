@@ -72,7 +72,7 @@ export function ProjectDetailHero({ project, siteSettings = {} }: ProjectDetailH
               <li>
                 <Link 
                   href="/" 
-                  className="hover:text-brand-orange transition-colors duration-200"
+                  className="hover:text-brand-orangeText transition-colors duration-200"
                   aria-label="Go to homepage"
                 >
                   Home
@@ -82,14 +82,14 @@ export function ProjectDetailHero({ project, siteSettings = {} }: ProjectDetailH
               <li>
                 <Link 
                   href="/projects" 
-                  className="hover:text-brand-orange transition-colors duration-200"
+                  className="hover:text-brand-orangeText transition-colors duration-200"
                   aria-label="Go to projects page"
                 >
                   Projects
                 </Link>
               </li>
               <li className="text-gray-400">/</li>
-              <li className="text-brand-orange font-medium" aria-current="page">
+              <li className="text-brand-orangeText font-medium" aria-current="page">
                 {project.title}
               </li>
             </ol>
@@ -128,7 +128,7 @@ export function ProjectDetailHero({ project, siteSettings = {} }: ProjectDetailH
                   )}
                   {project.category && (
                     <>
-                      <Badge variant="secondary" className="bg-brand-orange/10 text-brand-orange">
+                      <Badge variant="secondary" className="bg-brand-orange/10 text-brand-orangeText">
                         {project.category.charAt(0).toUpperCase() + project.category.slice(1)}
                       </Badge>
                       <span className="mx-2">•</span>
@@ -175,7 +175,7 @@ export function ProjectDetailHero({ project, siteSettings = {} }: ProjectDetailH
               >
                 <Button 
                   size="lg"
-                  className="bg-brand-orange hover:bg-brand-orange/90 text-white px-8 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="bg-brand-orangeText hover:bg-brand-orangeText/90 text-white px-8 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                   onClick={() => window.location.href = '/contact#contact-form-section'}
                 >
                   Start Similar Project

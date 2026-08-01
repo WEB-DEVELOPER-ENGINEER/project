@@ -376,7 +376,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                           {f.serviceType}
                         </Label>
                         <Select value={formData.service_type} onValueChange={(value) => handleInputChange('service_type', value)}>
-                          <SelectTrigger className="mt-1">
+                          <SelectTrigger id="service_type" className="mt-1">
                             <SelectValue placeholder={f.phService} />
                           </SelectTrigger>
                           <SelectContent>
@@ -397,7 +397,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                           {f.fromLanguage}
                         </Label>
                         <Select value={formData.source_language} onValueChange={(value) => handleInputChange('source_language', value)}>
-                          <SelectTrigger className="mt-1">
+                          <SelectTrigger id="source_language" className="mt-1">
                             <SelectValue placeholder={f.phSourceLang} />
                           </SelectTrigger>
                           <SelectContent>
@@ -415,7 +415,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                           {f.toLanguage}
                         </Label>
                         <Select value={formData.target_language} onValueChange={(value) => handleInputChange('target_language', value)}>
-                          <SelectTrigger className="mt-1">
+                          <SelectTrigger id="target_language" className="mt-1">
                             <SelectValue placeholder={f.phTargetLang} />
                           </SelectTrigger>
                           <SelectContent>
@@ -436,7 +436,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                           {f.documentType}
                         </Label>
                         <Select value={formData.document_type} onValueChange={(value) => handleInputChange('document_type', value)}>
-                          <SelectTrigger className="mt-1">
+                          <SelectTrigger id="document_type" className="mt-1">
                             <SelectValue placeholder={f.phDocType} />
                           </SelectTrigger>
                           <SelectContent>
@@ -501,7 +501,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                           type="checkbox"
                           checked={formData.certification_needed}
                           onChange={(e) => handleInputChange('certification_needed', e.target.checked.toString())}
-                          className="h-4 w-4 text-brand-orange focus:ring-brand-orange border-gray-300 rounded"
+                          className="h-4 w-4 text-brand-orangeText focus:ring-brand-orange border-gray-300 rounded"
                         />
                         <Label htmlFor="certification_needed" className="ml-2 text-sm font-medium text-gray-700">
                           {f.certificationNeeded}
@@ -544,7 +544,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                           {errors.message}
                         </p>
                       ) : (
-                        <p id="message-help" className="mt-1 text-xs text-gray-500">
+                        <p id="message-help" className="mt-1 text-xs text-gray-600">
                           {f.messageHelp}
                         </p>
                       )}
@@ -569,9 +569,9 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                         <label htmlFor="file-upload" className="cursor-pointer">
                           <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                           <p className="text-sm text-gray-600 mb-1">
-                            <span className="font-medium text-brand-orange hover:text-brand-orange/80">{f.clickToUpload}</span> {f.orDragDrop}
+                            <span className="font-medium text-brand-orangeText hover:text-brand-orangeText/80">{f.clickToUpload}</span> {f.orDragDrop}
                           </p>
-                          <p id="file-upload-help" className="text-xs text-gray-500">
+                          <p id="file-upload-help" className="text-xs text-gray-600">
                             {f.fileHint}
                           </p>
                         </label>
@@ -585,7 +585,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                               <div className="flex items-center">
                                 <FileText className="w-4 h-4 text-gray-500 mr-2" />
                                 <span className="text-sm text-gray-700 truncate">{file.name}</span>
-                                <span className="text-xs text-gray-500 ml-2">({(file.size / 1024 / 1024).toFixed(1)}MB)</span>
+                                <span className="text-xs text-gray-600 ml-2">({(file.size / 1024 / 1024).toFixed(1)}MB)</span>
                               </div>
                               <button
                                 type="button"
@@ -612,7 +612,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                     <Button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full bg-brand-orange hover:bg-brand-orange/90 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-brand-orange/20"
+                      className="w-full bg-brand-orangeText hover:bg-brand-orangeText/90 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-brand-orange/20"
                       aria-describedby="submit-button-help"
                     >
                       {isSubmitting ? (
@@ -627,7 +627,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                         </>
                       )}
                     </Button>
-                    <p id="submit-button-help" className="text-xs text-center text-gray-500 mt-2">
+                    <p id="submit-button-help" className="text-xs text-center text-gray-600 mt-2">
                       {f.submitHelp}
                     </p>
                   </form>
@@ -649,7 +649,7 @@ export function ContactFormSection({ contactData, siteSettings = {} }: ContactFo
                     <p className="text-sm text-gray-600 mb-4">
                       {f.quickResponseBody}
                     </p>
-                    <div className="flex items-center text-sm text-brand-orange font-medium">
+                    <div className="flex items-center text-sm text-brand-orangeText font-medium">
                       <CheckCircle className="w-4 h-4 mr-2" />
                       {f.quoteGuarantee}
                     </div>

@@ -134,7 +134,7 @@ export function ProjectDetailResults({ project, siteSettings = {} }: ProjectDeta
               <Card className="border-0 shadow-lg h-full">
                 <CardHeader>
                   <CardTitle className="text-xl flex items-center">
-                    <TrendingUp className="h-6 w-6 text-brand-orange mr-3" />
+                    <TrendingUp className="h-6 w-6 text-brand-orangeText mr-3" />
                     {projectResults.impact.title}
                   </CardTitle>
                 </CardHeader>
@@ -147,7 +147,7 @@ export function ProjectDetailResults({ project, siteSettings = {} }: ProjectDeta
                   <ul className="space-y-3">
                     {projectResults.impact.outcomes.map((outcome, index) => (
                       <li key={index} className="flex items-start">
-                        <CheckCircle className="h-5 w-5 text-brand-orange mr-3 mt-0.5 flex-shrink-0" />
+                        <CheckCircle className="h-5 w-5 text-brand-orangeText mr-3 mt-0.5 flex-shrink-0" />
                         <span className="text-gray-600">{outcome}</span>
                       </li>
                     ))}
@@ -205,7 +205,7 @@ export function ProjectDetailResults({ project, siteSettings = {} }: ProjectDeta
             <Card className="border-0 shadow-lg">
               <CardHeader>
                 <CardTitle className="text-xl flex items-center">
-                  <Award className="h-6 w-6 text-brand-orange mr-3" />
+                  <Award className="h-6 w-6 text-brand-orangeText mr-3" />
                   Project Achievements
                 </CardTitle>
               </CardHeader>
@@ -222,7 +222,7 @@ export function ProjectDetailResults({ project, siteSettings = {} }: ProjectDeta
                       return (
                         <div key={index} className="flex items-start p-4 bg-white rounded-lg shadow-sm border border-gray-100">
                           <div className="bg-brand-orange/10 rounded-lg p-3 mr-4">
-                            <IconComponent className="h-6 w-6 text-brand-orange" />
+                            <IconComponent className="h-6 w-6 text-brand-orangeText" />
                           </div>
                           <div>
                             <h4 className="font-semibold text-gray-900 mb-2">

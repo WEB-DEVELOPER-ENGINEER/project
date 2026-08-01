@@ -46,7 +46,7 @@ export function BlogListClient({ posts }: BlogListClientProps) {
       <section className="bg-gradient-to-br from-brand-orange/5 to-brand-blue/5 py-16 sm:py-24">
         <div className="container">
           <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orange mb-4">
+            <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orangeText mb-4">
               {isRtl ? 'مدونة الترجمة المتخصصة' : 'Translation Industry Blog'}
             </div>
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-5xl mb-6">
@@ -109,7 +109,7 @@ export function BlogListClient({ posts }: BlogListClientProps) {
                         <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-brand-orange/20 to-brand-blue/20 flex items-center justify-center p-6 text-center">
                           <div>
                             <div className="w-14 h-14 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md">
-                              <span className="text-2xl font-bold text-brand-orange">
+                              <span className="text-2xl font-bold text-brand-orangeText">
                                 {article.title.charAt(0)}
                               </span>
                             </div>
@@ -121,7 +121,7 @@ export function BlogListClient({ posts }: BlogListClientProps) {
 
                         {/* Content */}
                         <div className="p-6">
-                          <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 mb-3">
+                          <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400 mb-3">
                             <div className="flex items-center gap-1">
                               <User className="h-3 w-3" />
                               <span>{article.author}</span>
@@ -136,7 +136,7 @@ export function BlogListClient({ posts }: BlogListClientProps) {
                             </div>
                           </div>
 
-                          <h2 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-3 line-clamp-2 group-hover:text-brand-orange transition-colors">
+                          <h2 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-3 line-clamp-2 group-hover:text-brand-orangeText transition-colors">
                             {article.title}
                           </h2>
                           
@@ -146,7 +146,7 @@ export function BlogListClient({ posts }: BlogListClientProps) {
 
                           <Link 
                             href={localizedPath(`/blog/${article.slug}`, locale)}
-                            className="inline-flex items-center text-brand-orange hover:text-brand-orange/80 font-medium text-sm transition-colors"
+                            className="inline-flex items-center text-brand-orangeText hover:text-brand-orangeText/80 font-medium text-sm transition-colors"
                           >
                             {isRtl ? 'قراءة المقال الكامل' : 'Read Full Article'}
                             <ArrowRight className={cn('h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform', isRtl && 'rotate-180 mr-1 ml-0')} />
@@ -168,7 +168,7 @@ export function BlogListClient({ posts }: BlogListClientProps) {
                   >
                     {isRtl ? 'السابق' : 'Previous'}
                   </Button>
-                  <span className="px-4 py-2 bg-brand-orange text-white rounded-lg text-sm font-medium">
+                  <span className="px-4 py-2 bg-brand-orangeText text-white rounded-lg text-sm font-medium">
                     {currentPage} / {totalPages}
                   </span>
                   <Button

@@ -108,7 +108,7 @@ export function ServicesHeroSection({ services, siteSettings = {} }: ServicesHer
                 className="flex items-center text-left"
               >
                 <CheckCircle 
-                  className="h-5 w-5 text-brand-orange mr-3 flex-shrink-0" 
+                  className="h-5 w-5 text-brand-orangeText mr-3 flex-shrink-0" 
                   aria-hidden="true"
                 />
                 <span className="text-gray-700 font-medium">{highlight}</span>
@@ -124,7 +124,7 @@ export function ServicesHeroSection({ services, siteSettings = {} }: ServicesHer
           >
             <Button 
               size="lg"
-              className="bg-brand-orange hover:bg-brand-orange/90 text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group"
+              className="bg-brand-orangeText hover:bg-brand-orangeText/90 text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group"
               onClick={handleScrollToServices}
               aria-describedby="explore-services-description"
             >

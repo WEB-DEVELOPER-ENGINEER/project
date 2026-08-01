@@ -38,7 +38,7 @@ export function AboutTeam({ teamMembers, siteSettings }: AboutTeamProps) {
       <div className="container">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orange mb-6">
+          <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orangeText mb-6">
             <Users className="h-4 w-4 mr-2" />
             {ac.badge}
           </div>
@@ -90,7 +90,7 @@ export function AboutTeam({ teamMembers, siteSettings }: AboutTeamProps) {
                             href={member.linkedin_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:bg-brand-orange hover:text-white transition-colors"
+                            className="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:bg-brand-orangeText hover:text-white transition-colors"
                             aria-label={`${member.name} on LinkedIn`}
                           >
                             <Linkedin className="h-5 w-5" />
@@ -111,7 +111,7 @@ export function AboutTeam({ teamMembers, siteSettings }: AboutTeamProps) {
 
                   {/* Member Info */}
                   <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-brand-orange transition-colors">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-brand-orangeText transition-colors">
                       {member.name}
                     </h3>
                     <p className="text-brand-blue font-medium mb-3">
@@ -217,7 +217,7 @@ export function AboutTeam({ teamMembers, siteSettings }: AboutTeamProps) {
             
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <Award className="h-6 w-6 text-brand-orange" />
+                <Award className="h-6 w-6 text-brand-orangeText" />
                 <span className="text-gray-700">{ac.bullets[0]}</span>
               </div>
               <div className="flex items-center gap-3">
@@ -225,7 +225,7 @@ export function AboutTeam({ teamMembers, siteSettings }: AboutTeamProps) {
                 <span className="text-gray-700">{ac.bullets[1]}</span>
               </div>
               <div className="flex items-center gap-3">
-                <Users className="h-6 w-6 text-brand-orange" />
+                <Users className="h-6 w-6 text-brand-orangeText" />
                 <span className="text-gray-700">{ac.bullets[2]}</span>
               </div>
             </div>

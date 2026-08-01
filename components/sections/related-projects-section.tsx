@@ -129,7 +129,7 @@ export function RelatedProjectsSection({
                     </div>
 
                     {/* Project Title */}
-                    <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-brand-orange transition-colors duration-200">
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-brand-orangeText transition-colors duration-200">
                       {project.title}
                     </h3>
 
@@ -197,7 +197,7 @@ export function RelatedProjectsSection({
                     asChild
                     variant="outline"
                     size="lg"
-                    className="border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-white"
+                    className="border-brand-orange text-brand-orangeText hover:bg-brand-orangeText hover:text-white"
                   >
                     <Link href="/contact#contact-form-section">
                       Start Your Project

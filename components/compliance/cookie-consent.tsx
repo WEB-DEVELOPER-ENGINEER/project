@@ -111,7 +111,7 @@ export function CookieConsent() {
         <div className="container py-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-start gap-3">
-              <Cookie className="h-6 w-6 text-brand-orange flex-shrink-0 mt-1" aria-hidden="true" />
+              <Cookie className="h-6 w-6 text-brand-orangeText flex-shrink-0 mt-1" aria-hidden="true" />
               <div>
                 <h3 id="cookie-banner-title" className="font-semibold text-gray-900">
                   We use cookies

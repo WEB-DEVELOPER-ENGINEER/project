@@ -77,7 +77,7 @@ export function AboutValues({ aboutData, siteSettings }: AboutValuesProps) {
       <div className="container">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orange mb-6">
+          <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orangeText mb-6">
             <Star className="h-4 w-4 mr-2" />
             Our Values
           </div>
@@ -104,7 +104,7 @@ export function AboutValues({ aboutData, siteSettings }: AboutValuesProps) {
                     <IconComponent className={`h-8 w-8 ${value.color || 'text-gray-600'}`} />
                   </div>
                   
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-brand-orange transition-colors">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-brand-orangeText transition-colors">
                     {value.title}
                   </h3>
                   
@@ -175,7 +175,7 @@ export function AboutValues({ aboutData, siteSettings }: AboutValuesProps) {
               <div className="aspect-[4/3] rounded-2xl bg-gradient-to-br from-brand-orange/10 to-brand-blue/10 p-8 flex items-center justify-center">
                 <div className="text-center">
                   <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                    <Award className="h-12 w-12 text-brand-orange" />
+                    <Award className="h-12 w-12 text-brand-orangeText" />
                   </div>
                   <h4 className="text-xl font-bold text-gray-900 mb-3">
                     Certified Translation Services
@@ -189,7 +189,7 @@ export function AboutValues({ aboutData, siteSettings }: AboutValuesProps) {
               {/* Floating Stats */}
               <div className="absolute -top-4 -right-4 bg-white rounded-xl p-4 shadow-xl border">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-brand-orange">99.8%</div>
+                  <div className="text-2xl font-bold text-brand-orangeText">99.8%</div>
                   <div className="text-xs text-gray-600">Client Satisfaction</div>
                 </div>
               </div>

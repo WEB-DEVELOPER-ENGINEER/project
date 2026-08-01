@@ -79,7 +79,7 @@ export function ContactHeroSection({ contactData, siteSettings = {} }: ContactHe
             <li>
               <Link
                 href={localizedPath('/', locale)}
-                className="hover:text-brand-orange transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2 rounded"
+                className="hover:text-brand-orangeText transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2 rounded"
               >
                 {c.breadcrumbHome}
               </Link>
@@ -132,13 +132,12 @@ export function ContactHeroSection({ contactData, siteSettings = {} }: ContactHe
               <button
                 onClick={handlePhoneClick}
                 className="flex items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 group border border-gray-100 hover:border-brand-orange/20 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2"
-                aria-label={`Call us at ${contactData.phone}`}
               >
                 <div className="w-12 h-12 bg-brand-orange/10 rounded-lg flex items-center justify-center mr-4 group-hover:bg-brand-orange/20 transition-colors duration-300">
-                  <Phone className="w-6 h-6 text-brand-orange" />
+                  <Phone className="w-6 h-6 text-brand-orangeText" />
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-gray-900 group-hover:text-brand-orange transition-colors duration-300">{c.callUs}</p>
+                  <p className="font-semibold text-gray-900 group-hover:text-brand-orangeText transition-colors duration-300">{c.callUs}</p>
                   <p className="text-sm text-gray-600">{contactData.phone}</p>
                 </div>
               </button>
@@ -147,7 +146,6 @@ export function ContactHeroSection({ contactData, siteSettings = {} }: ContactHe
               <button
                 onClick={handleEmailClick}
                 className="flex items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 group border border-gray-100 hover:border-brand-blue/20 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2"
-                aria-label={`Email us at ${contactData.email}`}
               >
                 <div className="w-12 h-12 bg-brand-blue/10 rounded-lg flex items-center justify-center mr-4 group-hover:bg-brand-blue/20 transition-colors duration-300">
                   <Mail className="w-6 h-6 text-brand-blue" />
@@ -167,7 +165,7 @@ export function ContactHeroSection({ contactData, siteSettings = {} }: ContactHe
             >
               <Button 
                 size="lg"
-                className="bg-brand-orange hover:bg-brand-orange/90 text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group"
+                className="bg-brand-orangeText hover:bg-brand-orangeText/90 text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group"
                 onClick={handleScrollToForm}
                 aria-describedby="get-quote-description"
               >
@@ -226,7 +224,7 @@ export function ContactHeroSection({ contactData, siteSettings = {} }: ContactHe
                 {/* Contact details */}
                 <div className="space-y-4">
                   <div className="flex items-center text-gray-700">
-                    <MapPin className="h-5 w-5 text-brand-orange mr-3 flex-shrink-0" aria-hidden="true" />
+                    <MapPin className="h-5 w-5 text-brand-orangeText mr-3 flex-shrink-0" aria-hidden="true" />
                     <span className="text-sm">{(locale === 'ar' ? cm.address : contactData.address || cm.address)}</span>
                   </div>
                   <div className="flex items-center text-gray-700">

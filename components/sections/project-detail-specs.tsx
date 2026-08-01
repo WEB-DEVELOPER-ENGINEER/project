@@ -92,7 +92,7 @@ export function ProjectDetailSpecs({ project, siteSettings = {} }: ProjectDetail
               <Card className="border-0 shadow-lg h-full">
                 <CardHeader>
                   <CardTitle className="text-xl flex items-center">
-                    <FileText className="h-6 w-6 text-brand-orange mr-3" />
+                    <FileText className="h-6 w-6 text-brand-orangeText mr-3" />
                     Technical Details
                   </CardTitle>
                 </CardHeader>
@@ -151,7 +151,7 @@ export function ProjectDetailSpecs({ project, siteSettings = {} }: ProjectDetail
             <Card className="border-0 shadow-lg">
               <CardHeader>
                 <CardTitle className="text-xl flex items-center">
-                  <Target className="h-6 w-6 text-brand-orange mr-3" />
+                  <Target className="h-6 w-6 text-brand-orangeText mr-3" />
                   Quality Metrics & Performance
                 </CardTitle>
               </CardHeader>
@@ -192,7 +192,7 @@ export function ProjectDetailSpecs({ project, siteSettings = {} }: ProjectDetail
                   <div className="grid md:grid-cols-2 gap-4">
                     {certifications.map((cert, index) => (
                       <div key={index} className="flex items-center p-4 bg-gray-50 rounded-lg">
-                        <Shield className="h-5 w-5 text-brand-orange mr-3 flex-shrink-0" />
+                        <Shield className="h-5 w-5 text-brand-orangeText mr-3 flex-shrink-0" />
                         <span className="text-gray-700 font-medium">{cert}</span>
                       </div>
                     ))}

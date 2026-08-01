@@ -116,7 +116,7 @@ export function WhatsAppFloatingButton({
               </div>
               <div>
                 <p className="font-semibold text-gray-900 text-sm">Jusor Translation</p>
-                <p className="text-xs text-gray-500">Typically replies instantly</p>
+                <p className="text-xs text-gray-600">Typically replies instantly</p>
               </div>
             </div>
             <p className="text-sm text-gray-700 mb-3">
@@ -124,7 +124,7 @@ export function WhatsAppFloatingButton({
             </p>
             <button
               onClick={handleClick}
-              className="w-full bg-green-500 hover:bg-green-600 text-white text-sm font-medium py-2 px-3 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
+              className="w-full bg-green-700 hover:bg-green-800 text-white text-sm font-medium py-2 px-3 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
             >
               Start Chat
             </button>
@@ -143,7 +143,7 @@ export function WhatsAppFloatingButton({
         onMouseEnter={() => !hasInteracted && setIsExpanded(true)}
         onMouseLeave={() => !hasInteracted && setTimeout(() => setIsExpanded(false), 1000)}
         className={cn(
-          'group relative w-12 h-12 sm:w-14 sm:h-14 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50',
+          'group relative w-12 h-12 sm:w-14 sm:h-14 bg-green-700 hover:bg-green-800 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-50',
           'flex items-center justify-center',
           'animate-gentle-bounce hover:animate-none'
         )}

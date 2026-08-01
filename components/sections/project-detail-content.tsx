@@ -88,7 +88,7 @@ export function ProjectDetailContent({ project, siteSettings = {} }: ProjectDeta
                 <Card className="border-0 shadow-lg">
                   <CardHeader>
                     <div className="flex items-center mb-2">
-                      <FileText className="h-6 w-6 text-brand-orange mr-3" />
+                      <FileText className="h-6 w-6 text-brand-orangeText mr-3" />
                       <CardTitle className="text-xl">Project Challenge</CardTitle>
                     </div>
                   </CardHeader>
@@ -121,7 +121,7 @@ export function ProjectDetailContent({ project, siteSettings = {} }: ProjectDeta
                       <CardContent className="p-6">
                         <div className="flex items-start">
                           <div className="bg-brand-orange/10 rounded-lg p-3 mr-4">
-                            <feature.icon className="h-6 w-6 text-brand-orange" />
+                            <feature.icon className="h-6 w-6 text-brand-orangeText" />
                           </div>
                           <div>
                             <h4 className="font-semibold text-gray-900 mb-2">
@@ -159,7 +159,7 @@ export function ProjectDetailContent({ project, siteSettings = {} }: ProjectDeta
                           <ul className="space-y-2">
                             {projectDetails.scope.map((item, index) => (
                               <li key={index} className="flex items-start">
-                                <CheckCircle className="h-5 w-5 text-brand-orange mr-2 mt-0.5 flex-shrink-0" />
+                                <CheckCircle className="h-5 w-5 text-brand-orangeText mr-2 mt-0.5 flex-shrink-0" />
                                 <span className="text-gray-600">{item}</span>
                               </li>
                             ))}
@@ -211,7 +211,7 @@ export function ProjectDetailContent({ project, siteSettings = {} }: ProjectDeta
                             <Badge 
                               key={index}
                               variant="secondary"
-                              className="bg-brand-orange/10 text-brand-orange hover:bg-brand-orange/20"
+                              className="bg-brand-orange/10 text-brand-orangeText hover:bg-brand-orange/20"
                             >
                               {lang}
                             </Badge>
@@ -258,7 +258,7 @@ export function ProjectDetailContent({ project, siteSettings = {} }: ProjectDeta
                         {project.quality_metrics?.client_satisfaction && (
                           <div className="flex justify-between">
                             <span className="text-gray-600">Quality Score</span>
-                            <span className="font-medium text-brand-orange">{project.quality_metrics.client_satisfaction}%</span>
+                            <span className="font-medium text-brand-orangeText">{project.quality_metrics.client_satisfaction}%</span>
                           </div>
                         )}
                       </div>

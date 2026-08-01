@@ -45,7 +45,7 @@ export function TeamSection({ teamMembers: rawTeamMembers, siteSettings = {} }: 
       <div className="container">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orange mb-4">
+          <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orangeText mb-4">
             {isRtl ? 'فريق عملنا' : 'Meet Our Team'}
           </div>
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl mb-4">
@@ -110,7 +110,7 @@ export function TeamSection({ teamMembers: rawTeamMembers, siteSettings = {} }: 
                   <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-1">
                     {member.name}
                   </h3>
-                  <p className="text-brand-orange font-medium mb-3">
+                  <p className="text-brand-orangeText font-medium mb-3">
                     {member.job_title}
                   </p>
                   

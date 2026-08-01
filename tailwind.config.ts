@@ -13,6 +13,13 @@ const config: Config = {
         // Brand colors
         brand: {
           orange: '#e86e2a',
+          // #e86e2a only reaches 3.14:1 against white, which satisfies WCAG AA
+          // for large text (>=24px, or >=18.66px bold) and UI components but
+          // fails the 4.5:1 required for normal-size text. Use `orangeText`
+          // wherever brand orange carries small text — as a foreground on a
+          // light background, or as a solid background behind white text.
+          // Keep `orange` for large display type, icons, and decorative fills.
+          orangeText: '#ad4a14',
           blue: '#0a447c',
           black: '#000000',
         },

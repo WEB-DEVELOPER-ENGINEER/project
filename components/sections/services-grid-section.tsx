@@ -145,7 +145,7 @@ export function ServicesGridSection({
                   <div className="mb-4">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-orange/10 to-brand-blue/10 group-hover:from-brand-orange/20 group-hover:to-brand-blue/20 transition-all duration-300">
                       <IconComponent 
-                        className="h-8 w-8 text-brand-orange group-hover:text-brand-blue transition-colors duration-300" 
+                        className="h-8 w-8 text-brand-orangeText group-hover:text-brand-blue transition-colors duration-300" 
                         aria-hidden="true"
                       />
                     </div>
@@ -179,8 +179,8 @@ export function ServicesGridSection({
                   {/* CTA Link */}
                   <Link 
                     href={localizedPath(`/services/${service.translation_group || service.slug}`, locale)}
-                    className="inline-flex items-center text-brand-orange hover:text-brand-blue font-semibold transition-colors duration-300 group/link"
-                    aria-label={`Learn more about ${service.title}`}
+                    className="inline-flex items-center text-brand-orangeText hover:text-brand-blue font-semibold transition-colors duration-300 group/link"
+                    aria-label={`${sp.learnMore} — ${service.title}`}
                   >
                     {sp.learnMore}
                     <ArrowRight className="ml-2 h-4 w-4 group-hover/link:translate-x-1 transition-transform duration-300" aria-hidden="true" />

@@ -128,7 +128,7 @@ export function Footer({ footerData, siteSettings = {} }: FooterProps) {
               {t('footer.newsletterDesc')}
             </p>
             {newsletterStatus === 'success' ? (
-              <p className="mt-6 text-sm text-brand-orange font-medium" role="status">
+              <p className="mt-6 text-sm text-brand-orangeText font-medium" role="status">
                 {isRtl ? 'شكراً لاشتراكك!' : 'Thank you for subscribing!'}
               </p>
             ) : (
@@ -152,7 +152,7 @@ export function Footer({ footerData, siteSettings = {} }: FooterProps) {
                   <button
                     type="submit"
                     disabled={newsletterStatus === 'submitting'}
-                    className="flex w-full items-center justify-center rounded-md bg-brand-orange px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-orange/90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+                    className="flex w-full items-center justify-center rounded-md bg-brand-orangeText px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-orangeText/90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
                   >
                     {newsletterStatus === 'submitting' ? (isRtl ? 'جارٍ الإرسال...' : 'Submitting...') : t('footer.subscribeBtn')}
                   </button>

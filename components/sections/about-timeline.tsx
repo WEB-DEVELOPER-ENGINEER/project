@@ -131,7 +131,7 @@ export function AboutTimeline({ aboutData, siteSettings }: AboutTimelineProps) {
                           <div className="h-px flex-1 bg-gray-200" />
                         </div>
                         
-                        <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-brand-orange transition-colors">
+                        <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-brand-orangeText transition-colors">
                           {item.title}
                         </h3>
                         

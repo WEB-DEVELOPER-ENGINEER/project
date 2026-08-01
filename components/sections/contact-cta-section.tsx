@@ -87,7 +87,7 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
             >
               {benefits.map((benefit, index) => (
                 <div key={benefit} className="flex items-center text-blue-100">
-                  <CheckCircle className="w-5 h-5 text-brand-orange mr-3 flex-shrink-0" aria-hidden="true" />
+                  <CheckCircle className="w-5 h-5 text-brand-orangeText mr-3 flex-shrink-0" aria-hidden="true" />
                   <span className="text-sm font-medium">{benefit}</span>
                 </div>
               ))}
@@ -101,7 +101,7 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
             >
               <Button 
                 size="lg"
-                className="bg-brand-orange hover:bg-brand-orange/90 text-white px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 group border-0"
+                className="bg-brand-orangeText hover:bg-brand-orangeText/90 text-white px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 group border-0"
                 onClick={handleScrollToForm}
                 aria-describedby="get-quote-cta-description"
               >
@@ -179,7 +179,7 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
                 <ul className="space-y-3">
                   {c.accreditations.map((item, i) => (
                     <li key={i} className="flex items-start gap-3 text-gray-700">
-                      <CheckCircle className="w-5 h-5 text-brand-orange flex-shrink-0 mt-0.5" aria-hidden="true" />
+                      <CheckCircle className="w-5 h-5 text-brand-orangeText flex-shrink-0 mt-0.5" aria-hidden="true" />
                       <span>{item}</span>
                     </li>
                   ))}
@@ -214,7 +214,7 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
             <div className="mt-6 text-center">
               <Link 
                 href="/services"
-                className="inline-flex items-center text-white hover:text-brand-orange transition-colors duration-300 font-medium focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-blue rounded"
+                className="inline-flex items-center text-white hover:text-brand-orangeText transition-colors duration-300 font-medium focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-blue rounded"
               >
                 {c.exploreAllServices}
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
@@ -252,7 +252,7 @@ export function ContactCTASection({ contactData, siteSettings = {} }: ContactCTA
                     formSection.scrollIntoView({ behavior: 'smooth' });
                   }
                 }}
-                className="bg-brand-orange hover:bg-brand-orange/90 text-white px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-brand-orangeText hover:bg-brand-orangeText/90 text-white px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 {c.sendUsMessage}
               </Button>

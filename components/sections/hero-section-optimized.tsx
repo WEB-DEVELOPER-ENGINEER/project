@@ -416,7 +416,7 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
             {/* Content Section */}
             <div className="space-y-8 order-2 lg:order-1">
               <div className="space-y-4">
-                <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orange">
+                <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orangeText">
                   {isRtl ? '🌟 خدمات الترجمة المعتمدة في دبي' : '🌟 Certified Translation Services in Dubai'}
                 </div>
                 
@@ -441,7 +441,7 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
                                      FileText;
                   return (
                     <div key={index} className="flex items-center gap-2">
-                      <IconComponent className="h-5 w-5 text-brand-orange" />
+                      <IconComponent className="h-5 w-5 text-brand-orangeText" />
                       <span>{indicator.text}</span>
                     </div>
                   );
@@ -452,7 +452,7 @@ export function HeroSectionOptimized({ sliders, siteSettings = {} }: HeroSection
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
                   size="lg" 
-                  className="bg-brand-orange hover:bg-brand-orange/90 text-white px-8 py-3 text-lg"
+                  className="bg-brand-orangeText hover:bg-brand-orangeText/90 text-white px-8 py-3 text-lg"
                   onClick={handlePrimaryClick}
                 >
                   {t('hero.ctaQuote')}

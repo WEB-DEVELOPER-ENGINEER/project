@@ -58,7 +58,7 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
       <div className="container">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orange mb-4">
+          <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orangeText mb-4">
             <BookOpen className="h-4 w-4 mr-2" />
             {sc.continueReading}
           </div>
@@ -124,7 +124,7 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
                   {/* Post Content */}
                   <div className="p-6 flex-1 flex flex-col">
                     {/* Meta Information */}
-                    <div className="flex items-center gap-4 text-xs text-gray-500 mb-3">
+                    <div className="flex items-center gap-4 text-xs text-gray-600 mb-3">
                       <div className="flex items-center gap-1">
                         <User className="h-3 w-3" />
                         <span>{post.author}</span>
@@ -137,7 +137,7 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
                       </div>
                     </div>
 
-                    <h3 className="font-bold text-xl text-gray-900 mb-3 line-clamp-2 group-hover:text-brand-orange transition-colors flex-shrink-0">
+                    <h3 className="font-bold text-xl text-gray-900 mb-3 line-clamp-2 group-hover:text-brand-orangeText transition-colors flex-shrink-0">
                       {post.title}
                     </h3>
                     
@@ -148,7 +148,7 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
                     {/* Read More Link */}
                     <Link 
                       href={localizedPath(`/blog/${post.slug}`, locale)}
-                      className="inline-flex items-center text-brand-orange hover:text-brand-orange/80 font-medium text-sm transition-colors mt-auto"
+                      className="inline-flex items-center text-brand-orangeText hover:text-brand-orangeText/80 font-medium text-sm transition-colors mt-auto"
                     >
                       {sc.readFullArticle}
                       <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
@@ -173,7 +173,7 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
               <Button 
                 asChild
                 size="lg"
-                className="bg-brand-orange hover:bg-brand-orange/90"
+                className="bg-brand-orangeText hover:bg-brand-orangeText/90"
               >
                 <Link href={localizedPath('/blog', locale)}>
                   <BookOpen className="h-5 w-5 mr-2" />
@@ -216,15 +216,15 @@ export function RelatedBlogPosts({ posts, currentPost, siteSettings = {} }: Rela
                 />
                 <Button 
                   type="submit"
-                  className="bg-brand-orange hover:bg-brand-orange/90 px-8"
+                  className="bg-brand-orangeText hover:bg-brand-orangeText/90 px-8"
                 >
                   {sc.subscribe}
                 </Button>
               </form>
               
-              <p className="text-xs text-gray-500 mt-4">
+              <p className="text-xs text-gray-600 mt-4">
                 {sc.newsletterNoSpam}{' '}
-                <Link href={localizedPath('/privacy', locale)} className="text-brand-orange hover:underline">
+                <Link href={localizedPath('/privacy', locale)} className="text-brand-orangeText hover:underline">
                   {sc.privacyPolicy}
                 </Link>
                 .

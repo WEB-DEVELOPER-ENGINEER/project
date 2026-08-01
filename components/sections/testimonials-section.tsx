@@ -117,7 +117,7 @@ export function TestimonialsSection({ testimonials: rawTestimonials, siteSetting
               />
 
               <div className="mt-8 flex items-center">
-                <div className="h-12 w-12 rounded-full bg-brand-orange/20 flex items-center justify-center font-bold text-brand-orange text-lg">
+                <div className="h-12 w-12 rounded-full bg-brand-orange/20 flex items-center justify-center font-bold text-brand-orangeText text-lg">
                   {testimonials[currentIndex].name.slice(0, 1)}
                 </div>
                 <div className={cn('ml-4', isRtl && 'mr-4 ml-0')}>

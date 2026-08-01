@@ -246,7 +246,7 @@ export function ServiceDetailSpecifications({ service, siteSettings = {} }: Serv
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {Object.entries(service.service_highlights).map(([key, value], index) => (
                     <div key={key} className="text-center">
-                      <div className="text-2xl font-bold text-brand-orange mb-2">
+                      <div className="text-2xl font-bold text-brand-orangeText mb-2">
                         {value}
                       </div>
                       <div className="text-gray-600 font-medium capitalize">

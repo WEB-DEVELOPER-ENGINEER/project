@@ -132,7 +132,7 @@ export function ProjectDetailTimeline({ project, siteSettings = {} }: ProjectDet
                           <div className="flex items-start justify-between">
                             <div className="flex items-center">
                               <div className="bg-brand-orange/10 rounded-lg p-3 mr-4">
-                                <IconComponent className="h-6 w-6 text-brand-orange" />
+                                <IconComponent className="h-6 w-6 text-brand-orangeText" />
                               </div>
                               <div>
                                 <div className="flex items-center gap-3 mb-2">
@@ -168,7 +168,7 @@ export function ProjectDetailTimeline({ project, siteSettings = {} }: ProjectDet
                               <div className="grid md:grid-cols-2 gap-2">
                                 {event.details.map((detail, detailIndex) => (
                                   <div key={detailIndex} className="flex items-center text-sm text-gray-600">
-                                    <CheckCircle className="h-4 w-4 text-brand-orange mr-2 flex-shrink-0" />
+                                    <CheckCircle className="h-4 w-4 text-brand-orangeText mr-2 flex-shrink-0" />
                                     {detail}
                                   </div>
                                 ))}
@@ -193,7 +193,7 @@ export function ProjectDetailTimeline({ project, siteSettings = {} }: ProjectDet
             <Card className="border-0 shadow-lg bg-gradient-to-r from-brand-orange/5 to-brand-blue/5">
               <CardContent className="p-8">
                 <div className="text-center">
-                  <Award className="h-12 w-12 text-brand-orange mx-auto mb-4" />
+                  <Award className="h-12 w-12 text-brand-orangeText mx-auto mb-4" />
                   <h3 className="text-2xl font-bold text-gray-900 mb-4">
                     Project Successfully Completed
                   </h3>
@@ -204,7 +204,7 @@ export function ProjectDetailTimeline({ project, siteSettings = {} }: ProjectDet
                   
                   <div className="grid md:grid-cols-3 gap-6 mt-8">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-brand-orange">{project.duration_days || 'N/A'} {project.duration_days ? 'Days' : ''}</div>
+                      <div className="text-2xl font-bold text-brand-orangeText">{project.duration_days || 'N/A'} {project.duration_days ? 'Days' : ''}</div>
                       <div className="text-gray-600">Total Duration</div>
                     </div>
                     <div className="text-center">

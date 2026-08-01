@@ -140,7 +140,7 @@ export function ServiceDetailFAQ({ service, siteSettings = {} }: ServiceDetailFA
                 {fill(sc.stillQuestionsBody, service.title)}
               </p>
               <button 
-                className="bg-brand-orange hover:bg-brand-orange/90 text-white px-8 py-4 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2"
+                className="bg-brand-orangeText hover:bg-brand-orangeText/90 text-white px-8 py-4 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2"
                 onClick={() => {
                   if (service.cta_primary_url) {
                     window.location.href = service.cta_primary_url;

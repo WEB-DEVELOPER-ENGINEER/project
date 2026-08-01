@@ -126,7 +126,7 @@ export function ProjectsSection({ projects: rawProjects, siteSettings = {} }: Pr
 
                   {/* Project Content */}
                   <div className="p-6">
-                    <Badge variant="secondary" className="mb-3 bg-brand-orange/10 text-brand-orange">
+                    <Badge variant="secondary" className="mb-3 bg-brand-orange/10 text-brand-orangeText">
                       {isRtl ? (project.category || 'ترجمة معتمدة') : 'Certified Translation'}
                     </Badge>
 
@@ -177,7 +177,7 @@ export function ProjectsSection({ projects: rawProjects, siteSettings = {} }: Pr
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 size="lg"
-                className="bg-brand-orange hover:bg-brand-orange/90 text-white"
+                className="bg-brand-orangeText hover:bg-brand-orangeText/90 text-white"
                 onClick={() => {
                   window.location.href = '/contact';
                 }}

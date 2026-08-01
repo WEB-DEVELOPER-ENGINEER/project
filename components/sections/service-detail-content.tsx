@@ -83,7 +83,7 @@ export function ServiceDetailContent({ service, siteSettings = {} }: ServiceDeta
                       className="flex items-start group"
                     >
                       <CheckCircle 
-                        className="h-6 w-6 text-brand-orange mr-3 flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform duration-300" 
+                        className="h-6 w-6 text-brand-orangeText mr-3 flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform duration-300" 
                         aria-hidden="true"
                       />
                       <span className="text-gray-700 font-medium leading-relaxed">
@@ -192,7 +192,7 @@ export function ServiceDetailContent({ service, siteSettings = {} }: ServiceDeta
                   {fill(sc.readyToStartBody, service.title)}
                 </p>
                 <button 
-                  className="w-full bg-brand-orange hover:bg-brand-orange/90 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2"
+                  className="w-full bg-brand-orangeText hover:bg-brand-orangeText/90 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2"
                   onClick={() => {
                     if (service.cta_primary_url) {
                       window.location.href = service.cta_primary_url;

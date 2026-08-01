@@ -88,7 +88,7 @@ export function ServiceDetailHero({ service, siteSettings = {} }: ServiceDetailH
             <li>
               <Link 
                 href={localizedPath('/', locale)}
-                className="hover:text-brand-orange transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2 rounded"
+                className="hover:text-brand-orangeText transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2 rounded"
               >
                 {sc.home}
               </Link>
@@ -97,7 +97,7 @@ export function ServiceDetailHero({ service, siteSettings = {} }: ServiceDetailH
             <li>
               <Link 
                 href={localizedPath('/services', locale)}
-                className="hover:text-brand-orange transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2 rounded"
+                className="hover:text-brand-orangeText transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2 rounded"
               >
                 {sc.services}
               </Link>
@@ -120,7 +120,7 @@ export function ServiceDetailHero({ service, siteSettings = {} }: ServiceDetailH
             >
               <Link 
                 href={localizedPath('/services', locale)}
-                className="inline-flex items-center text-brand-blue hover:text-brand-orange transition-colors duration-300 font-medium group focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2 rounded"
+                className="inline-flex items-center text-brand-blue hover:text-brand-orangeText transition-colors duration-300 font-medium group focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2 rounded"
               >
                 <ArrowRight className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform duration-300" aria-hidden="true" />
                 {sc.backToServices}
@@ -201,7 +201,7 @@ export function ServiceDetailHero({ service, siteSettings = {} }: ServiceDetailH
                   >
                     <Button 
                       size="lg" 
-                      className="bg-brand-orange hover:bg-brand-orange/90 text-white px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 group"
+                      className="bg-brand-orangeText hover:bg-brand-orangeText/90 text-white px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 group"
                       onClick={() => {
                         if (service.cta_primary_url) {
                           window.location.href = service.cta_primary_url;

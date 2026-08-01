@@ -82,7 +82,7 @@ export function FeaturesSection({ features = [], siteSettings = {} }: FeaturesSe
                   <div className={`inline-flex h-12 w-12 items-center justify-center rounded-lg ${feature.icon_color || 'text-blue-600 bg-blue-100'} group-hover:scale-110 transition-transform duration-300`}>
                     <IconComponent className="h-6 w-6" aria-hidden="true" />
                   </div>
-                  <CardTitle className="text-xl font-semibold text-gray-900 group-hover:text-brand-orange transition-colors">
+                  <CardTitle className="text-xl font-semibold text-gray-900 group-hover:text-brand-orangeText transition-colors">
                     {feature.title || feature.name}
                   </CardTitle>
                 </CardHeader>

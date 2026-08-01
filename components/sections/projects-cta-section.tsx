@@ -79,7 +79,7 @@ export function ProjectsCTASection({ siteSettings = {} }: ProjectsCTASectionProp
                 className="flex items-center text-left bg-white/10 backdrop-blur-sm rounded-lg p-4 hover:bg-white/20 transition-colors duration-300"
               >
                 <CheckCircle 
-                  className="h-5 w-5 text-brand-orange mr-3 flex-shrink-0" 
+                  className="h-5 w-5 text-brand-orangeText mr-3 flex-shrink-0" 
                   aria-hidden="true"
                 />
                 <span className="text-white font-medium">{benefit}</span>
@@ -95,7 +95,7 @@ export function ProjectsCTASection({ siteSettings = {} }: ProjectsCTASectionProp
           >
             <Button 
               size="lg"
-              className="bg-brand-orange hover:bg-brand-orange/90 text-white px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 group"
+              className="bg-brand-orangeText hover:bg-brand-orangeText/90 text-white px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 group"
               onClick={handleGetQuote}
               aria-describedby="get-quote-description"
             >
@@ -138,7 +138,7 @@ export function ProjectsCTASection({ siteSettings = {} }: ProjectsCTASectionProp
                 <a 
                   href={`mailto:${siteSettings.company_email || 'info@jusortrans.com'}`}
                   onClick={() => trackEmailClick(siteSettings.company_email || 'info@jusortrans.com', 'projects_cta_footer')}
-                  className="text-white hover:text-brand-orange transition-colors duration-200 font-semibold"
+                  className="text-white hover:text-brand-orangeText transition-colors duration-200 font-semibold"
                 >
                   {siteSettings.company_email || 'info@jusortrans.com'}
                 </a>
@@ -148,7 +148,7 @@ export function ProjectsCTASection({ siteSettings = {} }: ProjectsCTASectionProp
                 <a 
                   href={`tel:${siteSettings.company_phone || '+971503244329'}`}
                   onClick={() => trackPhoneClick(siteSettings.company_phone || '+971503244329', 'projects_cta_footer')}
-                  className="text-white hover:text-brand-orange transition-colors duration-200 font-semibold"
+                  className="text-white hover:text-brand-orangeText transition-colors duration-200 font-semibold"
                 >
                   {siteSettings.company_phone || '+971 50 324 4329'}
                 </a>
@@ -160,7 +160,7 @@ export function ProjectsCTASection({ siteSettings = {} }: ProjectsCTASectionProp
                   onClick={() => trackWhatsAppClick(siteSettings.whatsapp_number || '971503244329', 'projects_cta_footer')}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-white hover:text-brand-orange transition-colors duration-200 font-semibold"
+                  className="text-white hover:text-brand-orangeText transition-colors duration-200 font-semibold"
                 >
                   {pp.quickChat}
                 </a>

@@ -99,7 +99,7 @@ export function RelatedServicesSection({ services, currentService, siteSettings 
                   <div className="mb-4">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-orange/10 to-brand-blue/10 group-hover:from-brand-orange/20 group-hover:to-brand-blue/20 transition-all duration-300">
                       <IconComponent 
-                        className="h-8 w-8 text-brand-orange group-hover:text-brand-blue transition-colors duration-300" 
+                        className="h-8 w-8 text-brand-orangeText group-hover:text-brand-blue transition-colors duration-300" 
                         aria-hidden="true"
                       />
                     </div>
@@ -121,7 +121,7 @@ export function RelatedServicesSection({ services, currentService, siteSettings 
                   {/* CTA Link */}
                   <Link 
                     href={localizedPath(`/services/${service.translation_group || service.slug}`, locale)}
-                    className="inline-flex items-center text-brand-orange hover:text-brand-blue font-semibold transition-colors duration-300 group/link"
+                    className="inline-flex items-center text-brand-orangeText hover:text-brand-blue font-semibold transition-colors duration-300 group/link"
                     aria-label={`${sc.learnMore} — ${service.title}`}
                   >
                     {sc.learnMore}
@@ -152,7 +152,7 @@ export function RelatedServicesSection({ services, currentService, siteSettings 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
                 href={localizedPath('/services', locale)}
-                className="inline-flex items-center justify-center bg-brand-orange hover:bg-brand-orange/90 text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2"
+                className="inline-flex items-center justify-center bg-brand-orangeText hover:bg-brand-orangeText/90 text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2"
               >
                 {sc.viewAllServices}
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true" />

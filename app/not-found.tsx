@@ -14,7 +14,7 @@ export default function NotFound() {
           <br />
           عذراً، الصفحة التي تبحث عنها غير موجودة أو تم نقلها.
         </p>
-        <Button asChild className="bg-brand-orange hover:bg-brand-orange/90 text-white">
+        <Button asChild className="bg-brand-orangeText hover:bg-brand-orangeText/90 text-white">
           <Link href="/">
             Return Home | العودة للرئيسية
           </Link>

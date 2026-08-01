@@ -96,7 +96,7 @@ export function AboutSection({ aboutUs, siteSettings = {} }: AboutSectionProps) 
               </h2>
               
               {displaySlogan && (
-                <p className="text-xl text-brand-orange font-medium">
+                <p className="text-xl text-brand-orangeText font-medium">
                   {displaySlogan}
                 </p>
               )}
@@ -121,7 +121,7 @@ export function AboutSection({ aboutUs, siteSettings = {} }: AboutSectionProps) 
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
                 size="lg"
-                className="bg-brand-orange hover:bg-brand-orange/90"
+                className="bg-brand-orangeText hover:bg-brand-orangeText/90"
                 onClick={() => {
                   window.location.href = '/contact';
                 }}
@@ -195,7 +195,7 @@ export function AboutSection({ aboutUs, siteSettings = {} }: AboutSectionProps) 
                       <div className="bg-brand-orange/10 p-3 rounded-lg">
                         {(() => {
                           const IconComponent = getIcon(achievement.icon);
-                          return <IconComponent className="h-6 w-6 text-brand-orange" />;
+                          return <IconComponent className="h-6 w-6 text-brand-orangeText" />;
                         })()}
                       </div>
                       <div>

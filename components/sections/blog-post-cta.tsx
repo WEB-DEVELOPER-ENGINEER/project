@@ -152,7 +152,7 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
                   <Button 
                     asChild
                     size="lg"
-                    className="bg-white text-brand-orange hover:bg-gray-50 font-semibold"
+                    className="bg-white text-brand-orangeText hover:bg-gray-50 font-semibold"
                   >
                     <Link href="/contact">
                       <FileText className="h-5 w-5 mr-2" />
@@ -163,7 +163,7 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
                     asChild
                     variant="outline" 
                     size="lg"
-                    className="border-white text-white hover:bg-white hover:text-brand-orange"
+                    className="border-white text-white hover:bg-white hover:text-brand-orangeText"
                   >
                     <Link href="/services">
                       {bc.viewAllServices}
@@ -192,7 +192,7 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
             {services.map((service, index) => (
               <Card key={index} className="group hover:shadow-lg transition-all duration-300 border border-gray-200">
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-brand-orange transition-colors">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-brand-orangeText transition-colors">
                     {service.title}
                   </h3>
                   <p className="text-gray-600 mb-4 leading-relaxed">
@@ -200,7 +200,7 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
                   </p>
                   <Link 
                     href={service.href}
-                    className="inline-flex items-center text-brand-orange hover:text-brand-orange/80 font-medium text-sm transition-colors"
+                    className="inline-flex items-center text-brand-orangeText hover:text-brand-orangeText/80 font-medium text-sm transition-colors"
                   >
                     {bc.learnMore}
                     <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
@@ -218,7 +218,7 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
           <Card className="group hover:shadow-lg transition-all duration-300 border border-gray-200">
             <CardContent className="p-6 text-center">
               <div className="w-16 h-16 bg-brand-orange/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-brand-orange/20 transition-colors">
-                <Phone className="h-8 w-8 text-brand-orange" />
+                <Phone className="h-8 w-8 text-brand-orangeText" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 {bc.callUsDirectly}
@@ -229,7 +229,7 @@ export function BlogPostCTA({ post, companyMetrics = [], blogContentSections = [
               <Button 
                 asChild
                 variant="outline"
-                className="border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-white"
+                className="border-brand-orange text-brand-orangeText hover:bg-brand-orangeText hover:text-white"
               >
                 <a
                   href={`tel:${siteSettings.phone || '+971503244329'}`}

@@ -54,7 +54,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
             <Button 
               asChild
               size="lg"
-              className="bg-white text-brand-orange hover:bg-gray-50 font-semibold text-lg px-8 py-4"
+              className="bg-white text-brand-orangeText hover:bg-gray-50 font-semibold text-lg px-8 py-4"
             >
               <Link href="/contact">
                 <FileText className="h-6 w-6 mr-2" />
@@ -66,7 +66,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
             <Button 
               variant="outline" 
               size="lg"
-              className="border-white text-white hover:bg-white hover:text-brand-orange font-semibold text-lg px-8 py-4"
+              className="border-white text-white hover:bg-white hover:text-brand-orangeText font-semibold text-lg px-8 py-4"
               asChild
             >
               <Link href="/services">
@@ -109,7 +109,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
               </p>
               <Button 
                 variant="outline"
-                className="border-white text-white hover:bg-white hover:text-brand-orange w-full"
+                className="border-white text-white hover:bg-white hover:text-brand-orangeText w-full"
                 asChild
               >
                 <a 
@@ -136,7 +136,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
               </p>
               <Button 
                 variant="outline"
-                className="border-white text-white hover:bg-white hover:text-brand-orange w-full"
+                className="border-white text-white hover:bg-white hover:text-brand-orangeText w-full"
                 asChild
               >
                 <a 
@@ -163,7 +163,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
               </p>
               <Button 
                 variant="outline"
-                className="border-white text-white hover:bg-white hover:text-brand-orange w-full"
+                className="border-white text-white hover:bg-white hover:text-brand-orangeText w-full"
                 asChild
               >
                 <Link href="/contact">
@@ -188,7 +188,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button 
                   variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-brand-orange"
+                  className="border-white text-white hover:bg-white hover:text-brand-orangeText"
                   asChild
                 >
                   <Link href="/services">
@@ -197,7 +197,7 @@ export function AboutCTA({ siteSettings }: AboutCTAProps) {
                 </Button>
                 <Button 
                   variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-brand-orange"
+                  className="border-white text-white hover:bg-white hover:text-brand-orangeText"
                   asChild
                 >
                   <Link href="/projects">

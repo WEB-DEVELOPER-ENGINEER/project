@@ -103,7 +103,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
                       <div className="text-center mb-6">
                         <div className="w-20 h-20 bg-brand-orange/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <MapPin className="w-10 h-10 text-brand-orange" />
+                          <MapPin className="w-10 h-10 text-brand-orangeText" />
                         </div>
                         <h3 className="text-xl font-semibold text-gray-900 mb-2">
                           {c.officeMapLabel}
@@ -114,12 +114,12 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
                       </div>
                       <Button
                         onClick={handleLoadMap}
-                        className="bg-brand-orange hover:bg-brand-orange/90 text-white px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                        className="bg-brand-orangeText hover:bg-brand-orangeText/90 text-white px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                       >
                         <MapPin className="mr-2 h-5 w-5" />
                         {c.loadMap}
                       </Button>
-                      <p className="text-xs text-gray-500 mt-3">
+                      <p className="text-xs text-gray-600 mt-3">
                         {c.loadMapHint}
                       </p>
                     </div>
@@ -176,7 +176,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     <div className="w-12 h-12 bg-brand-orange/10 rounded-lg flex items-center justify-center mr-4">
-                      <MapPin className="w-6 h-6 text-brand-orange" />
+                      <MapPin className="w-6 h-6 text-brand-orangeText" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900">{c.officeAddress}</h3>
@@ -251,7 +251,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
               {/* Visit Appointment */}
               <Card className="shadow-lg border-0 border-brand-orange/20 bg-brand-orange/5">
                 <CardContent className="p-6">
-                  <h3 className="font-semibold text-brand-orange mb-2">{c.scheduleVisit}</h3>
+                  <h3 className="font-semibold text-brand-orangeText mb-2">{c.scheduleVisit}</h3>
                   <p className="text-sm text-gray-700 mb-4">
                     {c.scheduleVisitDescription}
                   </p>
@@ -263,7 +263,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
                       }
                     }}
                     variant="outline"
-                    className="w-full border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-white"
+                    className="w-full border-brand-orange text-brand-orangeText hover:bg-brand-orangeText hover:text-white"
                   >
                     {c.scheduleAppointment}
                   </Button>
@@ -282,7 +282,7 @@ export function ContactMapSection({ contactData, siteSettings = {} }: ContactMap
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div>
               <div className="w-16 h-16 bg-brand-orange/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MapPin className="w-8 h-8 text-brand-orange" />
+                <MapPin className="w-8 h-8 text-brand-orangeText" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">{c.primeLocation}</h3>
               <p className="text-gray-600 text-sm">

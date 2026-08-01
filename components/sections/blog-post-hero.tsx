@@ -103,7 +103,7 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
             <li>
               <Link 
                 href="/" 
-                className="hover:text-brand-orange transition-colors"
+                className="hover:text-brand-orangeText transition-colors"
                 aria-label={bc.goToHomepage}
               >
                 {bc.home}
@@ -113,7 +113,7 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
             <li>
               <Link 
                 href="/blog" 
-                className="hover:text-brand-orange transition-colors"
+                className="hover:text-brand-orangeText transition-colors"
                 aria-label={bc.goToBlog}
               >
                 {bc.blog}
@@ -132,7 +132,7 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
             <Button 
               variant="outline" 
               size="sm"
-              className="group border-gray-300 hover:border-brand-orange hover:text-brand-orange"
+              className="group border-gray-300 hover:border-brand-orange hover:text-brand-orangeText"
             >
               <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
               {bc.backToBlog}
@@ -186,7 +186,7 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
                 onClick={handleShare}
                 variant="outline"
                 size="sm"
-                className="group border-gray-300 hover:border-brand-orange hover:text-brand-orange"
+                className="group border-gray-300 hover:border-brand-orange hover:text-brand-orangeText"
               >
                 <Share2 className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
                 {bc.shareArticle}
@@ -195,7 +195,7 @@ export function BlogPostHero({ post, siteSettings = {} }: BlogPostHeroProps) {
               {/* Newsletter CTA */}
               <Button 
                 size="sm"
-                className="bg-brand-orange hover:bg-brand-orange/90"
+                className="bg-brand-orangeText hover:bg-brand-orangeText/90"
                 onClick={() => {
                   const element = document.getElementById('newsletter-signup');
                   element?.scrollIntoView({ behavior: 'smooth' });

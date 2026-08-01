@@ -63,7 +63,7 @@ export function Navigation({ navigationData, siteSettings = {} }: NavigationProp
             <Link
               key={item.name}
               href={navHref(item)}
-              className="text-sm font-semibold leading-6 text-gray-900 dark:text-gray-100 hover:text-brand-orange transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2"
+              className="text-sm font-semibold leading-6 text-gray-900 dark:text-gray-100 hover:text-brand-orangeText transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2"
             >
               {getNavLabel(item)}
             </Link>
@@ -90,7 +90,7 @@ export function Navigation({ navigationData, siteSettings = {} }: NavigationProp
           <LanguageSwitcher variant="compact" />
           <button
             type="button"
-            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700 dark:text-gray-200 hover:text-brand-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange"
+            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700 dark:text-gray-200 hover:text-brand-orangeText focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-expanded={mobileMenuOpen}
             aria-label="Toggle navigation menu"

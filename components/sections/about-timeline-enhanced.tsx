@@ -158,7 +158,7 @@ export function AboutTimelineEnhanced({ aboutData, siteSettings }: AboutTimeline
             {/* Floating Stats */}
             <div className="absolute -bottom-6 -right-6 bg-white rounded-xl p-6 shadow-xl border">
               <div className="text-center">
-                <div className="text-2xl font-bold text-brand-orange mb-1">
+                <div className="text-2xl font-bold text-brand-orangeText mb-1">
                   {new Date().getFullYear() - 2008}+
                 </div>
                 <div className="text-sm text-gray-600">{ac.yearsOfExcellence}</div>

@@ -52,7 +52,7 @@ export function AboutHeroEnhanced({ aboutData, siteSettings, companyMetrics }: A
           {/* Content Column */}
           <div className="lg:col-span-7 space-y-8">
             {/* Badge */}
-            <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orange">
+            <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orangeText">
               <Award className="h-4 w-4 mr-2" />
               {yearsBadge} {ac.yearsOfExcellence}
             </div>
@@ -64,7 +64,7 @@ export function AboutHeroEnhanced({ aboutData, siteSettings, companyMetrics }: A
               </h1>
               
               {aboutData.slogan && (
-                <p className="text-xl lg:text-2xl text-brand-orange font-medium">
+                <p className="text-xl lg:text-2xl text-brand-orangeText font-medium">
                   {aboutData.slogan}
                 </p>
               )}
@@ -95,7 +95,7 @@ export function AboutHeroEnhanced({ aboutData, siteSettings, companyMetrics }: A
                 <Button 
                   asChild
                   size="lg"
-                  className="bg-brand-orange hover:bg-brand-orange/90 text-white group"
+                  className="bg-brand-orangeText hover:bg-brand-orangeText/90 text-white group"
                 >
                   <Link href={aboutData.hero_cta_primary_url}>
                     {aboutData.hero_cta_primary_text}
@@ -124,7 +124,7 @@ export function AboutHeroEnhanced({ aboutData, siteSettings, companyMetrics }: A
                 text only if none are seeded yet. */}
             <div className="flex flex-wrap items-center gap-6 pt-6 border-t border-gray-200">
               <div className="flex items-center gap-2 text-sm text-gray-600">
-                <Award className="h-4 w-4 text-brand-orange" />
+                <Award className="h-4 w-4 text-brand-orangeText" />
                 <span>{companyMetrics?.find((m) => m.metric_key === 'iso_certification')?.metric_value || 'Certified Translation Services'}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -132,7 +132,7 @@ export function AboutHeroEnhanced({ aboutData, siteSettings, companyMetrics }: A
                 <span>{companyMetrics?.find((m) => m.metric_key === 'moj_accreditation')?.metric_value || 'Accredited Translation Office'}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
-                <Globe className="h-4 w-4 text-brand-orange" />
+                <Globe className="h-4 w-4 text-brand-orangeText" />
                 <span>{ac.globalReach}</span>
               </div>
             </div>
@@ -182,7 +182,7 @@ export function AboutHeroEnhanced({ aboutData, siteSettings, companyMetrics }: A
               <div className="absolute -bottom-6 -left-6 bg-white rounded-xl p-6 shadow-xl border">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-brand-orange/10 rounded-full flex items-center justify-center">
-                    <Award className="h-6 w-6 text-brand-orange" />
+                    <Award className="h-6 w-6 text-brand-orangeText" />
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-gray-900">{yearsBadge}</div>

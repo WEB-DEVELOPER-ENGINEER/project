@@ -50,7 +50,7 @@ export function AboutMissionEnhanced({ aboutData, siteSettings }: AboutMissionEn
                 <CardContent className="p-8">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-brand-orange/10 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Target className="h-6 w-6 text-brand-orange" />
+                      <Target className="h-6 w-6 text-brand-orangeText" />
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-gray-900 mb-3">{ac.missionTitle}</h3>
@@ -136,7 +136,7 @@ export function AboutMissionEnhanced({ aboutData, siteSettings }: AboutMissionEn
             {/* Floating Achievement Cards */}
             <div className="absolute -top-6 -right-6 bg-white rounded-xl p-4 shadow-xl border">
               <div className="flex items-center gap-3">
-                <Award className="h-8 w-8 text-brand-orange" />
+                <Award className="h-8 w-8 text-brand-orangeText" />
                 <div>
                   <div className="font-bold text-gray-900">{ac.certifiedTranslation}</div>
                   <div className="text-xs text-gray-600">{ac.qualityAssured}</div>

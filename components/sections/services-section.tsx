@@ -34,6 +34,7 @@ const getServiceIcon = (iconName?: string) => {
 };
 
 import { useLanguage } from '@/components/providers/LanguageProvider';
+import { localizedPath } from '@/lib/locale';
 import { cn } from '@/lib/utils';
 
 export function ServicesSection({ services, siteSettings = {} }: ServicesSectionProps) {
@@ -41,7 +42,7 @@ export function ServicesSection({ services, siteSettings = {} }: ServicesSection
     triggerOnce: true,
     threshold: 0.1,
   });
-  const { t, isRtl } = useLanguage();
+  const { t, isRtl, locale } = useLanguage();
 
   // Only show services if we have data from database
   if (!services || services.length === 0) {
@@ -74,7 +75,7 @@ export function ServicesSection({ services, siteSettings = {} }: ServicesSection
     >
       <div className="container">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orange mb-4">
+          <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orangeText mb-4">
             {isRtl ? 'خدمات الترجمة لدينا' : 'Our Translation Services'}
           </div>
           <h2 
@@ -107,16 +108,20 @@ export function ServicesSection({ services, siteSettings = {} }: ServicesSection
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-brand-orange/10 group-hover:bg-brand-orange/20 transition-colors duration-300">
-                      <IconComponent className="h-6 w-6 text-brand-orange" aria-hidden="true" />
+                      <IconComponent className="h-6 w-6 text-brand-orangeText" aria-hidden="true" />
                     </div>
                     <Button variant="ghost" size="sm" asChild>
-                      <Link href={`/services/${service.slug}`} className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <Link
+                        href={localizedPath(`/services/${service.translation_group || service.slug}`, locale)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        aria-label={`${isRtl ? 'اعرف المزيد' : 'Learn More'} — ${service.title}`}
+                      >
                         {isRtl ? 'اعرف المزيد' : 'Learn More'}
                         <ArrowRight className={cn('ml-2 h-4 w-4', isRtl && 'rotate-180 mr-2 ml-0')} />
                       </Link>
                     </Button>
                   </div>
-                  <CardTitle className="text-xl font-semibold text-gray-900 dark:text-gray-100 group-hover:text-brand-orange transition-colors">
+                  <CardTitle className="text-xl font-semibold text-gray-900 dark:text-gray-100 group-hover:text-brand-orangeText transition-colors">
                     {localized.title}
                   </CardTitle>
                 </CardHeader>
@@ -143,7 +148,7 @@ export function ServicesSection({ services, siteSettings = {} }: ServicesSection
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 size="lg"
-                className="bg-brand-orange hover:bg-brand-orange/90"
+                className="bg-brand-orangeText hover:bg-brand-orangeText/90"
                 onClick={() => {
                   window.location.href = '/contact';
                 }}

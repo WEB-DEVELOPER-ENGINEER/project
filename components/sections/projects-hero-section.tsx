@@ -67,14 +67,14 @@ export function ProjectsHeroSection({ projects, totalProjects, siteSettings = {}
               <li>
                 <a 
                   href="/" 
-                  className="hover:text-brand-orange transition-colors duration-200"
+                  className="hover:text-brand-orangeText transition-colors duration-200"
                   aria-label={pp.goToHomepage}
                 >
                   {pp.home}
                 </a>
               </li>
               <li className="text-gray-400">/</li>
-              <li className="text-brand-orange font-medium" aria-current="page">
+              <li className="text-brand-orangeText font-medium" aria-current="page">
                 {pp.projects}
               </li>
             </ol>
@@ -121,7 +121,7 @@ export function ProjectsHeroSection({ projects, totalProjects, siteSettings = {}
                 className="flex items-center text-left"
               >
                 <CheckCircle 
-                  className="h-5 w-5 text-brand-orange mr-3 flex-shrink-0" 
+                  className="h-5 w-5 text-brand-orangeText mr-3 flex-shrink-0" 
                   aria-hidden="true"
                 />
                 <span className="text-gray-700 font-medium">{highlight}</span>
@@ -137,7 +137,7 @@ export function ProjectsHeroSection({ projects, totalProjects, siteSettings = {}
           >
             <Button 
               size="lg"
-              className="bg-brand-orange hover:bg-brand-orange/90 text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group"
+              className="bg-brand-orangeText hover:bg-brand-orangeText/90 text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group"
               onClick={handleScrollToProjects}
               aria-describedby="explore-projects-description"
             >

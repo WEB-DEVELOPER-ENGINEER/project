@@ -243,7 +243,7 @@ export function ContactInfoSection({ contactData, siteSettings = {} }: ContactIn
                 return (
                   <div key={info.title} className="flex items-start">
                     <div className="w-12 h-12 bg-brand-orange/10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                      <IconComponent className="w-6 h-6 text-brand-orange" />
+                      <IconComponent className="w-6 h-6 text-brand-orangeText" />
                     </div>
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-2">{info.title}</h4>
@@ -276,21 +276,21 @@ export function ContactInfoSection({ contactData, siteSettings = {} }: ContactIn
               <div className="flex flex-wrap justify-center gap-4 text-sm">
                 <Link 
                   href={localizedPath('/services', locale)}
-                  className="inline-flex items-center text-white hover:text-brand-orange transition-colors duration-300 font-medium focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-blue rounded px-3 py-1"
+                  className="inline-flex items-center text-white hover:text-brand-orangeText transition-colors duration-300 font-medium focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-blue rounded px-3 py-1"
                 >
                   {c.ourServices}
                   <ArrowRight className="ml-1 h-3 w-3" aria-hidden="true" />
                 </Link>
                 <Link 
                   href={localizedPath('/about', locale)}
-                  className="inline-flex items-center text-white hover:text-brand-orange transition-colors duration-300 font-medium focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-blue rounded px-3 py-1"
+                  className="inline-flex items-center text-white hover:text-brand-orangeText transition-colors duration-300 font-medium focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-blue rounded px-3 py-1"
                 >
                   {c.aboutUs}
                   <ArrowRight className="ml-1 h-3 w-3" aria-hidden="true" />
                 </Link>
                 <Link 
                   href={localizedPath('/blog', locale)}
-                  className="inline-flex items-center text-white hover:text-brand-orange transition-colors duration-300 font-medium focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-blue rounded px-3 py-1"
+                  className="inline-flex items-center text-white hover:text-brand-orangeText transition-colors duration-300 font-medium focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-blue rounded px-3 py-1"
                 >
                   {c.blogResources}
                   <ArrowRight className="ml-1 h-3 w-3" aria-hidden="true" />
@@ -330,7 +330,7 @@ export function ContactInfoSection({ contactData, siteSettings = {} }: ContactIn
             <div className="mt-8 p-6 bg-white rounded-lg shadow-md">
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-bold text-brand-orange mb-1">500+</div>
+                  <div className="text-2xl font-bold text-brand-orangeText mb-1">500+</div>
                   <div className="text-sm text-gray-600">{c.statProjects}</div>
                 </div>
                 <div>
@@ -338,7 +338,7 @@ export function ContactInfoSection({ contactData, siteSettings = {} }: ContactIn
                   <div className="text-sm text-gray-600">{c.statLanguages}</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-brand-orange mb-1">98%</div>
+                  <div className="text-2xl font-bold text-brand-orangeText mb-1">98%</div>
                   <div className="text-sm text-gray-600">{c.statSatisfaction}</div>
                 </div>
                 <div>

@@ -71,7 +71,7 @@ export function AboutValuesEnhanced({ aboutData, siteSettings }: AboutValuesEnha
       <div className="container">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orange mb-6">
+          <div className="inline-flex items-center rounded-full bg-brand-orange/10 px-4 py-2 text-sm font-medium text-brand-orangeText mb-6">
             <Heart className="h-4 w-4 mr-2" />
             {ac.badge}
           </div>
@@ -127,7 +127,7 @@ export function AboutValuesEnhanced({ aboutData, siteSettings }: AboutValuesEnha
                 <div className="flex items-center justify-center h-full">
                   <div className="text-center p-8">
                     <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                      <Heart className="h-10 w-10 text-brand-orange" />
+                      <Heart className="h-10 w-10 text-brand-orangeText" />
                     </div>
                     <h3 className="text-xl font-bold text-gray-800 mb-3">
                       {ac.coreValuesTitle}
@@ -143,7 +143,7 @@ export function AboutValuesEnhanced({ aboutData, siteSettings }: AboutValuesEnha
             {/* Floating Stats */}
             <div className="absolute -bottom-6 -right-6 bg-white rounded-xl p-6 shadow-xl border">
               <div className="text-center">
-                <div className="text-2xl font-bold text-brand-orange mb-1">100%</div>
+                <div className="text-2xl font-bold text-brand-orangeText mb-1">100%</div>
                 <div className="text-sm text-gray-600">{ac.commitment}</div>
               </div>
             </div>
